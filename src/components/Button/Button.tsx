@@ -1,0 +1,41 @@
+import React, { ReactNode } from "react";
+
+type Variant = "solid" | "outline" | "disabled";
+type Size = "sm" | "md" | "lg";
+
+interface ButtonProps {
+  children: ReactNode;
+  onClick: () => void;
+  disabled?: boolean;
+  variant?: Variant;
+  size?: Size;
+}
+
+const variantClasses: Record<Variant, string> = {
+  solid: "bg-[#ea3c12] text-white hover",
+  outline: "border text-[#ea3c12] hover",
+  disabled: "bg-[#a4a1aa] text-white cursor-not-allowed",
+};
+const sizeClasses: Record<Size, string> = {
+  sm: "px-3 py-2 text-xs font-normal",
+  md: "px-5 py-2.5 text-sm font-bold",
+  lg: "px-[136px] py-3.5 text-base font-bold",
+};
+
+export default function Button({
+  children,
+  variant = "solid",
+  size = "lg",
+  disabled,
+  ...rest
+}: ButtonProps) {
+  const base = "rounded-md";
+  const classes = `${base} ${variantClasses[disabled ? "disabled" : variant]} ${
+    sizeClasses[size]
+  }`;
+  return (
+    <button className={classes} disabled={disabled} {...rest}>
+      {children}
+    </button>
+  );
+}
