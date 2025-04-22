@@ -17,9 +17,9 @@ const variantClasses: Record<Variant, string> = {
   disabled: "bg-[#a4a1aa] text-white cursor-not-allowed",
 };
 const sizeClasses: Record<Size, string> = {
-  sm: "px-3 py-2 text-xs font-normal",
-  md: "px-5 py-2.5 text-sm font-bold",
-  lg: "px-[136px] py-3.5 text-base font-bold",
+  sm: "px-3 py-2 text-xs/[16px] font-normal ",
+  md: "px-5 py-2.5 text-sm/[16px] font-bold",
+  lg: "px-[136px] py-3.5 text-base/[20px] font-bold",
 };
 
 export default function Button({
