@@ -31,6 +31,16 @@ module.exports = {
                 },
                 kakao: "#FEE500",
             },
+            boxShadow: {
+                input: "0px 4px 25px 0px #0000001A",
+                notification: "0px 2px 8px 0px #78748640",
+            },
+            screens: {
+                xs: "375px",
+                sm: "768px",
+                md: "1024px",
+            },
+            plugins: [],
         },
     },
 };
