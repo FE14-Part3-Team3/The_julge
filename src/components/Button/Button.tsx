@@ -12,8 +12,8 @@ interface ButtonProps {
 }
 
 const variantClasses: Record<Variant, string> = {
-  solid: "bg-[#ea3c12] text-white hover",
-  outline: "border text-[#ea3c12] hover",
+  solid: "bg-[#ea3c12] text-white cursor-pointer",
+  outline: "border text-[#ea3c12] cursor-pointer",
   disabled: "bg-[#a4a1aa] text-white cursor-not-allowed",
 };
 const sizeClasses: Record<Size, string> = {
