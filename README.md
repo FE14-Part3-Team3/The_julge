@@ -7,7 +7,8 @@
 ## 🧑‍💻 팀원
 고서영 | 박원현 | 송미진 | 이나경 | 차경훈
 ---|---|---|---|---
-<img width=100 alt=고서영 src=https://github.com/user-attachments/assets/cdf12b68-328c-402d-83e6-73f650a66e61> |
+<img width=100 alt=고서영 src=https://github.com/user-attachments/assets/cdf12b68-328c-402d-83e6-73f650a66e61> ||<img width=100 alt=송미진 src=https://github.com/user-attachments/assets/6daf059c-b387-413c-b5ba-4895adad45dc>|||
+
 
 ## 📆 프로젝트 기간
 2025년 04월 22일 - 2025년 05월 11일
