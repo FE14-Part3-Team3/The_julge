@@ -12,9 +12,8 @@ interface ModalButtonProps {
 }
 
 const variantStyles: Record<Variant, string> = {
-  primary: 'bg-[#ea3c12] text-white cursor-pointer',
-  outline:
-    'bg-white font-sans text-[#ea3c12] border border-[#ea3c12] cursor-pointer',
+  primary: 'bg-red-50 text-white cursor-pointer',
+  outline: 'bg-white font-sans text-red-50 border border-red-50 cursor-pointer',
 };
 
 const sizeStyles: Record<Size, string> = {

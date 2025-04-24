@@ -59,7 +59,7 @@ export default function Modal({
             {icon && <div className="mb-3">{icon}</div>}
             <p
               className={clsx(
-                'text-[#333236] text-center font-medium leading-none whitespace-nowrap',
+                'text-black text-center font-medium leading-none whitespace-nowrap',
                 textSizeClass
               )}
             >
@@ -71,7 +71,7 @@ export default function Modal({
             {icon && <div className="mb-3">{icon}</div>}
             <p
               className={clsx(
-                'text-[#333236] text-center font-medium leading-none',
+                'text-black text-center font-medium leading-none',
                 textSizeClass
               )}
             >

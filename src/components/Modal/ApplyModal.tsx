@@ -1,6 +1,7 @@
 import Modal from './Modal';
 import { useState } from 'react';
 import ModalButton from '../Button/ModalButton';
+import Image from 'next/image';
 
 type ApplyModalType = 'cancel' | 'reject' | 'approve';
 
@@ -39,10 +40,12 @@ export default function ApplyModal({ type }: ApplyModalProps) {
           buttonAlign="center"
           description={description}
           icon={
-            <img
+            <Image
               src="/assets/images/check.svg"
               alt="아이콘"
-              className="w-6 h-6 mb-3"
+              width={24}
+              height={24}
+              className="mb-3"
             />
           }
         >
