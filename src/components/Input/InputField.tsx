@@ -22,7 +22,7 @@ export function InputField({
       </label>
       {children}
       {isError && (
-        <p className="text-red-50 text-[12px]/[16px] mt-2 pl-2">{error}</p>
+        <p className="text-red-40 text-[12px]/[16px] mt-2 pl-2">{error}</p>
       )}
     </div>
   );
