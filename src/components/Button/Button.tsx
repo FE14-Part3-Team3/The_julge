@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 
-type Variant = "solid" | "outline" | "disabled";
+type Variant = "primary" | "outline" | "disabled";
 type Size = "sm" | "md" | "lg";
 
 interface ButtonProps {
@@ -12,9 +12,9 @@ interface ButtonProps {
 }
 
 const variantClasses: Record<Variant, string> = {
-  solid: "bg-[#ea3c12] text-white cursor-pointer",
-  outline: "border text-[#ea3c12] cursor-pointer",
-  disabled: "bg-[#a4a1aa] text-white cursor-not-allowed",
+  primary: "bg-red-50 text-white cursor-pointer",
+  outline: "border border-red-50 text-red-50 cursor-pointer",
+  disabled: "bg-gray-40 text-white cursor-not-allowed",
 };
 const sizeClasses: Record<Size, string> = {
   sm: "px-3 py-2 text-xs/[16px] font-normal ",
@@ -24,7 +24,7 @@ const sizeClasses: Record<Size, string> = {
 
 export default function Button({
   children,
-  variant = "solid",
+  variant = "primary",
   size = "lg",
   disabled,
   ...rest
