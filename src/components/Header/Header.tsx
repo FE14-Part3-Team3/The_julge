@@ -19,7 +19,7 @@ export default function HeaderHandler() {
   const [hasShops, setHasShops] = useState(false);
   const [shopId, setShopId] = useState<string | null>(null);
 
-  // 가게 등록 여부 확인
+  // 가게 등록여부 확인
   useEffect(() => {
     const checkShops = async () => {
       try {
