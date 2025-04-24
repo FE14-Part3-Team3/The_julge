@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import RegisterCard from "@/components/Card/RegisterCard"; // 정확한 경로로 수정됨
+import RegisterCard from "@/components/Card/RegisterCard";
 
 export default function EmployerPage() {
   return (
