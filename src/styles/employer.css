@@ -1,0 +1,16 @@
+.employerContainer {
+  @apply px-4 py-8 mx-auto max-w-full;
+  @apply sm:max-w-lg md:max-w-3xl;
+}
+.employerTitle {
+  @apply text-xl sm:text-2xl font-semibold mb-6;
+}
+.employerCard {
+  @apply border border-gray-20 rounded-lg p-8 text-center shadow-notification;
+}
+.employerText {
+  @apply text-sm sm:text-base text-gray-40 mb-6;
+}
+.employerButton {
+  @apply bg-red-50 text-white text-sm sm:text-base py-2 px-4 sm:py-3 sm:px-6 rounded-lg font-medium hover:bg-red-40;
+}
