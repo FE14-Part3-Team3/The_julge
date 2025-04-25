@@ -5,7 +5,7 @@ type Size = "sm" | "md" | "lg";
 
 interface ButtonProps {
   children: ReactNode;
-  onClick: () => void;
+  onClick?: () => void;
   disabled?: boolean;
   variant?: Variant;
   size?: Size;
