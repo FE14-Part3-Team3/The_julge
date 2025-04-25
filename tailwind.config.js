@@ -1,4 +1,10 @@
 module.exports = {
+    content: [
+        "./src/**/*.{js,jsx,ts,tsx}",
+        "./src/components/**/*.{js,jsx,ts,tsx}",
+        "./src/pages/**/*.{js,jsx,ts,tsx}",
+        "./src/app/**/*.{js,jsx,ts,tsx}",
+    ],
     theme: {
         extend: {
             fontFamily: {
@@ -16,6 +22,7 @@ module.exports = {
                 },
                 white: "#FFFFFF",
                 red: {
+                    50: "#EA3C12",
                     40: "#FF4040",
                     30: "#FF8D72",
                     20: "#FFAF9B",
@@ -40,7 +47,7 @@ module.exports = {
                 sm: "768px",
                 md: "1024px",
             },
-            plugins: [],
         },
     },
+    plugins: [],
 };
