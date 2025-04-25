@@ -6,6 +6,7 @@ import AlertModal from "@/components/Modal/AlertModal";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 interface LoginForm {
@@ -15,7 +16,7 @@ interface LoginForm {
 
 export default function LoginPage() {
   const router = useRouter();
-
+  const [isOpenAlert, setIsOpenAlert] = useState(false);
   const {
     register,
     handleSubmit,
@@ -40,8 +41,7 @@ export default function LoginPage() {
       );
 
       if (!response.ok) {
-        const errorData = await response.json();
-        return <AlertModal type="password" />;
+        setIsOpenAlert(true);
       }
 
       const result = await response.json();
@@ -53,7 +53,6 @@ export default function LoginPage() {
       router.push("/dashboard");
     } catch (err: any) {
       console.error("로그인 실패", err);
-      return <AlertModal type="password" />;
     }
   };
 
@@ -107,6 +106,18 @@ export default function LoginPage() {
           {isSubmitting ? "로딩 중..." : "로그인 하기"}
         </Button>
       </form>
+      <p className="text-center mt-4 sm:mt-5 text-black text-normal ">
+        회원이 아니신가요?{" "}
+        <Link
+          href="/signup"
+          className="text-[#5534DA] underline underline-offset-4"
+        >
+          회원가입하기
+        </Link>
+      </p>
+      {isOpenAlert && (
+        <AlertModal type="password" onClose={() => setIsOpenAlert(false)} />
+      )}
     </main>
   );
 }
