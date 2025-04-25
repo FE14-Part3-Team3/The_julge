@@ -73,12 +73,8 @@ export type ShopCategory =
   | '분식'
   | '카페'
   | '편의점'
-  | '기타'
+  | '기타' ;
 
-// 공고 연관 status      // 어떤파일에 넣을지 모르겠음... 
-export interface CurrentUserApplication {  // 특정공고의 상태 
-  item: UserApplication
-}
 
 export interface UserApplication {    
   id: string

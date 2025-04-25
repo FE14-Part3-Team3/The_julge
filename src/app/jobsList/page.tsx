@@ -1,29 +1,30 @@
 'use client'
 
-import { useNoticeList } from "@/hooks/api/useNoticeList"
+import { useNoticeList, usePostShopsNoticeList } from "@/hooks/api/useNoticeList"
 import { usePagination } from "@/hooks/api/usePagination"
 import { GetShopNoticesQuery } from "@/types/common"
 import { useState } from "react"
 
 export default function NoticeListPage() {
 
-  const shopId = 'abc123' // 실제 shop_id로 대체
+  const shopId = 'abc123' ;// 실제 shop_id로 대체
 
 
   const [query, setQuery] = useState<GetShopNoticesQuery>({
     offset: 0,
     limit: 10,
     keyword: '',
-  })
+  });
 
   const [form, setForm] = useState({
     hourlyPay: 10000,
     startsAt: new Date().toISOString(),
     workhour: 4,
     description: '테스트 공고입니다',
-  })
+  });
 
-  const { data, isLoading, isError, error } = useNoticeList(query)
+
+  const { data, isLoading, isError, error } = useNoticeList(query);
 
  
 

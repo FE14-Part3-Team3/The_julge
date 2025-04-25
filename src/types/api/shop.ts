@@ -1,4 +1,4 @@
-import { Link, SeoulDistrict, ShopCategory, UserType } from "../common"
+import { Link, SeoulDistrict, ShopCategory, UserApplication, UserType } from "../common"
 import { UserWrapper } from "./user"
 
 // 가게 정보
@@ -58,3 +58,19 @@ export interface CreateShopRequest {   // 가게 등록, 가게 정보 수정
   imageUrl: string
   originalHourlyPay: number
 }
+
+export type NoticeDetail = {
+  id: string
+  hourlyPay: number
+  startsAt: string
+  workhour: number
+  description: string
+  closed: boolean
+  shop: {
+    item: ShopInfo
+    href: string
+  }
+  currentUserApplication?: {
+    item: UserApplication
+  }
+};
