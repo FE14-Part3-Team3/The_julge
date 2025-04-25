@@ -9,9 +9,11 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
-interface LoginForm {
-  email: String;
-  password: String;
+interface SignUpForm {
+  email: string;
+  password: string;
+  password_confirm: string;
+  type: "employer" | "employee";
 }
 
 export default function LoginPage() {
@@ -21,18 +23,21 @@ export default function LoginPage() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<LoginForm>({
+    getValues,
+  } = useForm<SignUpForm>({
     mode: "onBlur",
     defaultValues: {
       email: "",
       password: "",
+      password_confirm: "",
+      type: "employee",
     },
   });
 
-  const onSubmit: SubmitHandler<LoginForm> = async (data) => {
+  const onSubmit: SubmitHandler<SignUpForm> = async (data) => {
     try {
       const response = await fetch(
-        "https://bootcamp-api.codeit.kr/api/0-1/the-julge/token",
+        "https://bootcamp-api.codeit.kr/api/0-1/the-julge/users",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -45,14 +50,14 @@ export default function LoginPage() {
       }
 
       const result = await response.json();
-      console.log("로그인 성공", result);
+      console.log("회원가입 성공", result);
 
       //토큰 저장
       localStorage.setItem("token", result.item.token);
 
       router.push("/dashboard");
     } catch (err: any) {
-      console.error("로그인 실패", err);
+      console.error("회원가입 실패", err);
     }
   };
 
@@ -102,21 +107,31 @@ export default function LoginPage() {
           isError={!!errors.password}
           errorText={errors.password?.message}
         />
+        <Input
+          label="비밀번호 확인"
+          type="password"
+          placeholder="입력"
+          {...register("password_confirm", {
+            required: {
+              value: true,
+              message: "비밀번호를 다시 한 번 입력해주세요.",
+            },
+            validate: {
+              notMatched: (value) => {
+                const { password } = getValues();
+                return value === password || "비밀번호가 일치하지 않습니다.";
+              },
+            },
+          })}
+          isError={!!errors.password_confirm}
+          errorText={errors.password_confirm?.message}
+        />
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "로딩 중..." : "로그인 하기"}
+          {isSubmitting ? "로딩 중..." : "가입하기"}
         </Button>
       </form>
-      <p className="text-center mt-4 sm:mt-5 text-black text-normal ">
-        회원이 아니신가요?{" "}
-        <Link
-          href="/signup"
-          className="text-[#5534DA] underline underline-offset-4"
-        >
-          회원가입하기
-        </Link>
-      </p>
       {isOpenAlert && (
-        <AlertModal type="password" onClose={() => setIsOpenAlert(false)} />
+        <AlertModal type="signup" onClose={() => setIsOpenAlert(false)} />
       )}
     </main>
   );
