@@ -7,15 +7,15 @@ import clsx from 'clsx';
 type ModalSize = 'compact' | 'wide';
 
 interface ModalProps {
-  description: string;
-  icon?: ReactNode;
-  children?: ReactNode;
-  size?: ModalSize;
-  width?: string;
-  height?: string;
-  descriptionSize?: string;
-  buttonAlign?: 'start' | 'center' | 'end';
-  layout?: 'centered' | 'top';
+  description: string; // 모달 본문 텍스트
+  icon?: ReactNode; // 모달 아이콘
+  children?: ReactNode; // 하단 버튼 요소
+  size?: ModalSize; // 모달 사이즈 ("compact" | "wide") , 기본값은 "wide"
+  width?: string; // 너비
+  height?: string; // 높이
+  descriptionSize?: string; // 본문 텍스트 사이즈
+  buttonAlign?: 'start' | 'center' | 'end'; // 버튼 정렬 위치 , 기본값: "end"
+  layout?: 'centered' | 'top'; // 컨텐츠 배치 방식, 기본값: "centered"
 }
 
 export default function Modal({
