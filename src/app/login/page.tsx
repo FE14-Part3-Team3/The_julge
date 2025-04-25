@@ -68,6 +68,7 @@ export default function LoginPage() {
             src="/assets/images/logo.png"
             alt="더줄게 로고"
             fill
+            priority
             sizes="(max-width: 640px) 208px, 248px"
             className="object-contain"
           />
@@ -102,7 +103,9 @@ export default function LoginPage() {
           isError={!!errors.password}
           errorText={errors.password?.message}
         />
-        <Button onClick={}>로그인 하기</Button>
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "로딩 중..." : "로그인 하기"}
+        </Button>
       </form>
     </main>
   );
