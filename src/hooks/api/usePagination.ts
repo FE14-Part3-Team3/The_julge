@@ -60,3 +60,19 @@ export const usePagination = ({ offset = 0, limit = 10, totalCount = 0, pageRang
     goToPrev
   }
 }
+
+// 아래와 같이 활용 
+// const {
+//   currentPage,
+//   totalPages,
+//   pageList,
+//   goToPage,
+//   goToNext,
+//   goToPrev
+// } = usePagination({
+//   offset: query.offset,  //  현재 오프셋
+//   limit: query.limit,  // 현재 리미트 
+//   totalCount: data?.count,  // 총 데이터 갯수
+//   setQuery,  // 퀴리 set
+//   pageRange: 7,  // 한번에 보여질 페이지 갯수 
+// })
