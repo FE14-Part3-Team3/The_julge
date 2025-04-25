@@ -1,4 +1,5 @@
-import { Link, SeoulDistrict, UserType } from "../common"
+import { ApplicationStatus, Link, NotificationResult, SeoulDistrict, UserType } from "../common"
+import { NoticeWrapper } from "./notice"
 import { ShopWrapper } from "./shop"
 
 // 로그인 요청
@@ -73,4 +74,49 @@ export interface UpdateUserProfileRequest {
   phone: string
   address: SeoulDistrict
   bio: string
+}
+
+// 개별 알림 항목
+export interface ApplicationSummary {
+  id: string
+  status: ApplicationStatus
+}
+
+export interface ApplicationWrapper {
+  item: ApplicationSummary
+  href: string
+}
+
+export interface Notification {  
+  id: string
+  createdAt: string
+  result: NotificationResult
+  read: boolean
+  application: ApplicationWrapper
+  shop: ShopWrapper
+  notice: NoticeWrapper
+  links: Link[]
+}
+
+export interface NotificationItemWrapper {
+  item: Notification
+  links: Link[]
+}
+
+export interface GetNotificationsResponse {
+  offset: number
+  limit: number
+  count: number
+  hasNext: boolean
+  items: NotificationItemWrapper[]
+  links: Link[]
+}
+
+export interface GetNotificationsResponse {  // 알림 읽음 처리
+  offset: number
+  limit: number
+  items: {
+    item: Notification
+    links: Link[]
+  }[]
 }

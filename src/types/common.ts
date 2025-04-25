@@ -1,4 +1,8 @@
 
+// 타입정의가 ... 너무 많은가? ... 이 부분이 필요한가?
+// 상속이 너무 많아서 오히려 헷갈림
+// 사용하게되면 아래 vscode 개요를 참고하시면 빠릅니다.
+// Wrapper ,  Response, Request 네이밍 참고하시면 활용 빠름
 
 export interface Link {
   rel: string
@@ -9,7 +13,12 @@ export interface Link {
 // 사용자 정보
 export type UserType = 'employer' | 'employee'
 
+//  ??  이부분... 줄일 수 있는 방법? 그냥 string?
 export type ApplicationStatus = 'pending' | 'accepted' | 'rejected' | 'canceled'  //  가게 공고 상세 버튼에 사용됨   // 유저, 공고상태등 구분
+
+// 알림 결과 상태
+export type NotificationResult = 'accepted' | 'rejected'
+
 
 // Query 타입 정의 
 export interface GetShopNoticesQuery {  // 공고 리스트 쿼리

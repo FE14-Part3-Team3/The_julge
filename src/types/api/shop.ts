@@ -1,5 +1,5 @@
 import { Link, SeoulDistrict, ShopCategory, UserType } from "../common"
-import { UserWrapper } from "./auth"
+import { UserWrapper } from "./user"
 
 // 가게 정보
 export interface ShopInfo { // Shop인포
@@ -35,8 +35,8 @@ export interface CreateShopResponse {
 }
 
 // 가게 응답 (등록 성공 시)
-export interface ShopResponse {
-  id: string
+export interface ShopResponse {  //  가게 등록, 가게 정보 수정,가게 정보 조회 Responses
+  id: string   
   name: string
   category: ShopCategory
   address1: SeoulDistrict
@@ -49,7 +49,7 @@ export interface ShopResponse {
 
 // Request
 // 가게 등록 요청
-export interface CreateShopRequest {
+export interface CreateShopRequest {   // 가게 등록, 가게 정보 수정
   name: string
   category: ShopCategory
   address1: SeoulDistrict
