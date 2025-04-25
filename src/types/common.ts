@@ -73,7 +73,7 @@ export type ShopCategory =
   | '분식'
   | '카페'
   | '편의점'
-  | '기타' ;
+  | '기타' 
 
 
 export interface UserApplication {    

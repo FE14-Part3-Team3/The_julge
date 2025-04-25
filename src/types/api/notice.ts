@@ -1,12 +1,12 @@
-import { Link } from "../common"
+import { PaginatedResponse, Wrapper } from "../common"
+import { UserApplication } from "./application";
 import { ShopInfo } from "./shop"
 
 
-// 공고리스트 타입 정의 
-export interface NoticeItem {  // 공고 조회 > items /  가게 공고 등록 Response  / 공고 수정 Response
+export interface NoticeItem {
   id: string
   hourlyPay: number
-  startsAt: string // RFC3339 시간
+  startsAt: string
   workhour: number
   description: string
   closed: boolean
@@ -14,13 +14,11 @@ export interface NoticeItem {  // 공고 조회 > items /  가게 공고 등록 
     item: ShopInfo
     href: string
   }
-}
-export interface ItemWrapper {
-  item: NoticeItem // NOtice 아이템 타입받아옴
-  links: Link[]
+  currentUserApplication?: {
+    item: UserApplication
+  }
 }
 
-// Notice 정보 (간략한 구조)
 export interface Notice {
   id: string
   hourlyPay: number
@@ -29,38 +27,25 @@ export interface Notice {
   workhour: number
   closed: boolean
 }
-export interface NoticeWrapper {
+
+export type NoticeWrapper = {
   item: Notice
   href: string
-}
+};
 
-// Response
-export interface GetNoticeListResponse {   //공고 > 공고 조회
-  offset: number
-  limit: number
-  count: number // 전체 개수
-  hasNext: boolean // 다음 페이지 여부
-  address: string[]
-  keyword?: string
-  items: ItemWrapper [] // NOticeWrapper 아이템 타입받아옴
-  links: Link[]
-}
-
-export interface GetShopNoticesResponse {  //공고 > 가게의 공고 목록 조회
-  offset: number
-  limit: number
-  count: number         // 전체 개수
-  hasNext: boolean      // 다음 페이지 존재 여부
-  items: ItemWrapper []
-  links: Link[]       
-}
-
-
-// Request 
-export interface NoticeFormData {    // 공고 수정, 공고 조회 샵 정보
+export interface NoticeFormData {    // 가게 공고 등록, 가게의 특정 공고 수정 Request body
   hourlyPay: number
-  startsAt: string // 예: "2023-12-23T00:00:00Z" (RFC3339 형식)
+  startsAt: string
   workhour: number
   description: string
 }
 
+export type ItemWrapper = Wrapper<NoticeItem>  // 가게 공고 등록 , 가게의 특정 공고 조회, 가게의 특정 공고 수정 Responses
+
+
+export interface GetNoticeListResponse extends PaginatedResponse<ItemWrapper> { //  공고 목록 조회
+  address: string[]
+  keyword?: string
+}
+
+export type GetShopNoticesResponse = PaginatedResponse<ItemWrapper> // 가게의 공고 목록 조회

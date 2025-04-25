@@ -1,122 +1,55 @@
-import { ApplicationStatus, Link, NotificationResult, SeoulDistrict, UserType } from "../common"
-import { NoticeWrapper } from "./notice"
-import { ShopWrapper } from "./shop"
+import { Link, SeoulDistrict, UserType, Wrapper } from "../common"
+import { ShopWrapper } from "./application";
 
-// 로그인 요청
 export interface LoginRequest {
   email: string
   password: string
 }
 
-export interface User {  
-  id: string
-  email: string
-  type: UserType
-  name?: string
-  phone?: string
-  address?: string
-  bio?: string
-}
-
-export interface UserWrapper { 
-  item: User
-  href: string
-}
-
-// 내 정보 응답 구조
-export interface UserDetail { // 내 정보 조회 > item
-  id: string
-  email: string
-  type: UserType
-  name?: string
-  phone?: string
-  address?: string
-  bio?: string
-  shop?: ShopWrapper | null
-}
-
-// Response
-// 회원가입 응답
-export interface SignupResponse {
-  item: {
-    id: string
-    email: string
-    type: UserType
-  }
-  links: Link[]
-}
-
-// 로그인 응답
-export interface LoginResponse {
-  item: {
-    token: string
-    user: UserWrapper
-  }
-  links: Link[]
-}
-
-export interface GetUserResponse {  // 내 정보 조회
-  item: UserDetail
-  links: Link[]
-}
-
-// Request 
-// 회원가입 요청
-export interface SignupRequest {
+export interface SignupRequest {  // 회원가입 Request body
   email: string
   password: string
   type: UserType
 }
 
-// 회원수정  
-export interface UpdateUserProfileRequest {
+export interface User {
+  id: string
+  email: string
+  type: UserType
+  name?: string
+  phone?: string
+  address?: string
+  bio?: string
+}
+
+export interface UserDetail extends User {
+  shop?: ShopWrapper | null
+}
+
+export interface UpdateUserProfileRequest {   // 내 정보 수정 Request body
   name: string
   phone: string
   address: SeoulDistrict
   bio: string
 }
 
-// 개별 알림 항목
-export interface ApplicationSummary {
-  id: string
-  status: ApplicationStatus
-}
-
-export interface ApplicationWrapper {
-  item: ApplicationSummary
+export type UserWrapper = { 
+  item: User
   href: string
+};
+
+export type SignupResponse = Wrapper<Pick<User, 'id' | 'email' | 'type'>>  // 회원가입 Responses
+
+// TypeScript의 유틸리티 타입 중 하나인 Pick
+// User 타입에서 특정 속성만 "뽑아오는 것" ( ?: 와 Pick ) 이 둘은 목적이 전혀 다르다!
+
+
+export interface LoginResponse {  // 로그인 Responses
+  item: {
+    token: string
+    user: UserWrapper
+  }
+  links: Link[];
 }
 
-export interface Notification {  
-  id: string
-  createdAt: string
-  result: NotificationResult
-  read: boolean
-  application: ApplicationWrapper
-  shop: ShopWrapper
-  notice: NoticeWrapper
-  links: Link[]
-}
-
-export interface NotificationItemWrapper {
-  item: Notification
-  links: Link[]
-}
-
-export interface GetNotificationsResponse {
-  offset: number
-  limit: number
-  count: number
-  hasNext: boolean
-  items: NotificationItemWrapper[]
-  links: Link[]
-}
-
-export interface GetNotificationsResponse {  // 알림 읽음 처리
-  offset: number
-  limit: number
-  items: {
-    item: Notification
-    links: Link[]
-  }[]
-}
+export type GetUserResponse = Wrapper<UserDetail>  // 내 정보 조회, 내 정보 수정 Responses
