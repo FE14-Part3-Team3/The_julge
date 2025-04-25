@@ -1,11 +1,14 @@
 'use client'
 
 import { useNoticeList } from "@/hooks/api/useNoticeList"
-import { GetNoticeListResponse } from "@/types/api/notice"
+import { usePagination } from "@/hooks/api/usePagination"
 import { GetShopNoticesQuery } from "@/types/common"
 import { useState } from "react"
 
 export default function NoticeListPage() {
+
+  const shopId = 'abc123' // 실제 shop_id로 대체
+
 
   const [query, setQuery] = useState<GetShopNoticesQuery>({
     offset: 0,
@@ -13,43 +16,61 @@ export default function NoticeListPage() {
     keyword: '',
   })
 
+  const [form, setForm] = useState({
+    hourlyPay: 10000,
+    startsAt: new Date().toISOString(),
+    workhour: 4,
+    description: '테스트 공고입니다',
+  })
+
   const { data, isLoading, isError, error } = useNoticeList(query)
 
-  const extractQueryFromHref = (href: string): GetShopNoticesQuery => {
-    const baseURL = process.env.NEXT_PUBLIC_API_URL
-    const url = new URL(href, baseURL)
-    return {
-      offset: Number(url.searchParams.get('offset')),
-      limit: Number(url.searchParams.get('limit')),
-    }
-  }
+ 
 
-  const goTo = (rel: 'next' | 'prev') => {
-    const href = data?.links.find(l => l.rel === rel)?.href
-    if (!href) return
-    console.log(href);
-    const nextQuery = extractQueryFromHref(href)
-    setQuery(prev => ({ ...prev, ...nextQuery }))
-  }
+  const {
+    currentPage,
+    totalPages,
+    pageList,
+    goToPage,
+    goToNext,
+    goToPrev
+  } = usePagination({
+    offset: query.offset,
+    limit: query.limit,
+    totalCount: data?.count,
+    setQuery,
+    pageRange: 7,
+  })
+
   if (isLoading) return <div>로딩 중...</div>
   if (isError) return <div>에러 발생: {error?.message}</div>
 
   return (
     <div>
+
       <ul>
         {data?.items.map(({ item }) => (
           <li key={item.id}>{item.description}</li>
         ))}
       </ul>
-
-      <div className="flex gap-4 mt-4">
-        <button onClick={() => goTo('prev')} disabled={!data?.links.some(l => l.rel === 'prev')}>
-          이전
+      <button onClick={() => goToPrev()}
+        disabled={currentPage === 1}
+        >Prev</button>
+      {pageList.map((page) => (
+        <button
+          key={page}
+          onClick={() => goToPage(page)}
+          className={page === currentPage ? 'bg-blue-500 text-grey' : ''}
+        >
+          {page}
         </button>
-        <button onClick={() => goTo('next')} disabled={!data?.links.some(l => l.rel === 'next')}>
-          다음
+      ))}
+      <button 
+      onClick={() => goToNext()}
+        disabled={currentPage === totalPages}
+        >
+          Next
         </button>
-      </div>
     </div>
   )
 }
