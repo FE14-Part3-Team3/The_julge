@@ -1,13 +1,15 @@
 import Modal from './Modal';
 import { useState } from 'react';
 import ModalButton from '../Button/ModalButton';
+import Image from 'next/image';
 
 type ApplyModalType = 'cancel' | 'reject' | 'approve';
 
 interface ApplyModalProps {
-  type: ApplyModalType;
+  type: ApplyModalType; // 모달 타입 ("cancel" | "reject" | "approve")
 }
 
+// 모달 타입별로 description과 버튼 문구 정의
 const modalConfig: Record<
   ApplyModalType,
   { description: string; confirmLabel: string }
@@ -39,10 +41,12 @@ export default function ApplyModal({ type }: ApplyModalProps) {
           buttonAlign="center"
           description={description}
           icon={
-            <img
+            <Image
               src="/assets/images/check.svg"
               alt="아이콘"
-              className="w-6 h-6 mb-3"
+              width={24}
+              height={24}
+              className="mb-3"
             />
           }
         >
