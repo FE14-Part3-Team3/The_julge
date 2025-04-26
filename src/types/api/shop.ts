@@ -13,6 +13,8 @@ export interface ShopInfo { // Shop인포
   originalHourlyPay: number
 }
 
+export type ShopWrapper = Wrapper<ShopInfo>;
+
 export interface CreateShopRequest {   // 가게 등록, 가게 정보 수정 Request
   name: string
   category: ShopCategory

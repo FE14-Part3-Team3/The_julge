@@ -1,4 +1,4 @@
-import { PaginatedResponse, Wrapper } from "../common"
+import { NoticesPaginatedResponse, PaginatedResponse, Wrapper } from "../common"
 import { UserApplication } from "./application";
 import { ShopInfo } from "./shop"
 
@@ -43,9 +43,6 @@ export interface NoticeFormData {    // 가게 공고 등록, 가게의 특정 �
 export type ItemWrapper = Wrapper<NoticeItem>  // 가게 공고 등록 , 가게의 특정 공고 조회, 가게의 특정 공고 수정 Responses
 
 
-export interface GetNoticeListResponse extends PaginatedResponse<ItemWrapper> { //  공고 목록 조회
-  address: string[]
-  keyword?: string
-}
+export type GetNoticeListResponse = NoticesPaginatedResponse<ItemWrapper> 
 
 export type GetShopNoticesResponse = PaginatedResponse<ItemWrapper> // 가게의 공고 목록 조회

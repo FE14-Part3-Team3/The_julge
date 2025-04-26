@@ -1,10 +1,10 @@
-import { ApplicationStatus, Link, NotificationResult, PaginatedResponse, Wrapper } from "../common";
-import { ShopWrapper } from "./application";
+import { Link, PaginatedResponse, Wrapper } from "../common";
 import { NoticeWrapper } from "./notice";
+import { ShopWrapper } from "./shop";
 
 export interface ApplicationSummary {
   id: string
-  status: ApplicationStatus
+  status: 'pending' | 'accepted' | 'rejected' 
 }
 
 export interface ApplicationWrapper {
@@ -15,7 +15,7 @@ export interface ApplicationWrapper {
 export interface Notification {
   id: string
   createdAt: string
-  result: NotificationResult
+  result: 'accepted' | 'rejected'
   read: boolean
   application: ApplicationWrapper
   shop: ShopWrapper
@@ -29,5 +29,5 @@ export type GetNotificationsResponse = PaginatedResponse<NotificationItemWrapper
 export interface MarkNotificationsAsReadResponse {  // 알림 읽음 처리  Responses
   offset: number
   limit: number
-  items: Wrapper<Notification>[]
+  item: Wrapper<Notification>[]
 }

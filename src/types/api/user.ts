@@ -1,5 +1,7 @@
-import { Link, SeoulDistrict, UserType, Wrapper } from "../common"
-import { ShopWrapper } from "./application";
+import { Link, PaginatedResponse, SeoulDistrict, UserType, Wrapper } from "../common"
+import { NoticeWrapper } from "./notice";
+import { ApplicationWrapper } from "./notification";
+import { ShopWrapper } from "./shop";
 
 export interface LoginRequest {
   email: string
@@ -53,3 +55,25 @@ export interface LoginResponse {  // 로그인 Responses
 }
 
 export type GetUserResponse = Wrapper<UserDetail>  // 내 정보 조회, 내 정보 수정 Responses
+
+
+export interface AlertItem {
+  id: string;
+  createdAt: string;
+  result: 'accepted' | 'rejected';
+  read: boolean;
+  application: ApplicationWrapper
+  shop: ShopWrapper
+  notice: NoticeWrapper
+  links: any[]
+}
+
+export type AlertItemWrapper = Wrapper<AlertItem> 
+
+export interface PutAlertItemResponse { // 알림 읽음 처리
+  offset: number
+  limit: number
+  items: AlertItemWrapper
+  links: Link[]
+}
+export type GetUserAlertsResponse = PaginatedResponse<AlertItemWrapper>  // 유저의 알림 목록 조회

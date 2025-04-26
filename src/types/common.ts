@@ -14,11 +14,39 @@ export interface Link {
 export type UserType = 'employer' | 'employee'
 
 //  ??  이부분... 줄일 수 있는 방법? 그냥 string?
-export type ApplicationStatus = 'pending' | 'accepted' | 'rejected' | 'canceled'  //  가게 공고 상세 버튼에 사용됨   // 유저, 공고상태등 구분
+export interface ApplicationStatus {status: 'pending' | 'accepted' | 'rejected' | 'canceled'}  //  가게 공고 상세 버튼에 사용됨   // 유저, 공고상태등 구분
+
+export interface ApplicationRequest {status: 'accepted' | 'rejected' | 'canceled' }
 
 // 알림 결과 상태
-export type NotificationResult = 'accepted' | 'rejected'
+export interface NotificationResult {status: 'accepted' | 'rejected'}
 
+
+export interface PaginatedResponse<T> {      // <T> 제네릭타입을 활용해서 변수적인 부분 기입
+  offset: number
+  limit: number
+  count: number
+  hasNext: boolean
+  items: T[]
+  links: Link[]
+}
+
+export interface NoticesPaginatedResponse<T> {      
+  offset: number
+  limit: number
+	count: number // 전체 개수
+	hasNext: boolean // 다음 내용 존재 여부
+  address: string[]
+	keyword: string // optional,
+  items: T[]
+  links: Link[]
+}
+
+export interface Wrapper<T> {
+  item: T
+  links?: Link[]
+  href?: string
+}
 
 // Query 타입 정의 
 export interface GetShopNoticesQuery {  // 공고 리스트 쿼리
@@ -75,9 +103,3 @@ export type ShopCategory =
   | '편의점'
   | '기타' 
 
-
-export interface UserApplication {    
-  id: string
-  status: ApplicationStatus    // 유저, 공고상태등 구분
-  createdAt: string // ISO 문자열 (예: 2023-12-23T00:00:00Z)
-}

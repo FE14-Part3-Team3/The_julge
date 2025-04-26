@@ -28,53 +28,19 @@ export const usePostShop = () => {
     errorMessage,
   };
 };
-// 가게 공고 등록 아래와 같은 방식
-// const { mutate, isError, error, errorMessage } = usePostShop({
-//   onSuccess: () => {
-//     alert('등록 완료!');
-//     등록성공시 행동
-//   },
-// });
-
-// const handleSubmit = (e: React.FormEvent) => {
-//   e.preventDefault();
-//   mutate({
-//     body: form,
-//   });
-// };
-
 
 export const useGetShop = (shopId: string) => { // 가게 정보 조회
   return useQuery<CreateShopResponse>({
-    queryKey: ['shops', shopId],
+    queryKey: ['shops', shopId ],
     queryFn: async () => {
       const res = await requestor.get<CreateShopResponse>(`/shops/${shopId}`);
       return res.data;
-    },
-    enabled: !!shopId,           // shopId가 없으면 실행하지 않도록 조건 설정 (optional)
+    }
   });
 };
 
-// 공고 목록 조회 아래와 같은 방식
-// const { data, isLoading, isError } = useGetShop(query)
-
-  export const useUpdateShop = () => {
-    return useMutation<CreateShopResponse, Error, { shopId: string, body:  CreateShopRequest }>({  // 가게의 특정 공고 수정 
-      mutationFn: async ({ shopId, body }) => {
-        const token = localStorage.getItem('token');
-        const res = await requestor.put<CreateShopResponse>(`/shops/${shopId}`, body,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-        return res.data;
-      },
-    });
-  };
-
   export const useUpdateShopInfo = () => {
-    const mutation = useMutation<CreateShopResponse, Error, { shopId: string, body: CreateShopRequest }>({ // 가게 공고 수정
+    const mutation = useMutation<CreateShopResponse, Error, { shopId: string, body: CreateShopRequest }>({ // 가게 정보 수정
       mutationFn: async ({ shopId, body }) => {
         const token = localStorage.getItem('token');   // localStorage.getItem('token')는 훅 안쪽에서 호출돼야 안전  
         const res =  await requestor.put<CreateShopResponse>(`/shops/${shopId}`, body,
@@ -98,23 +64,3 @@ export const useGetShop = (shopId: string) => { // 가게 정보 조회
       errorMessage,
     };
   };
-  
-  
-  // 가게의 특정 공고 수정 아래와 같은 방식
-  // const { mutate, isError, error, errorMessage } = useUpdateShopInfo({
-  //   onSuccess: () => {
-  //     alert('등록 완료!');
-  //     등록성공시 행동
-  //   },
-  // });
-  
-  // const handleUpdate = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   mutate({
-  //     shopId: '1234', 
-  //     noticeId: '1234', 
-  //     body: form,
-  //   });
-  // };
-  
-  

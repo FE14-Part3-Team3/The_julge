@@ -3,10 +3,9 @@
 import { ApplicationStatus, PaginatedResponse, Wrapper } from '@/types/common'
 import { UserWrapper } from './user'
 import { NoticeWrapper } from './notice'
-import { ShopInfo } from './shop';
+import { ShopWrapper } from './shop';
 
 
-export type ShopWrapper = Wrapper<ShopInfo>;
 
 // 개별 지원서 항목
 export interface Application {
