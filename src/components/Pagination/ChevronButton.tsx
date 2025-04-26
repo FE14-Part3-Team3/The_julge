@@ -21,11 +21,7 @@ const ChevronButton: React.FC<ChevronButtonProps> = ({
     const rotationClass = direction === "right" ? "rotate-180" : "";
 
     return (
-        <button
-            onClick={onClick}
-            className={`rounded mx-1`}
-            disabled={isDisabled}
-        >
+        <button onClick={onClick} className="rounded" disabled={isDisabled}>
             <img
                 src={iconSrc}
                 alt={`${direction} chevron`}

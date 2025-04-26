@@ -38,29 +38,35 @@ const Pagination: React.FC<PaginationProps> = ({
     const visiblePageNumbers = getVisiblePageNumbers();
 
     return (
-        <div className="flex items-center justify-center space-x-1">
-            <ChevronButton
-                direction="left"
-                isDisabled={currentPage === 1}
-                onClick={() => onPageChange(Math.max(1, currentPage - 1))}
-            />
-
-            {visiblePageNumbers.map((pageNumber) => (
-                <PageButton
-                    key={pageNumber}
-                    pageNumber={pageNumber}
-                    isActive={currentPage === pageNumber}
-                    onClick={() => onPageChange(pageNumber)}
+        <div className="flex items-center justify-center">
+            <div className="mr-5">
+                <ChevronButton
+                    direction="left"
+                    isDisabled={currentPage === 1}
+                    onClick={() => onPageChange(Math.max(1, currentPage - 1))}
                 />
-            ))}
+            </div>
 
-            <ChevronButton
-                direction="right"
-                isDisabled={currentPage === totalPages}
-                onClick={() =>
-                    onPageChange(Math.min(totalPages, currentPage + 1))
-                }
-            />
+            <div className="flex space-x-1">
+                {visiblePageNumbers.map((pageNumber) => (
+                    <PageButton
+                        key={pageNumber}
+                        pageNumber={pageNumber}
+                        isActive={currentPage === pageNumber}
+                        onClick={() => onPageChange(pageNumber)}
+                    />
+                ))}
+            </div>
+
+            <div className="ml-5">
+                <ChevronButton
+                    direction="right"
+                    isDisabled={currentPage === totalPages}
+                    onClick={() =>
+                        onPageChange(Math.min(totalPages, currentPage + 1))
+                    }
+                />
+            </div>
         </div>
     );
 };
