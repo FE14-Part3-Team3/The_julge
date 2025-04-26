@@ -14,7 +14,7 @@ export default function IconText({
   iconSize = 20,
 }: IconTextProps) {
   return (
-    <div className="flex items-center gap-2 text-gray-50 text-[16px] font-normal leading-[26px]">
+    <div className="flex items-center gap-1.5 text-gray-50 text-[16px] font-normal leading-[26px]">
       <Image
         src={iconSrc}
         alt={alt}

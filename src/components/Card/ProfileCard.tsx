@@ -1,15 +1,20 @@
 'use client';
 
+import Button from '../Button/Button';
 import IconText from '../IconText/IconText';
 
 export default function ProfileCard() {
   return (
-    <div className="w-[665px] h-[256px] p-[32px] bg-[#FFEBE7] flex flex-col gap-[12px] justify-between">
-      <div className="flex flex-col gap-[8px]">
-        <p className="text-[16px] text-red-50 font-bold leading-[20px]">이름</p>
-        <p className="text-[28px] text-black font-bold leading-normal tracking-[0.56px]">
-          김승우
-        </p>
+    <div className="w-[665px] h-[256px] p-[32px] bg-[#FFEBE7] flex flex-col gap-[12px] justify-between rounded-[12px]">
+      <div className="flex justify-between items-center">
+        <div className="flex flex-col gap-[8px]">
+          <p className="text-[16px] text-red-50 font-bold leading-[20px]">
+            이름
+          </p>
+          <p className="text-[28px] text-black font-bold leading-normal tracking-[0.56px]">
+            김승우
+          </p>
+        </div>
       </div>
 
       <div className="flex flex-col gap-[12px]">
