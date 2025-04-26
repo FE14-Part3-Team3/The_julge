@@ -29,6 +29,10 @@ export default function LoginPage() {
     },
   });
 
+  const handleClose = () => {
+    setIsOpenAlert(false);
+  };
+
   const onSubmit: SubmitHandler<LoginForm> = async (data) => {
     try {
       const response = await fetch(
@@ -42,17 +46,13 @@ export default function LoginPage() {
 
       if (!response.ok) {
         setIsOpenAlert(true);
+        throw await response.json();
       }
 
       const result = await response.json();
-      console.log("로그인 성공", result);
-
-      //토큰 저장
-      localStorage.setItem("token", result.item.token);
-
-      router.push("/dashboard");
+      router.push(result.item.user.item.id);
     } catch (err: any) {
-      console.error("로그인 실패", err);
+      if (err.status === 404) setIsOpenAlert(true);
     }
   };
 
@@ -115,9 +115,7 @@ export default function LoginPage() {
           회원가입하기
         </Link>
       </p>
-      {isOpenAlert && (
-        <AlertModal type="password" onClose={() => setIsOpenAlert(false)} />
-      )}
+      {isOpenAlert && <AlertModal type="password" onClose={handleClose} />}
     </main>
   );
 }
