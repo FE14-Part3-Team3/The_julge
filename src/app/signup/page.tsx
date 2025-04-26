@@ -102,7 +102,8 @@ export default function LoginPage() {
           label="이메일"
           type="email"
           placeholder="입력"
-          {...register("email", { //로그인 페이지의 로직과 동일합니다. 로그인 페이지 참고
+          {...register("email", {
+            //로그인 페이지의 로직과 동일합니다. 로그인 페이지 참고
             required: "이메일을 입력해주세요.",
             pattern: {
               value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
@@ -116,7 +117,8 @@ export default function LoginPage() {
           label="비밀번호"
           type="password"
           placeholder="입력"
-          {...register("password", { //상동
+          {...register("password", {
+            //상동
             required: "비밀번호를 입력해주세요.",
             minLength: { value: 8, message: "8자 이상 입력해 주세요." },
           })}
@@ -132,7 +134,8 @@ export default function LoginPage() {
               value: true,
               message: "비밀번호를 다시 한 번 입력해주세요.",
             },
-            validate: { //커스텀 유효성 검사 함수를 받을 수 있는 validate속성입니다.
+            validate: {
+              //커스텀 유효성 검사 함수를 받을 수 있는 validate속성입니다.
               notMatched: (value) => {
                 const { password } = getValues(); //현재 password 필드의 값을 구조분해 할당을 통해 가져옵니다.
                 return value === password || "비밀번호가 일치하지 않습니다."; //value에 현재 register가 참조하는 필드의 입력값이 호출되고 Password값과 비교하게 됩니다.
@@ -145,9 +148,11 @@ export default function LoginPage() {
         <Controller //커스텀 인풋을 다룰 때 사용하는 패턴입니다.
           name="type"
           control={control}
-          render={({ field }) => ( //render패턴을 이용해 컨트롤하고 싶은 컴포넌트를 직접 선언해서 사용할 수 있습니다.
-            <MemberTypeRadioInput  //Controller컴포넌트의 설계자체가 render프롭을 통해 커스텀 컴포넌트를 받을 수 있게 설계되어 있습니다.
-              checkedMemberType={field.value} 
+          render={(
+            { field } //render패턴을 이용해 컨트롤하고 싶은 컴포넌트를 직접 선언해서 사용할 수 있습니다.
+          ) => (
+            <MemberTypeRadioInput //Controller컴포넌트의 설계자체가 render프롭을 통해 커스텀 컴포넌트를 받을 수 있게 설계되어 있습니다.
+              checkedMemberType={field.value}
               onChange={field.onChange}
             />
           )}
@@ -156,6 +161,15 @@ export default function LoginPage() {
           {isSubmitting ? "로딩 중..." : "가입하기"}
         </Button>
       </form>
+      <p className="text-center mt-4 sm:mt-5 text-black text-normal ">
+        이미 가입하셨나요?{" "}
+        <Link
+          href="/signup"
+          className="text-[#5534DA] underline underline-offset-4"
+        >
+          로그인하기
+        </Link>
+      </p>
       {isOpenAlert && <AlertModal type={alertType} onClose={handleClose} />}
     </main>
   );

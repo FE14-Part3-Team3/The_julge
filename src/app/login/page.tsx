@@ -42,7 +42,7 @@ export default function LoginPage() {
     try {
       //네트워크 요청 전송
       const response = await fetch(
-        "https://bootcamp-api.codeit.kr/api/0-1/the-julge/token", 
+        "https://bootcamp-api.codeit.kr/api/0-1/the-julge/token",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -58,10 +58,9 @@ export default function LoginPage() {
       //정상 반환의 경우 개인 페이지로 이동합니다.
       const result = await response.json();
       router.push(result.item.user.item.id);
-      
     } catch (err: any) {
       //로그인이 실패했음을 알리는 모달을 엽니다.
-      if (err.status === 404) setIsOpenAlert(true);
+      setIsOpenAlert(true);
     }
   };
 
@@ -92,29 +91,34 @@ export default function LoginPage() {
           label="이메일"
           type="email"
           placeholder="입력"
-          {...register("email", { //email필드에 값을 등록합니다.
+          {...register("email", {
+            //email필드에 값을 등록합니다.
             required: "이메일을 입력해주세요.", //값이 비여있을때 errors.email에 반환되는 메시지입니다.
-            pattern: { //유효성 검증을 실행할 정규표현식과 메시지를 전달합니다.
+            pattern: {
+              //유효성 검증을 실행할 정규표현식과 메시지를 전달합니다.
               value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
               message: "이메일 형식으로 작성해 주세요.",
             },
           })}
           //Input 컴포넌트에 전달하는 props입니다.
           isError={!!errors.email} //!!연산자를 통해서 메시지가 존재하는 경우 -> !를 통해서 false가 됩니다. -> 한 번 더!를 통해서 true가 반환됩니다.
-          errorText={errors.email?.message} //errors.email에 등록된 메시지를 전달합니다. 
+          errorText={errors.email?.message} //errors.email에 등록된 메시지를 전달합니다.
         />
         <Input //공통 컴포넌트를 연결합니다.
           label="비밀번호"
           type="password"
           placeholder="입력"
-          {...register("password", { //password필드에 값을 등록합니다.
+          {...register("password", {
+            //password필드에 값을 등록합니다.
             required: "비밀번호를 입력해주세요.", //값이 비여있을때 errors.password에 반환되는 메시지입니다.
             minLength: { value: 8, message: "8자 이상 입력해 주세요." }, //최소값을 요구하는 패턴입니다.
           })}
           isError={!!errors.password} //!!연산자를 통해서 메시지가 존재하는 경우 -> !를 통해서 false가 됩니다. -> 한 번 더!를 통해서 true가 반환됩니다.
-          errorText={errors.password?.message} //errors.password에 등록된 메시지를 전달합니다. 
+          errorText={errors.password?.message} //errors.password에 등록된 메시지를 전달합니다.
         />
-        <Button type="submit" disabled={isSubmitting}> {/* disabled에 isSubmitting을 전달해 요청중에 비활성화 되도록 합니다. */}
+        <Button type="submit" disabled={isSubmitting}>
+          {" "}
+          {/* disabled에 isSubmitting을 전달해 요청중에 비활성화 되도록 합니다. */}
           {isSubmitting ? "로딩 중..." : "로그인 하기"}
         </Button>
       </form>
@@ -128,7 +132,7 @@ export default function LoginPage() {
         </Link>
       </p>
       {/* 상태를 통해 모달의 열고 닫힘을 관리합니다. */}
-      {isOpenAlert && <AlertModal type="password" onClose={handleClose} />} 
+      {isOpenAlert && <AlertModal type="password" onClose={handleClose} />}
     </main>
   );
 }
