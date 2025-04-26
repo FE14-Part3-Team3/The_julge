@@ -1,5 +1,6 @@
 import Modal from "./Modal";
 import ModalButton from "../Button/ModalButton";
+import Image from 'next/image';
 
 interface RegisterModalProps {
   onClose: () => void;
@@ -14,13 +15,15 @@ export default function RegisterModal({ onClose }: RegisterModalProps) {
         layout="top"
         buttonAlign="center"
         icon={
-          <img
-            src="/assets/images/notification.svg"
-            alt="알림 아이콘"
-            className="w-6 h-6 mb-3"
-          />
-        }
-      >
+            <Image
+              src="/assets/images/notification.svg"
+              alt="알림 아이콘"
+              width={24}
+              height={24}
+              className="w-6 h-6 mb-3"
+            />
+          }
+        >
         <ModalButton
           label="확인"
           variant="outline"
