@@ -1,14 +1,16 @@
+import { ChangeEventHandler } from "react";
 import RadioButton from "./RadioButton";
 
 export type MemberType = "employee" | "employer";
 
 interface MemberTypeRadioInputProps {
   checkedMemberType: MemberType;
-  onChange?: () => void;
+  onChange: (value: MemberType) => void;
 }
 
 export default function MemberTypeRadioInput({
-  checkedMemberType = "employee",onChange
+  checkedMemberType = "employee",
+  onChange,
 }: MemberTypeRadioInputProps) {
   return (
     <div className="w-full">

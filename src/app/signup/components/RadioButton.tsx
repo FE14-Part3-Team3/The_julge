@@ -1,11 +1,12 @@
 import Image from "next/image";
 import { MemberType } from "./MemberTypeRadioInput";
 import clsx from "clsx";
+import { ChangeEvent } from "react";
 
 interface RadioButtonProps {
   checkedMemberType: MemberType;
   memberType: MemberType;
-  onChange: () => void;
+  onChange: (value: MemberType) => void;
 }
 
 const memberToKorean: Record<MemberType, string> = {
@@ -21,6 +22,13 @@ export default function RadioButton({
   const isChecked = checkedMemberType === memberType;
   const base =
     "py-[13px] pl-[41px] pr-[58px] text-[14px]/[22px] font-normal border rounded-full flex gap-2 whitespace-nowrap";
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (onChange) {
+      onChange(memberType);
+    }
+  };
+
   return (
     <label
       className={clsx(base, isChecked ? "border-red-50" : "border-gray-30")}
@@ -31,7 +39,7 @@ export default function RadioButton({
         id={memberType}
         name="memberType"
         className="hidden"
-        onChange={onChange}
+        onChange={handleChange}
       />
       <span className="w-5 h-5 inline-block relative">
         {checkedMemberType === memberType ? (
