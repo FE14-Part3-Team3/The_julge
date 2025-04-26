@@ -7,13 +7,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import MemberTypeRadioInput, {
+  MemberType,
+} from "./components/MemberTypeRadioInput";
 
 interface SignUpForm {
   email: string;
   password: string;
   password_confirm: string;
-  type: "employer" | "employee";
+  type: MemberType;
 }
 
 export default function LoginPage() {
@@ -22,6 +25,7 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors, isSubmitting },
     getValues,
   } = useForm<SignUpForm>({
@@ -62,7 +66,7 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="w-[350px] flex flex-col align-center mt-[139px] sm:mt-[279px] lg:mt-[312px] mx-auto">
+    <main className="w-[350px] flex flex-col align-center mt-[73px] sm:mt-[139px] lg:mt-[156px] mx-auto">
       <h1 className="flex justify-center">
         <Link
           href="/"
@@ -125,6 +129,16 @@ export default function LoginPage() {
           })}
           isError={!!errors.password_confirm}
           errorText={errors.password_confirm?.message}
+        />
+        <Controller
+          name="type"
+          control={control}
+          render={({ field }) => (
+            <MemberTypeRadioInput
+              checkedMemberType={field.value}
+              onChange={field.onChange}
+            />
+          )}
         />
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? "로딩 중..." : "가입하기"}
