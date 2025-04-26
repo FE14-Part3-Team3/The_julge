@@ -1,4 +1,3 @@
-import { ChangeEventHandler } from "react";
 import RadioButton from "./RadioButton";
 
 export type MemberType = "employee" | "employer";
@@ -8,6 +7,7 @@ interface MemberTypeRadioInputProps {
   onChange: (value: MemberType) => void;
 }
 
+//라디오 버튼들을 감싸고 이름을 작성할 래퍼 컴포넌트입니다.
 export default function MemberTypeRadioInput({
   checkedMemberType = "employee",
   onChange,
