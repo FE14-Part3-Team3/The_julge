@@ -1,14 +1,21 @@
 import Modal from "./Modal";
 import ModalButton from "../Button/ModalButton";
 
-export type AlertType = "password" | "email" | "register" | "edit" | "signup";
+export type AlertType =
+  | "password"
+  | "email"
+  | "register"
+  | "edit"
+  | "signup"
+  | "generic";
 
 const AlertMessages: Record<AlertType, string> = {
   password: "비밀번호가 일치하지 않습니다.",
   email: "이미 사용중인 이메일입니다.",
-  signup: '가입이 완료되었습니다.',
+  signup: "가입이 완료되었습니다!",
   register: "등록이 완료되었습니다.",
   edit: "수정이 완료되었습니다.",
+  generic: "다시 한 번 시도해주세요",
 };
 
 interface AlertModalProps {

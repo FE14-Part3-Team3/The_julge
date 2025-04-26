@@ -2,7 +2,7 @@
 
 import Button from "@/components/Button/Button";
 import Input from "@/components/Input/Input";
-import AlertModal from "@/components/Modal/AlertModal";
+import AlertModal, { AlertType } from "@/components/Modal/AlertModal";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -22,6 +22,8 @@ interface SignUpForm {
 export default function LoginPage() {
   const router = useRouter();
   const [isOpenAlert, setIsOpenAlert] = useState(false);
+  const [newUserId, setNewUserId] = useState<string | null>(null);
+  const [alertType, setAlertType] = useState<AlertType>("signup");
   const {
     register,
     handleSubmit,
@@ -38,6 +40,13 @@ export default function LoginPage() {
     },
   });
 
+  const handleClose = () => {
+    setIsOpenAlert(false);
+    if (newUserId) {
+      router.push(newUserId);
+    }
+  };
+
   const onSubmit: SubmitHandler<SignUpForm> = async (data) => {
     try {
       const response = await fetch(
@@ -50,18 +59,18 @@ export default function LoginPage() {
       );
 
       if (!response.ok) {
-        setIsOpenAlert(true);
+        throw await response.json();
       }
 
       const result = await response.json();
-      console.log("회원가입 성공", result);
 
-      //토큰 저장
-      localStorage.setItem("token", result.item.token);
-
-      router.push("/dashboard");
+      setIsOpenAlert(true);
+      setAlertType("signup");
+      setNewUserId(result.item.id);
     } catch (err: any) {
-      console.error("회원가입 실패", err);
+      if (err.status === 409) setAlertType("email");
+      else setAlertType("generic");
+      setIsOpenAlert(true);
     }
   };
 
@@ -144,9 +153,7 @@ export default function LoginPage() {
           {isSubmitting ? "로딩 중..." : "가입하기"}
         </Button>
       </form>
-      {isOpenAlert && (
-        <AlertModal type="signup" onClose={() => setIsOpenAlert(false)} />
-      )}
+      {isOpenAlert && <AlertModal type={alertType} onClose={handleClose} />}
     </main>
   );
 }
