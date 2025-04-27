@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-interface IconTextProps {
+export interface IconTextProps {
   iconSrc: string;
   alt?: string;
   text: string;
