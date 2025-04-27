@@ -8,6 +8,7 @@ interface PaginationProps {
     itemsPerPage: number; // 페이지당 아이템 수
     currentPage: number; // 현재 페이지
     onPageChange: (page: number) => void;
+    pageRange?: number; // 표시할 페이지 범위 (기본값: 5)
 }
 
 const Pagination: React.FC<PaginationProps> = ({
@@ -15,27 +16,43 @@ const Pagination: React.FC<PaginationProps> = ({
     itemsPerPage,
     currentPage,
     onPageChange,
+    pageRange = 5,
 }) => {
     const totalPages = Math.ceil(totalItems / itemsPerPage);
-    const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
-    const getVisiblePageNumbers = () => {
-        if (totalPages <= 7) {
-            return pageNumbers;
-        }
+    // 현재 페이지 그룹의 시작 페이지 계산 (usePagination 훅과 일치하도록)
+    const pageGroupStart =
+        Math.floor((currentPage - 1) / pageRange) * pageRange + 1;
 
-        let startPage = Math.max(1, currentPage - 3);
-        let endPage = Math.min(totalPages, startPage + 6);
-
-        if (endPage > totalPages) {
-            endPage = totalPages;
-            startPage = Math.max(1, endPage - 6);
-        }
-
-        return pageNumbers.slice(startPage - 1, endPage);
+    // 페이지 목록 생성
+    const getPageList = () => {
+        const end = Math.min(pageGroupStart + pageRange - 1, totalPages);
+        return Array.from(
+            { length: end - pageGroupStart + 1 },
+            (_, i) => pageGroupStart + i
+        );
     };
 
-    const visiblePageNumbers = getVisiblePageNumbers();
+    const pageList = getPageList();
+
+    // 이전/다음 페이지 그룹으로 이동 (usePagination 훅의 로직과 일치)
+    const goToPrev = () => {
+        const prevPage = currentPage - pageRange;
+        if (prevPage < 1) {
+            onPageChange(1); // 첫 페이지로
+        } else {
+            onPageChange(prevPage);
+        }
+    };
+
+    const goToNext = () => {
+        const nextPage = currentPage + pageRange;
+        if (nextPage > totalPages) {
+            onPageChange(totalPages); // 마지막 페이지로
+        } else {
+            onPageChange(nextPage);
+        }
+    };
 
     return (
         <div className="flex items-center justify-center">
@@ -43,12 +60,12 @@ const Pagination: React.FC<PaginationProps> = ({
                 <ChevronButton
                     direction="left"
                     isDisabled={currentPage === 1}
-                    onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+                    onClick={goToPrev}
                 />
             </div>
 
-            <div className="flex space-x-1">
-                {visiblePageNumbers.map((pageNumber) => (
+            <div className="flex gap-2">
+                {pageList.map((pageNumber) => (
                     <PageButton
                         key={pageNumber}
                         pageNumber={pageNumber}
@@ -62,9 +79,7 @@ const Pagination: React.FC<PaginationProps> = ({
                 <ChevronButton
                     direction="right"
                     isDisabled={currentPage === totalPages}
-                    onClick={() =>
-                        onPageChange(Math.min(totalPages, currentPage + 1))
-                    }
+                    onClick={goToNext}
                 />
             </div>
         </div>
