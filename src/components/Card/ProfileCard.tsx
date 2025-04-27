@@ -15,6 +15,9 @@ export default function ProfileCard() {
             김승우
           </p>
         </div>
+        <Button variant="outline" size="md" className="w-[169px] h-[48px]">
+          편집하기
+        </Button>
       </div>
 
       <div className="flex flex-col gap-[12px]">
