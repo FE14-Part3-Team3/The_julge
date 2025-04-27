@@ -30,17 +30,17 @@ export default function AlertModal({ type, onClose }: AlertModalProps) {
         description={AlertMessages[type]}
         layout="centered"
         buttonAlign="end"
-        width="w-[540px] max-sm:w-[327px]"
-        height="h-[250px] max-sm:h-[220px]"
-        descriptionSize="text-[18px] max-sm:text-[16px]"
+        width="w-[540px] max-xs:w-[327px]"
+        height="h-[250px] max-xs:h-[220px]"
+        descriptionSize="text-[18px] max-xs:text-[16px]"
       >
-        <div className="flex w-full mt-auto pt-2 justify-end max-sm:justify-center">
+        <div className="flex w-full mt-auto pt-2 justify-end max-xs:justify-center">
           <ModalButton
             label="확인"
             onClick={onClose}
             variant="primary"
             size="md"
-            className="w-[100px] h-[40px] max-sm:w-[138px] max-sm:h-[42px]"
+            className="w-[100px] h-[40px] max-xs:w-[138px] max-xs:h-[42px]"
           />
         </div>
       </Modal>

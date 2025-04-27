@@ -1,13 +1,15 @@
 import Modal from "./Modal";
 import ModalButton from "../Button/ModalButton";
+import Image from 'next/image';
 
 type ApplyModalType = "cancel" | "reject" | "approve";
 
 interface ApplyModalProps {
-  type: ApplyModalType;
+  type: ApplyModalType; // 모달 타입 ("cancel" | "reject" | "approve")
   onClose: () => void;
 }
 
+// 모달 타입별로 description과 버튼 문구 정의
 const modalConfig: Record<
   ApplyModalType,
   { description: string; confirmLabel: string }
@@ -37,11 +39,13 @@ export default function ApplyModal({ type, onClose }: ApplyModalProps) {
         buttonAlign="center"
         description={description}
         icon={
-          <img
-            src="/assets/images/check.svg"
-            alt="아이콘"
-            className="w-6 h-6 mb-3"
-          />
+          <Image
+              src="/assets/images/check.svg"
+              alt="아이콘"
+              width={24}
+              height={24}
+              className="mb-3"
+            />
         }
       >
         <div className="flex gap-2">
