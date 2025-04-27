@@ -27,14 +27,13 @@ export default function Button({
   variant = 'primary',
   size = 'lg',
   disabled,
-  className = '',
+  className,
   ...rest
 }: ButtonProps) {
   const base = 'rounded-md';
   const classes = `${base} ${variantClasses[disabled ? 'disabled' : variant]} ${
     sizeClasses[size]
-  } ${className}
-  `;
+  } ${className ?? ''}`;
   return (
     <button className={classes} disabled={disabled} {...rest}>
       {children}
