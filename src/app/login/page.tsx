@@ -11,8 +11,8 @@ import { useForm, SubmitHandler } from "react-hook-form"; //폼관리를 도와�
 
 //useForm에 전달하면 타입추론을 지원해주기 때문데 폼의 데이터 타입 정의
 interface LoginForm {
-  email: String;
-  password: String;
+  email: string;
+  password: string;
 }
 
 export default function LoginPage() {
