@@ -15,10 +15,10 @@
     "next": "15.3.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
+    "react-hook-form": "^7.56.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4.1.4",
     "@types/axios": "^0.9.36",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -31,3 +31,4 @@
     "typescript": "^5"
   }
 }
+
