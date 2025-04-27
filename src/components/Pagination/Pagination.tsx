@@ -16,7 +16,7 @@ const Pagination: React.FC<PaginationProps> = ({
     itemsPerPage,
     currentPage,
     onPageChange,
-    pageRange = 5,
+    pageRange = 7,
 }) => {
     const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -56,13 +56,16 @@ const Pagination: React.FC<PaginationProps> = ({
 
     return (
         <div className="flex items-center justify-center">
-            <div className="mr-5">
-                <ChevronButton
-                    direction="left"
-                    isDisabled={currentPage === 1}
-                    onClick={goToPrev}
-                />
-            </div>
+            {/* 총 페이지가 8 이상일 때만 왼쪽 화살표 표시 */}
+            {totalPages >= 8 ? (
+                <div className="mr-5">
+                    <ChevronButton
+                        direction="left"
+                        isDisabled={currentPage === 1}
+                        onClick={goToPrev}
+                    />
+                </div>
+            ) : null}
 
             <div className="flex gap-2">
                 {pageList.map((pageNumber) => (
@@ -75,13 +78,16 @@ const Pagination: React.FC<PaginationProps> = ({
                 ))}
             </div>
 
-            <div className="ml-5">
-                <ChevronButton
-                    direction="right"
-                    isDisabled={currentPage === totalPages}
-                    onClick={goToNext}
-                />
-            </div>
+            {/* 총 페이지가 8 이상일 때만 오른쪽 화살표 표시 */}
+            {totalPages >= 8 ? (
+                <div className="ml-5">
+                    <ChevronButton
+                        direction="right"
+                        isDisabled={currentPage === totalPages}
+                        onClick={goToNext}
+                    />
+                </div>
+            ) : null}
         </div>
     );
 };
