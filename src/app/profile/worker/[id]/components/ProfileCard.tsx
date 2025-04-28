@@ -1,7 +1,7 @@
 'use client';
 
-import Button from '../../../../../components/Button/Button';
-import IconTextList from '../../../../../components/IconText/IconTextList';
+import Button from '@/components/Button/Button';
+import IconTextList from '@/components/IconText/IconTextList';
 
 interface ProfileCardProps {
   name: string;
@@ -19,7 +19,7 @@ export default function ProfileCard({
   onEdit,
 }: ProfileCardProps) {
   return (
-    <div className="w-full sm:max-w-[665px] min-h-[256px] sm:p-[32px] p-[20px] bg-[#FFEBE7] flex flex-col gap-[12px] justify-between rounded-[12px]">
+    <section className="w-full sm:max-w-[665px] min-h-[256px] sm:p-[32px] p-[20px] bg-[#FFEBE7] flex flex-col gap-[12px] justify-between rounded-[12px]">
       <div className="flex justify-between items-center">
         <div className="flex flex-col gap-[8px]">
           <p className="sm:text-[16px] text-[14px] text-red-50 font-bold leading-[20px]">
@@ -52,6 +52,6 @@ export default function ProfileCard({
       <p className="text-black font-spoqa text-[14px] sm:text-[16px] font-normal leading-[26px]">
         {introduction}
       </p>
-    </div>
+    </section>
   );
 }
