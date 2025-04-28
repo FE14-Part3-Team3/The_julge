@@ -30,7 +30,7 @@ export const usePagination = ({ offset = 0, limit = 10, totalCount = 0, pageRang
     setQuery({ offset: newOffset, limit })
   }
 
-   const goToPrev = () => {
+  const goToPrev = () => {
     const prevPage = currentPage - pageRange;
     if (prevPage < 1) {
       setQuery({ offset: 0, limit })
