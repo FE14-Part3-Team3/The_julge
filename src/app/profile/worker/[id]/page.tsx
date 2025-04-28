@@ -1,4 +1,4 @@
-import ProfileCard from './components/ProfileCard';
+import ProfileCard from '@/app/profile/worker/[id]/components/ProfileCard';
 import RegisterCard from '@/components/Card/RegisterCard';
 
 export default function WorkerProfilePage() {
