@@ -1,6 +1,6 @@
-import { Reservation } from "@/components/Table/Table";
+import { Application } from "@/components/Table/Table";
 
-const dummyReservations: Reservation[] = [
+const dummyApplication: Application[] = [
     {
         id: 1,
         place: "너구리네 라면집",
@@ -13,7 +13,7 @@ const dummyReservations: Reservation[] = [
         place: "너구리네 라면집",
         date: "2023.01.12 10:00 ~ 12:00 (2시간)",
         price: "12,500원",
-        status: "completed",
+        status: "normal",
     },
     {
         id: 3,
@@ -38,4 +38,4 @@ const dummyReservations: Reservation[] = [
     },
 ];
 
-export default dummyReservations;
+export default dummyApplication;
