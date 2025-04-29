@@ -6,14 +6,14 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { getNoticesByShop } from "@/lib/shared/api";
-import ShopInfo from "@/components/Shop/ShopInfo";
 import NoticeList from "@/components/Notice/NoticeList";
 import { Shop, ExtendedNotice } from "@/types/ShopTypes";
 import { mockNotices as mockNoticesData } from "@/mock/noticeData";
 import RegisterCard from "@/components/Card/RegisterCard";
-import ShopOverview from "@/components/Card/ShopOverview";
 import { getShopById } from "@/lib/shopApi";
 import { ShopInfo as ShopInfoType } from "@/types/api/shop";
+import { Section } from "@/components/Section/Section";
+import ShopInfoCard from "@/components/ShopCard/ShopInfoCard";
 
 // Mock 데이터를 ExtendedNotice 타입으로 변환
 const mockNotices = mockNoticesData as unknown as ExtendedNotice[];
@@ -36,20 +36,8 @@ const MOCK_SHOP: Shop = {
 // 페이지 당 아이템 수
 const ITEMS_PER_PAGE = 6;
 
-// Mock 함수: shopId로 가게 조회
-async function getShopById(shopId: string) {
-  if (shopId === "shop-1") {
-    return {
-      id: "shop-1",
-      imageUrl: "/temp-restaurant.jpg",
-      category: "식당",
-      name: "도토리 식당",
-      location: "서울시 송파구",
-      description: "알바하기 편한 나구리네 라면집!",
-    };
-  }
-  return null;
-}
+// 공통 클래스를 변수로 정의
+const containerClass = "w-[351px] sm:w-[680px] md:w-[964px] mx-auto";
 
 export default function ShopDetailPage() {
   const params = useParams();
@@ -124,18 +112,19 @@ export default function ShopDetailPage() {
 
   return (
     <div className="max-w-[964px] mx-auto px-6 py-10">
-      <h1 className="text-[28px] font-bold mb-6">내 가게</h1>
-
       {/* 가게 정보 섹션 */}
-      <section className="mb-10">
-        <ShopInfo shop={shop} />
-      </section>
+      <Section name="내 가게" className="mb-10">
+        <div className={containerClass}>
+          <ShopInfoCard shop={shop} />
+        </div>
+      </Section>
 
       {/* 내가 등록한 공고 섹션 */}
-      <section>
-        <h2 className="text-[22px] font-bold mb-6">내가 등록한 공고</h2>
-        <NoticeList notices={notices} shopId={shop.id} hasMore={hasMore} />
-      </section>
+      <Section name="내가 등록한 공고">
+        <div className={containerClass}>
+          <NoticeList notices={notices} shopId={shop.id} hasMore={hasMore} />
+        </div>
+      </Section>
     </div>
   );
 }
