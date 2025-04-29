@@ -1,8 +1,10 @@
 import { useState } from "react";
 import Pagination from "../Pagination/Pagination";
-import ApplyModal, { ApplyModalType } from "../Modal/ApplyModal";
+import ApplyModal from "../Modal/ApplyModal";
+import StatusButton from "./StatusButton";
+import { useApplyModal } from "../Modal/useApplyModal";
 
-type Status = "normal" | "approved" | "waiting" | "rejected";
+export type Status = "normal" | "approved" | "waiting" | "rejected";
 
 export interface Application {
     id: number; // 예약 ID
@@ -20,96 +22,29 @@ const Table: React.FC<ApplicationProps> = ({
     application: initialApplications,
 }) => {
     const [applications, setApplications] =
-        useState<Application[]>(initialApplications); // 예약 목록 상태
+        useState<Application[]>(initialApplications);
 
-    const [showModal, setShowModal] = useState(false); // 모달 표시 여부
-    const [modalType, setModalType] = useState<ApplyModalType>("approve"); // 모달 타입
-    const [selectedApplication, setSelectedApplication] = useState<
-        number | null
-    >(null); // 선택된 예약 ID
-
-    const handleCloseModal = () => {
-        setShowModal(false);
+    // 모달에서 확인 시 상태 변경 처리
+    const handleStatusChange = (id: number, newStatus: Status) => {
+        setApplications((prevApplications) =>
+            prevApplications.map((application) => {
+                if (application.id === id) {
+                    return { ...application, status: newStatus };
+                }
+                return application;
+            })
+        );
     };
 
-    // 모달에서 확인 버튼 클릭 시 상태 변경
-    const handleConfirmModal = () => {
-        if (selectedApplication !== null) {
-            // 모달 타입에 따라 상태 변경
-            setApplications((prevApplications) =>
-                prevApplications.map((application) => {
-                    if (application.id === selectedApplication) {
-                        let newStatus: Status = application.status;
-
-                        if (modalType === "reject") {
-                            newStatus = "rejected";
-                        } else if (modalType === "approve") {
-                            newStatus = "approved";
-                        }
-
-                        return { ...application, status: newStatus };
-                    }
-                    return application;
-                })
-            );
-        }
-        setShowModal(false);
-    };
-
-    // 거절하기 버튼 클릭 핸들러
-    const handleReject = (id: number) => {
-        setSelectedApplication(id);
-        setModalType("reject");
-        setShowModal(true);
-    };
-
-    // 승인하기 버튼 클릭 핸들러
-    const handleAccept = (id: number) => {
-        setSelectedApplication(id);
-        setModalType("approve");
-        setShowModal(true);
-    };
-
-    // 상태에 따른 버튼 렌더링
-    const renderStatusButton = (status: Status, id: number) => {
-        if (status === "normal") {
-            return (
-                <div className="flex space-x-2">
-                    <button
-                        onClick={() => handleReject(id)}
-                        className="px-4 py-2 text-red-50 font-bold border border-red-50 rounded-md"
-                    >
-                        거절하기
-                    </button>
-                    <button
-                        onClick={() => handleAccept(id)}
-                        className="px-4 py-2 text-blue-20 font-bold border border-blue-20 rounded-md"
-                    >
-                        승인하기
-                    </button>
-                </div>
-            );
-        } else if (status === "approved") {
-            return (
-                <div className="px-4 py-2 text-blue-20 bg-blue-10 rounded-full font-bold text-center inline-block">
-                    승인 완료
-                </div>
-            );
-        } else if (status === "waiting") {
-            return (
-                <div className="px-4 py-2 text-green-20 bg-green-10 rounded-full font-bold text-center inline-block">
-                    대기중
-                </div>
-            );
-        } else if (status === "rejected") {
-            return (
-                <div className="px-4 py-2 text-red-50 bg-red-10 rounded-full font-bold text-center inline-block">
-                    거절
-                </div>
-            );
-        }
-        return null;
-    };
+    // 모달 상태와 로직을 관리하는 커스텀 훅 사용
+    const {
+        showModal,
+        modalType,
+        handleCloseModal,
+        handleConfirmModal,
+        openRejectModal,
+        openApproveModal,
+    } = useApplyModal(handleStatusChange);
 
     return (
         <>
@@ -146,10 +81,12 @@ const Table: React.FC<ApplicationProps> = ({
                                     {application.price}
                                 </td>
                                 <td className="w-1/4 p-4">
-                                    {renderStatusButton(
-                                        application.status,
-                                        application.id
-                                    )}
+                                    <StatusButton
+                                        status={application.status}
+                                        applicationId={application.id}
+                                        onReject={openRejectModal}
+                                        onAccept={openApproveModal}
+                                    />
                                 </td>
                             </tr>
                         ))}
