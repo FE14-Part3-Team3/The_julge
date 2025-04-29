@@ -4,6 +4,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import { getNoticesByShop } from "@/lib/shared/api";
 import ShopInfo from "@/components/Shop/ShopInfo";
 import NoticeList from "@/components/Notice/NoticeList";
@@ -11,6 +12,8 @@ import { Shop, ExtendedNotice } from "@/types/ShopTypes";
 import { mockNotices as mockNoticesData } from "@/mock/noticeData";
 import RegisterCard from "@/components/Card/RegisterCard";
 import ShopOverview from "@/components/Card/ShopOverview";
+import { getShopById } from "@/lib/shopApi";
+import { ShopInfo as ShopInfoType } from "@/types/api/shop";
 
 // Mock 데이터를 ExtendedNotice 타입으로 변환
 const mockNotices = mockNoticesData as unknown as ExtendedNotice[];
@@ -33,17 +36,9 @@ const MOCK_SHOP: Shop = {
 // 페이지 당 아이템 수
 const ITEMS_PER_PAGE = 6;
 
-interface PageProps {
-  params: {
-    shopId: string;
-  };
-}
-
-// 예시: 사장님 id로 가게를 조회하는 mock 함수
-async function getMyShop(userId: string) {
-  // 실제로는 fetch("/api/shops?userId=...") 등으로 대체
-  // 가게가 있으면 객체 반환, 없으면 null 반환
-  if (userId === "has-shop") {
+// Mock 함수: shopId로 가게 조회
+async function getShopById(shopId: string) {
+  if (shopId === "shop-1") {
     return {
       id: "shop-1",
       imageUrl: "/temp-restaurant.jpg",
@@ -56,9 +51,10 @@ async function getMyShop(userId: string) {
   return null;
 }
 
-export default function ShopDetailPage({ params }: PageProps) {
-  // 상태 관리
-  const [shop, setShop] = useState<Shop>(MOCK_SHOP);
+export default function ShopDetailPage() {
+  const params = useParams();
+  const shopId = params.shopId as string;
+  const [shop, setShop] = useState<Shop | null>(null);
   const [notices, setNotices] = useState<ExtendedNotice[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
@@ -106,18 +102,17 @@ export default function ShopDetailPage({ params }: PageProps) {
   }, [hasMore]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    getMyShop(params.shopId).then((result) => {
-      setShop(result);
+    getShopById(shopId).then((result) => {
+      setShop(result as Shop | null);
       setLoading(false);
     });
-  }, [params.shopId]);
+  }, [shopId]);
 
   if (loading) {
     return <div className="text-center py-10">로딩 중...</div>;
   }
 
   if (!shop) {
-    // 가게가 없을 때
     return (
       <RegisterCard
         title="내 가게"
@@ -127,7 +122,6 @@ export default function ShopDetailPage({ params }: PageProps) {
     );
   }
 
-  // 가게가 있을 때
   return (
     <div className="max-w-[964px] mx-auto px-6 py-10">
       <h1 className="text-[28px] font-bold mb-6">내 가게</h1>
