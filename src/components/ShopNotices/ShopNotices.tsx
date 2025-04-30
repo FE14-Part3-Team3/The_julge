@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import NoticeList from "@/components/Notice/NoticeList";
 import NoticeRegisterCard from "@/components/Card/NoticeRegisterCard";
 import { ExtendedNotice } from "@/types/ShopTypes";
-import { getNoticesByShop } from "@/lib/shared/api";
 import { generateDummyNotices, TEST_MODE_CONFIG, TestMode } from "./dummyData";
+import { useShopsNoticeList } from "@/hooks/api/useNoticeService";
+import { GetListQuery } from "@/types/common";
 
 interface ShopNoticesProps {
   shopId: string;
@@ -19,21 +20,41 @@ export default function ShopNotices({ shopId }: ShopNoticesProps) {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
 
+  // 실제 API 연동: useShopsNoticeList
+  const { data, isLoading } = useShopsNoticeList(shopId, {
+    offset: page * TEST_MODE_CONFIG.ITEMS_PER_PAGE,
+    limit: TEST_MODE_CONFIG.ITEMS_PER_PAGE,
+  } as GetListQuery);
+
   // 테스트 모드에 따른 데이터 로드 함수
   const loadTestModeData = (mode: TestMode) => {
     switch (mode) {
       case "empty":
         setNotices([]);
         setHasMore(false);
+        setLoading(false);
         break;
-
       case "random":
         loadRandomData();
         break;
-
       case "normal":
       default:
-        loadApiData();
+        // 실제 API 데이터로 대체
+        if (data) {
+          // ItemWrapper[] -> ExtendedNotice[] 변환
+          const mapped = (data.items || []).map((itemWrapper: any) => ({
+            id: itemWrapper.item.id,
+            hourlyPay: itemWrapper.item.hourlyPay,
+            startsAt: itemWrapper.item.startsAt,
+            description: itemWrapper.item.description,
+            workhour: itemWrapper.item.workhour,
+            closed: itemWrapper.item.closed,
+            shopId: shopId,
+          }));
+          setNotices(mapped);
+          setHasMore(data.hasNext);
+        }
+        setLoading(isLoading);
         break;
     }
   };
@@ -44,10 +65,8 @@ export default function ShopNotices({ shopId }: ShopNoticesProps) {
       shopId,
       TEST_MODE_CONFIG.RANDOM_DATA_COUNT
     );
-
     const startIndex = page * TEST_MODE_CONFIG.ITEMS_PER_PAGE;
     const endIndex = startIndex + TEST_MODE_CONFIG.ITEMS_PER_PAGE;
-
     if (startIndex < randomNotices.length) {
       const newNotices = randomNotices.slice(startIndex, endIndex);
       setNotices((prev) =>
@@ -58,63 +77,26 @@ export default function ShopNotices({ shopId }: ShopNoticesProps) {
     } else {
       setHasMore(false);
     }
-  };
-
-  // API 데이터 로드 함수
-  const loadApiData = async () => {
-    try {
-      const result = await getNoticesByShop({
-        shopId,
-        offset: page * TEST_MODE_CONFIG.ITEMS_PER_PAGE,
-        limit: TEST_MODE_CONFIG.ITEMS_PER_PAGE,
-      });
-
-      if (result && result.notices) {
-        const formattedNotices = result.notices.map((notice) => ({
-          ...notice,
-          shopId,
-        })) as ExtendedNotice[];
-
-        setNotices((prev) => [...prev, ...formattedNotices]);
-        setHasMore(result.hasNext || false);
-        setPage((prev) => prev + 1);
-      }
-    } catch (error) {
-      console.error("Failed to load notices:", error);
-    }
+    setLoading(false);
   };
 
   // 데이터 로드 메인 함수
-  const loadNotices = async () => {
-    // 무한 스크롤에서는 이미 로딩 중이면 추가 로드 방지
-    if (loading && page > 0) return;
-
-    try {
-      setLoading(true);
-      loadTestModeData(TEST_MODE_CONFIG.CURRENT_MODE);
-    } catch (error) {
-      console.error("Failed to load notices:", error);
-    } finally {
-      setLoading(false);
-    }
+  const loadNotices = () => {
+    loadTestModeData(TEST_MODE_CONFIG.CURRENT_MODE);
   };
 
   // 초기 데이터 로드
   useEffect(() => {
-    // 페이지 초기화 및 초기 데이터 로드
     setPage(0);
     setNotices([]);
     setLoading(true);
+    loadNotices();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shopId, data, isLoading]);
 
-    // 테스트 모드에 따라 초기 데이터 로드
-    loadTestModeData(TEST_MODE_CONFIG.CURRENT_MODE);
-
-    // 로딩 상태 해제
-    setLoading(false);
-  }, [shopId]);
-
-  // 무한 스크롤 구현
+  // 무한 스크롤 구현 (테스트 모드에서만 동작)
   useEffect(() => {
+    if (TEST_MODE_CONFIG.CURRENT_MODE === "normal") return;
     const handleScroll = () => {
       if (
         window.innerHeight + document.documentElement.scrollTop + 100 >=
@@ -125,9 +107,9 @@ export default function ShopNotices({ shopId }: ShopNoticesProps) {
         }
       }
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasMore, loading]);
 
   // 로딩 중이고 첫 페이지일 경우에만 로딩 표시

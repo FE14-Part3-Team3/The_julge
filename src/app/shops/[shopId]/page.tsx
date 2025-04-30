@@ -3,42 +3,51 @@
  */
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Shop } from "@/types/ShopTypes";
 import RegisterCard from "@/components/Card/RegisterCard";
 import ShopNotices from "@/components/ShopNotices/ShopNotices";
 import ShopInfoCard from "@/components/ShopCard/ShopInfoCard";
-import { getShopById } from "@/lib/shopApi";
+import { useGetShop } from "@/hooks/api/useShopService";
+import { TEST_MODE_CONFIG } from "@/components/ShopNotices/dummyData";
 
 export default function ShopDetailPage() {
   const router = useRouter();
   const params = useParams();
   const shopId = params.shopId as string;
-  const [shop, setShop] = useState<Shop | null>(null);
-  const [loading, setLoading] = useState(true);
 
-  // 가게 정보 로드
-  useEffect(() => {
-    const fetchShopData = async () => {
-      try {
-        const result = await getShopById(shopId);
-        setShop(result as Shop | null);
-      } catch (error) {
-        console.error("Failed to load shop:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // 실제 API 연동
+  const { data, isLoading, error } = useGetShop(shopId);
+  const shop = data?.item;
 
-    fetchShopData();
-  }, [shopId]);
+  // 테스트용 더미 shop 데이터
+  const dummyShop = {
+    id: "shop-1",
+    name: "도토리 식당",
+    category: "식당",
+    address1: "서울시 송파구",
+    address2: "송파동 123-45",
+    description: "알바하기 편한 나구리네 라면집!",
+    imageUrl: "/temp-restaurant.jpg",
+    originalHourlyPay: 11000,
+    location: "서울시 송파구",
+    userId: "has-shop",
+  };
 
-  if (loading) {
+  const isTestMode = TEST_MODE_CONFIG.CURRENT_MODE !== "normal";
+  const mappedShop = isTestMode
+    ? dummyShop
+    : shop && {
+        ...shop,
+        location: shop.address1,
+        userId: shop.user?.item?.id || "",
+      };
+
+  if (!isTestMode && isLoading) {
     return <div className="text-center py-10">로딩 중...</div>;
   }
 
-  if (!shop) {
+  if (!isTestMode && (error || !mappedShop)) {
     return (
       <RegisterCard
         title="내 가게"
@@ -55,12 +64,12 @@ export default function ShopDetailPage() {
 
       {/* 가게 정보 섹션 */}
       <section className="mb-10">
-        <ShopInfoCard shop={shop} />
+        <ShopInfoCard shop={mappedShop} />
       </section>
 
       {/* 공고 섹션 - 분리된 컴포넌트 사용 */}
       <section>
-        <ShopNotices shopId={shop.id} />
+        <ShopNotices shopId={mappedShop.id} />
       </section>
     </div>
   );
