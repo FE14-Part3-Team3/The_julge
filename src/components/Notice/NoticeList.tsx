@@ -87,12 +87,27 @@ export default function NoticeList({
       {notices.length === 0 ? (
         <div className="text-center py-8">
           <p className="text-gray-600 mb-4">공고를 등록해 보세요.</p>
-          <button
-            className={`${buttonStyle.width} ${buttonStyle.height} ${buttonStyle.text} font-bold bg-red-50 text-white rounded-md text-center`}
+          <Button
+            variant="primary"
+            size={deviceSize === "mobile" ? "sm" : "lg"}
             onClick={() => router.push(`/shops/${shopId}/notices/new`)}
+            className={`
+              font-bold flex items-center justify-center
+              ${deviceSize === "mobile" ? "w-[151.5px] h-[38px] text-sm" : ""}
+              ${
+                deviceSize === "tablet"
+                  ? "w-[324px] h-[48px] text-base whitespace-nowrap"
+                  : ""
+              }
+              ${
+                deviceSize === "desktop"
+                  ? "w-[169px] h-[48px] text-base whitespace-nowrap"
+                  : ""
+              }
+            `}
           >
             공고 등록하기
-          </button>
+          </Button>
         </div>
       ) : (
         <div>

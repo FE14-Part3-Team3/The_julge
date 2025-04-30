@@ -17,9 +17,9 @@ const variantClasses: Record<Variant, string> = {
   disabled: "bg-gray-40 text-white cursor-not-allowed",
 };
 const sizeClasses: Record<Size, string> = {
-  sm: "px-3 py-2 text-xs/[16px] font-normal min-w-[120px]",
-  md: "px-5 py-2.5 text-sm/[16px] font-bold min-w-[150px]",
-  lg: "px-6 md:px-10 lg:px-[136px] py-3.5 text-base/[20px] font-bold min-w-[180px] md:min-w-[220px]",
+  sm: "px-3 py-2 text-xs/[16px] font-normal ",
+  md: "px-5 py-2.5 text-sm/[16px] font-bold",
+  lg: "px-[136px] py-3.5 text-base/[20px] font-bold",
 };
 
 export default function Button({
@@ -30,7 +30,7 @@ export default function Button({
   className,
   ...rest
 }: ButtonProps) {
-  const base = "rounded-md whitespace-nowrap";
+  const base = "rounded-md";
   const classes = `${base} ${variantClasses[disabled ? "disabled" : variant]} ${
     sizeClasses[size]
   } ${className ?? ""}`;

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Button from "@/components/Button/Button";
 
 interface NoticeRegisterCardProps {
   title: string;
@@ -75,12 +76,27 @@ export default function NoticeRegisterCard({
         <p className="text-[14px] md:text-[16px] text-gray-700">
           {description}
         </p>
-        <button
-          className={`${buttonStyle.width} ${buttonStyle.height} ${buttonStyle.text} font-bold bg-red-50 text-white rounded-md text-center`}
+        <Button
           onClick={onClick ?? (() => router.push("/shops/register"))}
+          variant="primary"
+          size={deviceSize === "mobile" ? "sm" : "lg"}
+          className={`
+            font-bold flex items-center justify-center
+            ${deviceSize === "mobile" ? "w-[151.5px] h-[38px] text-sm" : ""}
+            ${
+              deviceSize === "tablet"
+                ? "w-[324px] h-[48px] text-base whitespace-nowrap"
+                : ""
+            }
+            ${
+              deviceSize === "desktop"
+                ? "w-[169px] h-[48px] text-base whitespace-nowrap"
+                : ""
+            }
+          `}
         >
           {buttonText}
-        </button>
+        </Button>
       </div>
     </div>
   );

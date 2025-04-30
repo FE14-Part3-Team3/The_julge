@@ -5,7 +5,7 @@ export type TestMode = "normal" | "empty" | "random";
 
 // 상수 정의
 export const TEST_MODE_CONFIG = {
-  CURRENT_MODE: "random" as TestMode,
+  CURRENT_MODE: "empty" as TestMode,
   ITEMS_PER_PAGE: 6,
   RANDOM_DATA_COUNT: 100,
 };
