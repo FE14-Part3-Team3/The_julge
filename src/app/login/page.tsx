@@ -66,7 +66,7 @@ export default function LoginPage() {
 
   return (
     // 로고 부분입니다.
-    <main className="w-[350px] flex flex-col align-center mt-[139px] sm:mt-[279px] lg:mt-[312px] mx-auto">
+    <main className="w-[350px] flex flex-col mt-[139px] sm:mt-[279px] lg:mt-[312px] mx-auto">
       <h1 className="flex justify-center">
         <Link
           href="/"
