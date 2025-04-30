@@ -13,8 +13,8 @@ import { Shop } from "@/types/ShopTypes";
 
 // 반응형 컨테이너 클래스
 const CONTAINER_CLASSES = {
-  mobile: "w-[351px] h-[449.71px]",
-  tablet: "w-[680px] h-[677px]",
+  mobile: "w-[351px]",
+  tablet: "w-[680px]",
   desktop: "w-[964px] h-[356px]",
 };
 
@@ -50,14 +50,23 @@ export default function ShopInfoCard({ shop }: ShopInfoCardProps) {
 
   // 태블릿 모드에서의 패딩 및 레이아웃 설정
   const layoutStyles = {
-    // 정확히 24px 패딩
-    container: `bg-[#FFEBE7] rounded-lg p-[24px] ${containerClass} mx-auto`,
+    // 디바이스 크기에 따라 패딩 조정
+    container: `bg-[#FFEBE7] rounded-lg ${
+      deviceSize === "mobile" ? "p-[20px]" : "p-[24px]"
+    } ${containerClass} mx-auto flex flex-col`,
     contentContainer: `flex ${isDesktop ? "flex-row" : "flex-col"} ${
       isTablet ? "gap-[24px]" : "gap-6"
+    } flex-1`,
+    // 데스크탑에서는 justify-between 유지, 모바일/태블릿에서는 제거
+    infoContainer: `flex-1 flex flex-col ${
+      isDesktop ? "lg:justify-between" : ""
     }`,
-    infoContainer: "flex-1 flex flex-col justify-between",
-    textSection: "flex flex-col gap-4",
-    buttonSection: `mt-4 lg:mt-0 ${isTablet ? "px-0" : ""}`,
+    // 모바일/태블릿에서만 하단 마진 추가
+    textSection: `flex flex-col gap-4 ${isDesktop ? "" : "mb-6"}`,
+    // 모바일/태블릿에서만 mt-auto 사용, 데스크탑은 원래대로 mt-0
+    buttonSection: `${isDesktop ? "lg:mt-0" : "mt-auto"} ${
+      isTablet ? "px-0" : ""
+    }`,
   };
 
   return (
