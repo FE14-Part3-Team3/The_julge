@@ -56,7 +56,7 @@ export default function SelectInput({
   return (
     <>
       <div className={clsx("w-[472px] flex flex-col", width)}>
-        <label className="text-black text-normal/[26px] mb-2">{label}</label>
+        <label className="text-black text-base/[26px] mb-2">{label}</label>
         <div ref={containerRef} className="relative">
           <input
             placeholder={placeholder}
