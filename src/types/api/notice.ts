@@ -15,7 +15,7 @@ export interface NoticeItem {
     href: string
   }
   currentUserApplication?: {
-    item: UserApplication
+    item: UserApplication[]
   }
 }
 

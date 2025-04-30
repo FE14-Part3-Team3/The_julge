@@ -3,6 +3,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { GetNoticeListResponse, GetShopNoticesResponse, ItemWrapper, NoticeFormData } from '@/types/api/notice'
 import { GetListQuery, GetShopNoticesQuery } from '@/types/common'
 import requestor from '@/lib/axios';
+import { useState } from 'react';
 
 
 export const useNoticeList = (query: GetShopNoticesQuery) => { // 공고 목록 조회

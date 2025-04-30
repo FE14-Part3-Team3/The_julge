@@ -36,10 +36,10 @@ export interface NoticesPaginatedResponse<T> {
   limit: number
 	count: number // 전체 개수
 	hasNext: boolean // 다음 내용 존재 여부
-  address: string[]
-	keyword: string // optional,
-  items: T[]
-  links: Link[]
+  address?: string[]
+	keyword?: string // optional,
+  items?: T[]
+  links?: Link[]
 }
 
 export interface Wrapper<T> {
