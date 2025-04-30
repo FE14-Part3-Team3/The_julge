@@ -4,7 +4,7 @@
 // =========================
 import React from "react";
 import { useRouter } from "next/navigation";
-import RegisterCard from "@/components/Card/RegisterCard";
+import MyShopCard from "@/components/Card/MyShopCard";
 
 export default function ShopsIndexPage() {
   const router = useRouter();
@@ -12,8 +12,7 @@ export default function ShopsIndexPage() {
   // 간단한 버전: 가게 등록 안내 화면만 표시
   return (
     <div className="max-w-[964px] mx-auto px-6 py-10">
-      <RegisterCard
-        title="내 가게"
+      <MyShopCard
         description="내 가게를 소개하고 공고도 등록해 보세요."
         buttonText="가게 등록하기"
         onClick={() => router.push("/shops/new")} //경로 향후 수정필요
@@ -26,7 +25,7 @@ export default function ShopsIndexPage() {
 /*
 export default function ShopsIndexPageWithMock() {
   const router = useRouter();
-  const userId = "has-shop"; // 또는 "no-shop" 등으로 테스트
+  const userId = "shop-1"; // 또는 "no-shop" 등으로 테스트
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

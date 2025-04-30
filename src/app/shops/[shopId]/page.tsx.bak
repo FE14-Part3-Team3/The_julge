@@ -88,7 +88,7 @@ export default function ShopDetailPage() {
     return <div className="text-center py-10">로딩 중...</div>;
   }
 
-  if (error || !mappedShop) {
+  if (!isTestMode && (error || !mappedShop)) {
     return (
       <MyShopCard
         description="내 가게를 소개하고 공고도 등록해 보세요."

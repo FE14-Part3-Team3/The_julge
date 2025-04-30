@@ -5,21 +5,18 @@ import { useRouter } from "next/navigation";
 import Button from "@/components/Button/Button";
 import { Section } from "../Section/Section";
 
-interface RegisterCardProps {
-  title: string;
+interface MyShopCardProps {
   description: string;
   buttonText: string;
   onClick?: () => void;
 }
 
-export default function RegisterCard({
-  title,
+export default function MyShopCard({
   description,
   buttonText,
   onClick,
-}: RegisterCardProps) {
+}: MyShopCardProps) {
   const router = useRouter();
-
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -30,7 +27,7 @@ export default function RegisterCard({
   }, []);
 
   return (
-    <Section name={title}>
+    <Section name="내 가게">
       <div className="flex flex-col h-[217px] items-center justify-center text-center gap-6 border border-gray-20 rounded-2xl p-6 md:p-8 bg-white">
         <p className="text-[14px] md:text-[16px] text-gray-700">
           {description}
