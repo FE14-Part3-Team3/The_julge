@@ -4,93 +4,34 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { getNoticesByShop } from "@/lib/shared/api";
-import ShopInfo from "@/components/Shop/ShopInfo";
-import NoticeList from "@/components/Notice/NoticeList";
-import { Shop, ExtendedNotice } from "@/types/ShopTypes";
-import { mockNotices as mockNoticesData } from "@/mock/noticeData";
+import { useParams, useRouter } from "next/navigation";
+import { Shop } from "@/types/ShopTypes";
 import RegisterCard from "@/components/Card/RegisterCard";
-import ShopOverview from "@/components/Card/ShopOverview";
+import ShopNotices from "@/components/ShopNotices/ShopNotices";
+import ShopInfoCard from "@/components/ShopCard/ShopInfoCard";
 import { getShopById } from "@/lib/shopApi";
-import { ShopInfo as ShopInfoType } from "@/types/api/shop";
-
-// Mock 데이터를 ExtendedNotice 타입으로 변환
-const mockNotices = mockNoticesData as unknown as ExtendedNotice[];
-
-// 임시 가게 데이터
-const MOCK_SHOP: Shop = {
-  id: "shop-1",
-  name: "도토리 식당",
-  category: "식당",
-  address1: "서울시 송파구",
-  address2: "송파동 123-45",
-  description:
-    "알바하기 편한 나구리네 라면집!\n라면 올려주고 끓이기만 하면 되어서 쉬운 편에 속하는 가게입니다.",
-  imageUrl: "/temp-restaurant.jpg",
-  originalHourlyPay: 11000,
-  location: "서울시 송파구",
-  userId: "current-user-id", // 현재 사용자 ID (임시로 설정)
-};
-
-// 페이지 당 아이템 수
-const ITEMS_PER_PAGE = 6;
 
 export default function ShopDetailPage() {
+  const router = useRouter();
   const params = useParams();
   const shopId = params.shopId as string;
   const [shop, setShop] = useState<Shop | null>(null);
-  const [notices, setNotices] = useState<ExtendedNotice[]>([]);
-  const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  // 공고 더 불러오기 (모의 API 호출)
-  const loadMoreNotices = () => {
-    // 페이지네이션을 시뮬레이션하기 위해 일정 개수만큼 가져옴
-    const startIndex = page * ITEMS_PER_PAGE;
-    const endIndex = startIndex + ITEMS_PER_PAGE;
-
-    // 새로운 공고 데이터 가져오기
-    const newNotices = mockNotices.slice(startIndex, endIndex);
-
-    // 더 불러올 데이터가 있는지 확인
-    const nextHasMore = endIndex < mockNotices.length;
-
-    // 상태 업데이트
-    setNotices((prev) => [...prev, ...newNotices]);
-    setHasMore(nextHasMore);
-    setPage((prev) => prev + 1);
-  };
-
-  // 초기 데이터 로드
+  // 가게 정보 로드
   useEffect(() => {
-    loadMoreNotices();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // 무한 스크롤 구현
-  useEffect(() => {
-    const handleScroll = () => {
-      // 스크롤이 페이지 하단에 가까워졌을 때 추가 데이터 로드
-      if (
-        window.innerHeight + document.documentElement.scrollTop + 100 >=
-        document.documentElement.offsetHeight
-      ) {
-        if (hasMore) {
-          loadMoreNotices();
-        }
+    const fetchShopData = async () => {
+      try {
+        const result = await getShopById(shopId);
+        setShop(result as Shop | null);
+      } catch (error) {
+        console.error("Failed to load shop:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasMore]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    getShopById(shopId).then((result) => {
-      setShop(result as Shop | null);
-      setLoading(false);
-    });
+    fetchShopData();
   }, [shopId]);
 
   if (loading) {
@@ -103,6 +44,7 @@ export default function ShopDetailPage() {
         title="내 가게"
         description="내 가게를 소개하고 공고도 등록해 보세요."
         buttonText="가게 등록하기"
+        onClick={() => router.push("/shops/new")}
       />
     );
   }
@@ -113,13 +55,12 @@ export default function ShopDetailPage() {
 
       {/* 가게 정보 섹션 */}
       <section className="mb-10">
-        <ShopInfo shop={shop} />
+        <ShopInfoCard shop={shop} />
       </section>
 
-      {/* 내가 등록한 공고 섹션 */}
+      {/* 공고 섹션 - 분리된 컴포넌트 사용 */}
       <section>
-        <h2 className="text-[22px] font-bold mb-6">내가 등록한 공고</h2>
-        <NoticeList notices={notices} shopId={shop.id} hasMore={hasMore} />
+        <ShopNotices shopId={shop.id} />
       </section>
     </div>
   );

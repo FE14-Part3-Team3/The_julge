@@ -2,10 +2,9 @@
 // =========================
 // [개발용 목업 테스트 버전]
 // =========================
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
 import RegisterCard from "@/components/Card/RegisterCard";
-import { getMyShop } from "@/lib/shopApi"; // 목업 API
 
 export default function ShopsIndexPage() {
   const router = useRouter();
@@ -17,7 +16,7 @@ export default function ShopsIndexPage() {
         title="내 가게"
         description="내 가게를 소개하고 공고도 등록해 보세요."
         buttonText="가게 등록하기"
-        onClick={() => router.push("/shops/new")}
+        onClick={() => router.push("/shops/new")} //경로 향후 수정필요
       />
     </div>
   );
