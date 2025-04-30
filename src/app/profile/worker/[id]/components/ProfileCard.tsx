@@ -2,27 +2,20 @@
 
 import Button from '@/components/Button/Button';
 import IconTextList from '@/components/IconText/IconTextList';
-// import { useParams } from 'next/navigation';
-import { useGetUser } from '@/hooks/api/useUserService';
 
-// interface ProfileCardProps {
-//   name: string;
-//   phone: string;
-//   region: string;
-//   introduction: string;
-//   onEdit?: () => void;
-// }
+interface ProfileCardProps {
+  name: string;
+  phone: string;
+  address: string;
+  bio: string;
+}
 
-export default function ProfileCard() {
-  const userId = '83bd130d-e852-4dac-b6f5-b0c9922d6175';
-  const { data } = useGetUser(userId);
-
-  if (!data) {
-    return null;
-  }
-
-  const { name, phone, address, bio } = data.item;
-
+export default function ProfileCard({
+  name,
+  phone,
+  address,
+  bio,
+}: ProfileCardProps) {
   return (
     <section className="w-full sm:max-w-[665px] min-h-[256px] sm:p-[32px] p-[20px] bg-[#FFEBE7] flex flex-col gap-[12px] justify-between rounded-[12px]">
       <div className="flex justify-between items-center">

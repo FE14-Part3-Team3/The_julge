@@ -1,7 +1,21 @@
+'use client';
+
 import ProfileCard from '@/app/profile/worker/[id]/components/ProfileCard';
 import RegisterCard from '@/components/Card/RegisterCard';
+import { useParams } from 'next/navigation';
+import { useGetUser } from '@/hooks/api/useUserService';
 
 export default function WorkerProfilePage() {
+  const params = useParams();
+  const userId = params?.id as string;
+  const { data } = useGetUser(userId);
+
+  if (!data) {
+    return <div>Loading...</div>;
+  }
+
+  const { name, phone, address, bio } = data.item;
+
   return (
     <>
       <div className="flex flex-col sm:flex-row w-full max-w-[964px] mx-auto px-6 py-[60px] gap-[24px] sm:gap-[180px]">
@@ -9,10 +23,10 @@ export default function WorkerProfilePage() {
           내 프로필
         </p>
         <ProfileCard
-          name="김승우"
-          phone="010-1234-4321"
-          region="서울시 도봉구"
-          introduction="열심히 일 하겠습니다"
+          name={name ?? ''}
+          phone={phone ?? ''}
+          address={address ?? ''}
+          bio={bio ?? ''}
         />
       </div>
       <div className="bg-gray-5">
