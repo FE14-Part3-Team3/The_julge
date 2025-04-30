@@ -13,7 +13,7 @@ interface RegisterCardProps {
 }
 
 export default function RegisterCard({
-  title,
+  title = "신청 내역",
   description,
   buttonText,
   onClick,

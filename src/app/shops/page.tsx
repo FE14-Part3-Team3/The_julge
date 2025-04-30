@@ -4,7 +4,7 @@
 // =========================
 import React from "react";
 import { useRouter } from "next/navigation";
-import MyShopCard from "@/components/Card/MyShopCard";
+import RegisterCard from "@/components/Card/RegisterCard";
 
 export default function ShopsIndexPage() {
   const router = useRouter();
@@ -12,7 +12,8 @@ export default function ShopsIndexPage() {
   // 간단한 버전: 가게 등록 안내 화면만 표시
   return (
     <div className="max-w-[964px] mx-auto px-6 py-10">
-      <MyShopCard
+      <RegisterCard
+        title="내 가게"
         description="내 가게를 소개하고 공고도 등록해 보세요."
         buttonText="가게 등록하기"
         onClick={() => router.push("/shops/new")} //경로 향후 수정필요

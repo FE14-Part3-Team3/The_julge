@@ -8,6 +8,7 @@ import { ExtendedNotice } from "@/types/ShopTypes";
 import { generateDummyNotices, TEST_MODE_CONFIG, TestMode } from "./dummyData";
 import { useShopsNoticeList } from "@/hooks/api/useNoticeService";
 import { GetListQuery } from "@/types/common";
+import { ItemWrapper } from "@/types/api/notice";
 
 interface ShopNoticesProps {
   shopId: string;
@@ -42,12 +43,12 @@ export default function ShopNotices({ shopId }: ShopNoticesProps) {
         // 실제 API 데이터로 대체
         if (data) {
           // ItemWrapper[] -> ExtendedNotice[] 변환
-          const mapped = (data.items || []).map((itemWrapper: any) => ({
+          const mapped = (data.items || []).map((itemWrapper: ItemWrapper) => ({
             id: itemWrapper.item.id,
             hourlyPay: itemWrapper.item.hourlyPay,
             startsAt: itemWrapper.item.startsAt,
-            description: itemWrapper.item.description,
             workhour: itemWrapper.item.workhour,
+            description: itemWrapper.item.description,
             closed: itemWrapper.item.closed,
             shopId: shopId,
           }));
