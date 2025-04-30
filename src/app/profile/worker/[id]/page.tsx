@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import ProfileCard from '@/app/profile/worker/[id]/components/ProfileCard';
-import RegisterCard from '@/components/Card/RegisterCard';
-import { useParams } from 'next/navigation';
-import { useGetUser } from '@/hooks/api/useUserService';
+import ProfileCard from "@/app/profile/worker/[id]/components/ProfileCard";
+import RegisterCard from "@/components/Card/RegisterCard";
+import { useParams } from "next/navigation";
+import { useGetUser } from "@/hooks/api/useUserService";
 
 export default function WorkerProfilePage() {
   const params = useParams();
@@ -24,10 +24,10 @@ export default function WorkerProfilePage() {
             </p>
 
             <ProfileCard
-              name={name ?? ''}
-              phone={phone ?? ''}
-              address={address ?? ''}
-              bio={bio ?? ''}
+              name={name ?? ""}
+              phone={phone ?? ""}
+              address={address ?? ""}
+              bio={bio ?? ""}
             />
           </div>
 

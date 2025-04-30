@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import Button from '@/components/Button/Button';
-import IconTextList from '@/components/IconText/IconTextList';
+import Button from "@/components/Button/Button";
+import IconTextList from "@/components/IconText/IconTextList";
 
 interface ProfileCardProps {
   name: string;
@@ -38,9 +38,9 @@ export default function ProfileCard({
 
       <IconTextList
         items={[
-          { iconSrc: '/assets/images/phone.svg', text: phone ?? '' },
+          { iconSrc: "/assets/images/phone.svg", text: phone ?? "" },
           {
-            iconSrc: '/assets/images/map.svg',
+            iconSrc: "/assets/images/map.svg",
             text: `선호지역: ${address}`,
           },
         ]}
