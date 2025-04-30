@@ -4,6 +4,7 @@ import ProfileCard from "@/app/profile/worker/[id]/components/ProfileCard";
 import RegisterCard from "@/components/Card/RegisterCard";
 import { useParams } from "next/navigation";
 import { useGetUser } from "@/hooks/api/useUserService";
+import { SeoulDistrict } from "@/types/common";
 
 export default function WorkerProfilePage() {
   const params = useParams();
@@ -26,7 +27,7 @@ export default function WorkerProfilePage() {
             <ProfileCard
               name={name ?? ""}
               phone={phone ?? ""}
-              address={address ?? ""}
+              address={address as SeoulDistrict}
               bio={bio ?? ""}
             />
           </div>
