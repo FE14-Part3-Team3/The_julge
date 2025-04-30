@@ -2,20 +2,14 @@
 
 import Button from "@/components/Button/Button";
 import IconTextList from "@/components/IconText/IconTextList";
-
-interface ProfileCardProps {
-  name: string;
-  phone: string;
-  address: string;
-  bio: string;
-}
+import { UpdateUserProfileRequest } from "@/types/api/user";
 
 export default function ProfileCard({
   name,
   phone,
   address,
   bio,
-}: ProfileCardProps) {
+}: UpdateUserProfileRequest) {
   return (
     <section className="w-full sm:max-w-[665px] min-h-[256px] sm:p-[32px] p-[20px] bg-[#FFEBE7] flex flex-col gap-[12px] justify-between rounded-[12px]">
       <div className="flex justify-between items-center">
