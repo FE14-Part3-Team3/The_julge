@@ -2,36 +2,64 @@
 
 import Button from "@/components/Button/Button";
 import Input from "@/components/Input/Input";
-import SelectInput from "@/components/Input/SelectInput";
 import {
   usePostShopsNoticeList,
-  useShopsNotice,
+  useUpdateNotice,
 } from "@/hooks/api/useNoticeService";
-import { NoticeFormData } from "@/types/api/notice";
+import { NoticeFormData, NoticeItem } from "@/types/api/notice";
 import { useQueryClient } from "@tanstack/react-query";
+import { ParamValue } from "next/dist/server/request/params";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import { useEffect } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
 
-export default function NoticeRegisterForm() {
+interface NoticeRegisterFormProps {
+  data?: NoticeItem;
+  noticeId?: ParamValue;
+}
+
+export default function NoticeRegisterForm({
+  data,
+  noticeId,
+}: NoticeRegisterFormProps) {
   const { shopId } = useParams();
   const queryClient = useQueryClient();
   const router = useRouter();
   const minDate = new Date().toISOString().slice(0, 16);
+  const updateMutation = useUpdateNotice(); //공고를 편집하는 변이를 불러옵니다.
+  const postMutation = usePostShopsNoticeList(); //공고를 발행하는 변이를 불러옵니다.
 
-  const { mutate } = usePostShopsNoticeList();
-
-  const onSubmit: SubmitHandler<NoticeFormData> = (data) => {
-    mutate({ shopId, body: data });
+  //prop으로 받는 data가 이미 존재하는 경우와 존재하지 않는 경우를 나눠서 분기점을 잡고 구별합니다.
+  const onSubmit: SubmitHandler<NoticeFormData> = (formData) => {
+    if (data) {
+      updateMutation.mutate(
+        { shopId, noticeId, body: formData },
+        { onSuccess: () => router.push(`/shops/${shopId}`) }
+      );
+    } else {
+      postMutation.mutate(
+        { shopId, body: formData },
+        { onSuccess: () => router.push(`/shops/${shopId}`) }
+      );
+    }
   };
 
   const {
     register,
     reset,
-    control,
     handleSubmit,
     formState: { errors },
   } = useForm<NoticeFormData>({ mode: "onSubmit" });
+
+  //데이터가 있는 경우 데이터에서 다음 필드들을 추출해 폼을 리셋합니다.
+  useEffect(() => {
+    if (data) {
+      const { description, hourlyPay, startsAt, workHour }: NoticeFormData =
+        data;
+      reset({ description, hourlyPay, startsAt, workHour });
+    }
+  }, [data]);
 
   const handleClick = () => {
     router.back();
