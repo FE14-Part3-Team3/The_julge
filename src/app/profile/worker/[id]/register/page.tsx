@@ -79,6 +79,7 @@ export default function ProfileRegisterPage() {
 
   return (
     <main className="w-full max-w-[964px] mx-auto mt-[60px]">
+
       <div className="flex justify-between">
         <h1 className="font-bold text-[28px]/[100%]">내 프로필</h1>
         <button onClick={handleClick}>
