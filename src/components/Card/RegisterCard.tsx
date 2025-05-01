@@ -13,6 +13,7 @@ interface RegisterCardProps {
 }
 
 export default function RegisterCard({
+  title = '신청 내역',
   description,
   buttonText,
   onClick,
@@ -29,7 +30,7 @@ export default function RegisterCard({
   }, []);
 
   return (
-    <Section name="신청 내역">
+    <Section name={title}>
       <div className="flex flex-col h-[217px] items-center justify-center text-center gap-6 border border-gray-20 rounded-2xl p-6 md:p-8 bg-white">
         <p className="text-[14px] md:text-[16px] text-gray-700">
           {description}
