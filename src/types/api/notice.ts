@@ -7,7 +7,7 @@ export interface NoticeItem {
   id: string
   hourlyPay: number
   startsAt: string
-  workhour: number
+  workHour: number
   description: string
   closed: boolean
   shop: {
@@ -24,7 +24,7 @@ export interface Notice {
   hourlyPay: number
   description: string
   startsAt: string
-  workhour: number
+  workHour: number
   closed: boolean
 }
 
