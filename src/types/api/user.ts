@@ -20,7 +20,7 @@ export interface User {
   type: UserType
   name?: string
   phone?: string
-  address?: string
+  address?: SeoulDistrict
   bio?: string
 }
 
