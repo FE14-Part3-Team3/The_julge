@@ -74,8 +74,8 @@ export const useShopsNotice = (shopId:ParamValue, noticeId:ParamValue) => { // �
 };
 
 
-export const useUpdateShop = () => {
-  const mutation = useMutation<GetShopNoticesResponse, Error, { shopId: string, noticeId: string, body: NoticeFormData }>({ // 가게 공고 수정
+export const useUpdateNotice = () => {
+  const mutation = useMutation<GetShopNoticesResponse, Error, { shopId: ParamValue, noticeId: ParamValue, body: NoticeFormData }>({ // 가게 공고 수정
     mutationFn: async ({ shopId, noticeId, body }) => {
       const token = localStorage.getItem('token');   // localStorage.getItem('token')는 훅 안쪽에서 호출돼야 안전  
       const res =  await requestor.put<GetShopNoticesResponse>(`/shops/${shopId}/notices/${noticeId}`, body,
