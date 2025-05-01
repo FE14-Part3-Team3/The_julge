@@ -62,7 +62,7 @@ export const usePostShopsNoticeList = () => {
 };
 
 
-export const useShopsNotice = (shopId:string, noticeId:string) => { // 공고 목록 조회
+export const useShopsNotice = (shopId:ParamValue, noticeId:ParamValue) => { // 공고 목록 조회
   return useQuery<ItemWrapper>({
     queryKey: ['shop-notices-detail', shopId, noticeId],
     queryFn: async () => {
