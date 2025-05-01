@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Button from '@/components/Button/Button';
-import { Section } from '../Section/Section';
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Button from "@/components/Button/Button";
+import { Section } from "../Section/Section";
 
 interface RegisterCardProps {
   title: string;
@@ -13,7 +13,7 @@ interface RegisterCardProps {
 }
 
 export default function RegisterCard({
-  title = '신청 내역',
+  title = "신청 내역",
   description,
   buttonText,
   onClick,
@@ -25,8 +25,8 @@ export default function RegisterCard({
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768); // 모바일 감지
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
@@ -36,9 +36,9 @@ export default function RegisterCard({
           {description}
         </p>
         <Button
-          onClick={onClick ?? (() => router.push('/shops/register'))}
+          onClick={onClick ?? (() => router.push("/shops/register"))}
           variant="primary"
-          size={isMobile ? 'sm' : 'lg'}
+          size={isMobile ? "sm" : "lg"}
         >
           {buttonText}
         </Button>
