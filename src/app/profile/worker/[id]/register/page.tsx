@@ -78,7 +78,7 @@ export default function ProfileRegisterPage() {
   };
 
   return (
-    <main className="max-w-[964px] mx-auto mt-[60px]">
+    <main className="w-full max-w-[964px] mx-auto mt-[60px]">
       <div className="flex justify-between">
         <h1 className="font-bold text-[28px]/[100%]">내 프로필</h1>
         <button onClick={handleClick}>
@@ -142,6 +142,11 @@ export default function ProfileRegisterPage() {
             placeholder="입력"
             {...register("bio", { maxLength: 150 })}
           />
+          {!!errors.bio && (
+            <p className="text-red-40 text-[12px]/[16px] mt-2 pl-2">
+              150자 미만으로 작성해주세요
+            </p>
+          )}
         </div>
         <Button className="block mx-auto mt-8">등록하기</Button>
       </form>
