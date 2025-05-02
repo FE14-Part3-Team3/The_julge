@@ -65,6 +65,7 @@ export default function LoginPage() {
       }
 
       const result = await response.json();
+      localStorage.setItem("token", result.item.token);
 
       setIsOpenAlert(true);
       setAlertType("signup"); //회원가입이 성공했음을 알리는 모달타입으로 변경
