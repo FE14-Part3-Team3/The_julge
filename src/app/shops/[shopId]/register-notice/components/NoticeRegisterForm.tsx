@@ -60,7 +60,7 @@ export default function NoticeRegisterForm({
       reset({ description, hourlyPay, startsAt, workHour });
     }
   }, [data]);
-
+  
   const handleClick = () => {
     router.back();
   };
