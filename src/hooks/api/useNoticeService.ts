@@ -7,9 +7,14 @@ import {
 } from "@/types/api/notice";
 import { GetListQuery, GetShopNoticesQuery } from "@/types/common";
 import requestor from "@/lib/axios";
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { GetNoticeListResponse, GetShopNoticesResponse, ItemWrapper, NoticeFormData } from '@/types/api/notice'
+import { GetListQuery, GetShopNoticesQuery } from '@/types/common'
+import requestor from '@/lib/axios';
+import { ParamValue } from 'next/dist/server/request/params';
 
-export const useNoticeList = (query: GetShopNoticesQuery) => {
-  // 공고 목록 조회
+
+export const useNoticeList = (query: GetShopNoticesQuery) => { // 공고 목록 조회
   return useQuery<GetNoticeListResponse>({
     queryKey: ["notices", query],
     queryFn: async () => {
@@ -41,12 +46,7 @@ export const useShopsNoticeList = (shopId: string, query: GetListQuery) => {
 };
 
 export const usePostShopsNoticeList = () => {
-  const mutation = useMutation<
-    GetShopNoticesResponse,
-    Error,
-    { shopId: string; body: NoticeFormData }
-  >({
-    // 가게 공고 등록
+    const mutation = useMutation<GetShopNoticesResponse, Error, { shopId: ParamValue, body: NoticeFormData }>({ // 가게 공고 등록
     mutationFn: async ({ shopId, body }) => {
       const token = localStorage.getItem("token"); // localStorage.getItem('token')는 훅 안쪽에서 호출돼야 안전
       const res = await requestor.post<GetShopNoticesResponse>(
@@ -60,6 +60,7 @@ export const usePostShopsNoticeList = () => {
       );
       return res.data;
     },
+    
   });
 
   const errorMessage =
