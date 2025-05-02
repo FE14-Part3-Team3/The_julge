@@ -1,23 +1,15 @@
-'use client';
+"use client";
 
-import Button from '@/components/Button/Button';
-import IconTextList from '@/components/IconText/IconTextList';
-
-interface ProfileCardProps {
-  name: string;
-  phone: string;
-  region: string;
-  introduction: string;
-  onEdit?: () => void;
-}
+import Button from "@/components/Button/Button";
+import IconTextList from "@/components/IconText/IconTextList";
+import { UpdateUserProfileRequest } from "@/types/api/user";
 
 export default function ProfileCard({
   name,
   phone,
-  region,
-  introduction,
-  onEdit,
-}: ProfileCardProps) {
+  address,
+  bio,
+}: UpdateUserProfileRequest) {
   return (
     <section className="w-full sm:max-w-[665px] min-h-[256px] sm:p-[32px] p-[20px] bg-[#FFEBE7] flex flex-col gap-[12px] justify-between rounded-[12px]">
       <div className="flex justify-between items-center">
@@ -33,7 +25,6 @@ export default function ProfileCard({
           variant="outline"
           size="md"
           className="w-[108px] h-[37px] sm:w-[169px] sm:h-[48px]"
-          onClick={onEdit}
         >
           편집하기
         </Button>
@@ -41,16 +32,16 @@ export default function ProfileCard({
 
       <IconTextList
         items={[
-          { iconSrc: '/assets/images/phone.svg', text: phone },
+          { iconSrc: "/assets/images/phone.svg", text: phone ?? "" },
           {
-            iconSrc: '/assets/images/map.svg',
-            text: `선호지역: ${region}`,
+            iconSrc: "/assets/images/map.svg",
+            text: `선호지역: ${address}`,
           },
         ]}
       />
 
       <p className="text-black font-spoqa text-[14px] sm:text-[16px] font-normal leading-[26px]">
-        {introduction}
+        {bio}
       </p>
     </section>
   );

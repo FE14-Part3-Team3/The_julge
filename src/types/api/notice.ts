@@ -7,7 +7,7 @@ export interface NoticeItem {
   id: string
   hourlyPay: number
   startsAt: string
-  workhour: number
+  workHour: number
   description: string
   closed: boolean
   shop: {
@@ -24,7 +24,7 @@ export interface Notice {
   hourlyPay: number
   description: string
   startsAt: string
-  workhour: number
+  workHour: number
   closed: boolean
 }
 
@@ -36,7 +36,7 @@ export type NoticeWrapper = {
 export interface NoticeFormData {    // 가게 공고 등록, 가게의 특정 공고 수정 Request body
   hourlyPay: number
   startsAt: string
-  workhour: number
+  workHour: number
   description: string
 }
 
