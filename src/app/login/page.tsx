@@ -57,6 +57,7 @@ export default function LoginPage() {
 
       //정상 반환의 경우 개인 페이지로 이동합니다.
       const result = await response.json();
+      localStorage.setItem("token", result.item.token);
       router.push(result.item.user.item.id);
     } catch (err: any) {
       //로그인이 실패했음을 알리는 모달을 엽니다.
