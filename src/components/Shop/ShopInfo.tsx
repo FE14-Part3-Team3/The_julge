@@ -2,6 +2,7 @@
  * 가게 상세 정보와 버튼을 표시하는 컴포넌트
  */
 import React from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Button from "../Button/Button";
 import { Shop } from "@/types/ShopTypes";
@@ -57,7 +58,11 @@ export default function ShopInfo({ shop }: ShopInfoProps) {
               {shop.name}
             </h2>
             <p className="text-sm text-gray-600 flex items-center mb-3">
-              <span className="mr-1">📍</span>
+              <img
+                src="/assets/icons/map.svg"
+                alt="위치"
+                className="mr-1 w-4 h-4"
+              />
               {shop.location}
             </p>
             <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
