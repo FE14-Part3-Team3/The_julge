@@ -37,13 +37,6 @@ export const userApplicationColumns: Column<UserApplication>[] = [
   },
   {
     label: "상태",
-    render: ({ id, status }) => (
-      <StatusButton
-        status={status}
-        applicationId={Number(id)}
-        onReject={(id) => console.log("거절", id)}
-        onAccept={(id) => console.log("승인", id)}
-      />
-    ),
+    render: ({ status }) => <StatusButton status={status} />,
   },
 ];
