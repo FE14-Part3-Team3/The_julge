@@ -6,16 +6,26 @@ import { userApplicationColumns } from "@/components/Table/TableSchemas";
 import { useUserApplicationList } from "@/hooks/api/useApplications";
 import { UserApplication } from "@/types/api/application";
 import { useParams } from "next/navigation";
+import { useState } from "react";
+import Pagination from "@/components/Pagination/Pagination";
 
 export default function ApplicationTable() {
   const { id: userId } = useParams() as { id: string };
+  const [offset, setOffset] = useState(0);
+  const limit = 5;
 
-  const { data } = useUserApplicationList(userId, {
-    offset: 0,
-    limit: 5,
+  const { data } = useUserApplicationList(userId as string, {
+    offset,
+    limit,
   });
 
+  if (!data) return null;
+
   const applications = data?.items.map((w) => w.item) ?? [];
+
+  const handlePageChange = ({ offset }: { offset: number }) => {
+    setOffset(offset);
+  };
 
   if (applications.length === 0) {
     return (
@@ -30,9 +40,17 @@ export default function ApplicationTable() {
   }
 
   return (
-    <Table<UserApplication>
-      data={applications}
-      columns={userApplicationColumns}
-    />
+    <div className="space-y-6">
+      <Table<UserApplication>
+        data={data.items.map((w) => w.item)}
+        columns={userApplicationColumns}
+      />
+      <Pagination
+        totalItems={data.count}
+        itemsPerPage={limit}
+        currentOffset={offset}
+        onPageChange={handlePageChange}
+      />
+    </div>
   );
 }
