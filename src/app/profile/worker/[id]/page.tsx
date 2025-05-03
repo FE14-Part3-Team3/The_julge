@@ -5,6 +5,8 @@ import RegisterCard from "@/components/Card/RegisterCard";
 import { useParams } from "next/navigation";
 import { useGetUser } from "@/hooks/api/useUserService";
 import { SeoulDistrict } from "@/types/common";
+import { Section } from "@/components/Section/Section";
+import ApplicationTable from "./components/ApplicationTable";
 
 export default function WorkerProfilePage() {
   const params = useParams();
@@ -32,13 +34,9 @@ export default function WorkerProfilePage() {
             />
           </div>
 
-          <div className="bg-gray-5">
-            <RegisterCard
-              title="신청 내역"
-              description="아직 신청 내역이 없어요."
-              buttonText="공고 보러가기"
-            />
-          </div>
+          <Section name="신청 내역">
+            <ApplicationTable />
+          </Section>
         </>
       ) : (
         // 프로필 등록이 완료되지 않았을 때, 등록 컴포넌트가 보이게 구현
