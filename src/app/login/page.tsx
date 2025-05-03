@@ -3,10 +3,11 @@
 import Button from "@/components/Button/Button";
 import Input from "@/components/Input/Input";
 import AlertModal from "@/components/Modal/AlertModal";
+import { useAuth } from "@/contexts/AuthContext";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation"; //페이지 이동을 위한 라우터
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form"; //폼관리를 도와주는 라이브러리
 
 //useForm에 전달하면 타입추론을 지원해주기 때문데 폼의 데이터 타입 정의
@@ -18,6 +19,8 @@ interface LoginForm {
 export default function LoginPage() {
   const router = useRouter(); //라우터 객체를 가져옵니다. 페이지 이동에 사용됩니다.
   const [isOpenAlert, setIsOpenAlert] = useState(false); //모달의 열고/닫힘을 상태를 관리합니다.
+  const { loginSuccess } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
 
   //useForm<LoginForm>으로 사용을 하고 필요한 것들을 구조분해 할당으로 꺼냄
   const {
@@ -57,13 +60,29 @@ export default function LoginPage() {
 
       //정상 반환의 경우 개인 페이지로 이동합니다.
       const result = await response.json();
-      localStorage.setItem("token", result.item.token);
-      router.push(result.item.user.item.id);
+      loginSuccess(result);
     } catch (err: any) {
       //로그인이 실패했음을 알리는 모달을 엽니다.
       setIsOpenAlert(true);
     }
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("type");
+    const id = localStorage.getItem("id");
+    if (token && role && id) {
+      if (role === "employer") {
+        router.push(`/shops/${id}`);
+      } else if (role === "employee") {
+        router.push(`/profile/worker/${id}`);
+      }
+    } else {
+      setIsLoading(false);
+    }
+  }, [router]);
+
+  if (isLoading) return null;
 
   return (
     // 로고 부분입니다.
@@ -118,7 +137,6 @@ export default function LoginPage() {
           errorText={errors.password?.message} //errors.password에 등록된 메시지를 전달합니다.
         />
         <Button type="submit" disabled={isSubmitting}>
-          {" "}
           {/* disabled에 isSubmitting을 전달해 요청중에 비활성화 되도록 합니다. */}
           {isSubmitting ? "로딩 중..." : "로그인 하기"}
         </Button>
