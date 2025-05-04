@@ -1,3 +1,26 @@
+export interface ShopItemProps {
+    shopId: string; // 가게 ID
+    noticeId: string; // 공고 ID
+    shopData: {
+        id: string;
+        name: string;
+        category: string;
+        address1: string;
+        address2: string;
+        description: string;
+        imageUrl: string;
+        originalHourlyPay: number;
+    };
+    noticeData: {
+        id: string;
+        hourlyPay: number;
+        startsAt: string;
+        description: string;
+        workhour: number;
+        closed: boolean;
+    };
+}
+
 export const calculateEndDate = (startsAt: string, workhour: number): Date => {
     const startDate = new Date(startsAt);
     return new Date(startDate.getTime() + workhour * 60 * 60 * 1000);

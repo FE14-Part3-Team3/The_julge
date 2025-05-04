@@ -1,36 +1,16 @@
+"use client"; // 클라이언트 컴포넌트로 선언
+
 import React from "react";
 import IconTextList from "../IconText/IconTextList";
 import clsx from "clsx";
 import {
+    ShopItemProps,
     calculateEndDate,
     formatDate,
     formatTime,
     calculateHourlyPayDiff,
 } from "./ShopItemSchemas";
-import Router from "next/router";
-
-interface ShopItemProps {
-    shopId: string; // 가게 ID
-    noticeId: string; // 공고 ID
-    shopData: {
-        id: string;
-        name: string;
-        category: string;
-        address1: string;
-        address2: string;
-        description: string;
-        imageUrl: string;
-        originalHourlyPay: number;
-    };
-    noticeData: {
-        id: string;
-        hourlyPay: number;
-        startsAt: string;
-        description: string;
-        workhour: number;
-        closed: boolean;
-    };
-}
+import { useRouter } from "next/navigation";
 
 export default function ShopItem({
     shopId,
@@ -38,6 +18,8 @@ export default function ShopItem({
     shopData,
     noticeData,
 }: ShopItemProps) {
+    const router = useRouter();
+
     const startDate = new Date(noticeData.startsAt);
     const endDate = calculateEndDate(noticeData.startsAt, noticeData.workhour);
 
@@ -64,7 +46,7 @@ export default function ShopItem({
         <div>
             <div
                 className={clsx(
-                    "p-4 border rounded-lg",
+                    "p-4 border rounded-lg overflow-hidden",
                     "flex flex-col",
                     "md:flex-row p-[24px]"
                 )}
@@ -73,18 +55,19 @@ export default function ShopItem({
                     src={shopData.imageUrl}
                     alt={shopData.name}
                     className={clsx(
-                        "w-full h-48 object-cover rounded-md",
-                        "md:w-2/3"
+                        "w-full h-[200px] item-center object-cover rounded-lg",
+                        "sm:h-[350px]",
+                        "md:w-4/5 md:mx-4 rounded-lg"
                     )}
                 />
                 <div>
                     <p className="mt-4 text-sm font-bold text-red-50">시급</p>
-                    <div className="flex flex-row items-center space-x-2">
-                        <p className="mt-2 text-lg font-bold text-black text-[28px]">
+                    <div className="mt-2 flex flex-row items-center space-x-2">
+                        <p className="text-lg font-bold text-black text-[24px] sm:text-[28px]">
                             {noticeData.hourlyPay.toLocaleString()}원
                         </p>
                         {isPayDiff && (
-                            <button className="rounded-full bg-red-50 text-white font-bold text-[14px] py-2 px-4 mt-4">
+                            <button className="rounded-full bg-red-50 text-white font-bold text-[12px] sm:text-[14px] py-2 px-4">
                                 {payDiffText}
                             </button>
                         )}
@@ -94,7 +77,7 @@ export default function ShopItem({
                     <button
                         className="mt-6 w-full py-2 border border-red-50 text-red-50 font-bold rounded-md"
                         onClick={() =>
-                            Router.push(
+                            router.push(
                                 `shops/${shopId}/notices/${noticeId}/edit`
                             )
                         }
