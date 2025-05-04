@@ -3,7 +3,7 @@ import { GetUserAlertsResponse, PutAlertItemResponse } from "@/types/api/user";
 import { GetListQuery } from "@/types/common";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-export function useUserAlerts(userId: string, query: GetListQuery) { // 유저의 알림 목록 조회
+export function useUserAlerts(userId: string | undefined, query: GetListQuery) { // 유저의 알림 목록 조회
   return useQuery<GetUserAlertsResponse>({
     queryKey: ['user-alerts', userId, query],
     queryFn: async () => {
@@ -22,7 +22,7 @@ export function useUserAlerts(userId: string, query: GetListQuery) { // 유저�
 
 export const useReadAlert = () => {
   const queryClient = useQueryClient();
-  const mutation = useMutation<PutAlertItemResponse, Error, { userId: string, alertId: string }>({ // 알림 읽음 처리
+  const mutation = useMutation<PutAlertItemResponse, Error, { userId: string | undefined, alertId: string | undefined}>({ // 알림 읽음 처리
     mutationFn: async ({ userId, alertId }) => {
       const token = localStorage.getItem('token');  
       const res =  await requestor.put<PutAlertItemResponse>(`/users/${userId}/alerts/${alertId}`,
