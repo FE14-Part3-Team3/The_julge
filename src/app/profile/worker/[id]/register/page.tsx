@@ -44,10 +44,16 @@ export default function ProfileRegisterPage() {
     Error,
     UpdateUserProfileRequest
   >({
-    mutationFn: async (payload) =>
-      requestor
-        .put<GetUserResponse>(`/users/${id}`, payload)
-        .then((res) => res.data),
+    mutationFn: async (payload) => {
+      const token = localStorage.getItem("token");
+      return await requestor
+        .put<GetUserResponse>(`/users/${id}`, payload, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => res.data);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["userProfile", id] });
       router.push(`/profile/worker/${id}`);
