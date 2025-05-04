@@ -11,7 +11,6 @@ export const useGetUser = (userId: string | undefined) => {
       return res.data;
     },
     enabled: !!userId,
-    staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
   });
 };

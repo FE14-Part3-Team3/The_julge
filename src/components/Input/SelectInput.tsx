@@ -60,7 +60,7 @@ export default function SelectInput({
         <div ref={containerRef} className="relative">
           <input
             placeholder={placeholder}
-            value={value}
+            value={value ?? ""}
             type="text"
             readOnly
             className="bg-white py-4 px-5 rounded-[6px] w-full border border-gray-30 cursor-pointer caret-transparent focus:outline-none "
