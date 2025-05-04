@@ -19,7 +19,7 @@ interface LoginForm {
 export default function LoginPage() {
   const router = useRouter(); //라우터 객체를 가져옵니다. 페이지 이동에 사용됩니다.
   const [isOpenAlert, setIsOpenAlert] = useState(false); //모달의 열고/닫힘을 상태를 관리합니다.
-  const { loginSuccess } = useAuth();
+  const { loginSuccess, isLogin } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
 
   //useForm<LoginForm>으로 사용을 하고 필요한 것들을 구조분해 할당으로 꺼냄
@@ -80,7 +80,7 @@ export default function LoginPage() {
     } else {
       setIsLoading(false);
     }
-  }, [router]);
+  }, [router, isLogin]);
 
   if (isLoading) return null;
 
