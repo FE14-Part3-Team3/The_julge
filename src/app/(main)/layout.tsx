@@ -1,15 +1,14 @@
 import GlobalHeader from "@/components/GNB/GlobalHeader";
 
 export default function MainLayout({
-  children,
+    children,
 }: {
-  children: React.ReactNode;
+    children: React.ReactNode;
 }) {
-  return (
-    <>
-      <GlobalHeader />
-      <main className="pt-[70px]" />
-      {children}
-    </>
-  );
+    return (
+        <>
+            <GlobalHeader />
+            <main>{children}</main>
+        </>
+    );
 }
