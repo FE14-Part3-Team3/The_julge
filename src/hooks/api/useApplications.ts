@@ -4,7 +4,7 @@ import { ApplicationRequest, GetListQuery } from "@/types/common";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 
-export const useApplicationList = (shopId:string, noticeId:string, query: GetListQuery) => { // 가게의 특정 공고의 지원 목록 조회
+export const useApplicationList = (shopId:string | undefined, noticeId:string | undefined, query: GetListQuery) => { // 가게의 특정 공고의 지원 목록 조회
   return useQuery<GetUserApplicationsResponse>({
     queryKey: ['Applications', shopId, noticeId, query],
     queryFn: async () => {
@@ -18,7 +18,7 @@ export const useApplicationList = (shopId:string, noticeId:string, query: GetLis
 };
 
 export const usePostApplication = () => {
-  const mutation = useMutation<GetUserApplicationsResponse, Error, { shopId:string, noticeId:string }>({ // 가게의 특정 공고 지원 등록
+  const mutation = useMutation<GetUserApplicationsResponse, Error, { shopId:string | undefined, noticeId:string | undefined }>({ // 가게의 특정 공고 지원 등록
   mutationFn: async ({  shopId, noticeId }) => {
     const token = localStorage.getItem('token');   
     const res = await requestor.post<GetUserApplicationsResponse>(

@@ -31,7 +31,7 @@ export const usePostShop = () => {
   };
 };
 
-export const useGetShop = (shopId: string) => {
+export const useGetShop = (shopId: string | undefined) => {
   // 가게 정보 조회
   return useQuery<CreateShopResponse>({
     queryKey: ["shops", shopId],
