@@ -32,9 +32,8 @@ export default function IconText({
         height={iconSize}
         className="w-[16px] h-[16px] sm:w-[20px] sm:h-[20px]"
       />
-
       {/* 텍스트 */}
-      <span className="text-gray-50 font-spoqa text-[14px] sm:text-[16px] font-normal leading-[26px]">
+      <span className="font-spoqa font-normal leading-[26px]">   
         {text}
       </span>
     </div>
