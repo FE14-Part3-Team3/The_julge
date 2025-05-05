@@ -6,11 +6,12 @@ import AlertModal, { AlertType } from "@/components/Modal/AlertModal";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import MemberTypeRadioInput, {
   MemberType,
 } from "./components/MemberTypeRadioInput";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface SignUpForm {
   email: string;
@@ -19,17 +20,21 @@ interface SignUpForm {
   type: MemberType;
 }
 
-export default function LoginPage() {
+export default function SignUpPage() {
   const router = useRouter(); //라우터 객체를 가져옵니다.
-  const [isOpenAlert, setIsOpenAlert] = useState(false);
-  const [newUserId, setNewUserId] = useState<string | null>(null);
-  const [alertType, setAlertType] = useState<AlertType>("signup"); //상황에 따라 모달의 다른 메시지를 불러옵니다.
+  const [isLoading, setIsLoading] = useState(true);
+  const [alert, setAlert] = useState<{ open: boolean; type: AlertType }>({
+    open: false,
+    type: "generic",
+  });
+  const { user, signUpSuccess } = useAuth();
   const {
     register,
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
     getValues, //폼의 필드에 입력된 값을 불러오는 함수 입니다.
+    setError,
   } = useForm<SignUpForm>({
     mode: "onBlur",
     defaultValues: {
@@ -41,10 +46,46 @@ export default function LoginPage() {
   });
 
   //모달이 닫히는 경우를 가정하고 저장된 새로운 UserId가 있는 경우 해당 페이지로 이동합니다.
+  useEffect(() => {
+    // 사용자가 존재하고, 현재 alert 모달이 열려있지 않을 때만 실행
+    // (회원가입 성공 메시지를 보여주는 동안 리디렉션되는 것을 방지)
+    if (user?.id && !alert.open) {
+      if (user.role === "employer") {
+        router.push(`/shops/${user.id}`);
+      } else if (user.role === "employee") {
+        router.push(`/profile/worker/${user.id}`);
+      }
+    }
+    // 모달이 닫힐 때 이 검사를 다시 실행하려면 alert.open을 의존성 배열에 추가할 수 있습니다.
+  }, [user, alert.open, router]); // router도 의존성 배열에 추가하는 것이 좋습니다.
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("type");
+    const id = localStorage.getItem("id");
+    if (token && role && id) {
+      if (role === "employer") {
+        router.push(`/shops/${id}`);
+      } else if (role === "employee") {
+        router.push(`/profile/worker/${id}`);
+      }
+    } else {
+      setIsLoading(false);
+    }
+  }, [router]);
+
+  if (isLoading) return null;
+
   const handleClose = () => {
-    setIsOpenAlert(false);
-    if (newUserId) {
-      router.push(newUserId);
+    setAlert({ open: false, type: "generic" }); // 모달 닫을 때 상태 초기화
+    // 모달을 닫은 *후에* 사용자 상태를 확인하고 페이지 이동
+    if (user?.id) {
+      console.log("handleClose: 회원가입 확인 후 페이지 이동.");
+      if (user.role === "employee") {
+        router.push(`/profile/worker/${user.id}`);
+      } else if (user.role === "employer") {
+        router.push(`/shops/${user.id}`);
+      }
     }
   };
 
@@ -65,16 +106,20 @@ export default function LoginPage() {
       }
 
       const result = await response.json();
-      localStorage.setItem("token", result.item.token);
+      signUpSuccess(result);
+      setAlert({ open: true, type: "signup" });
 
-      setIsOpenAlert(true);
-      setAlertType("signup"); //회원가입이 성공했음을 알리는 모달타입으로 변경
-      setNewUserId(result.item.id);
       //throw한 반환 데이터를 받아 상세한 에러처리
     } catch (err: any) {
-      if (err.status === 409) setAlertType("email");
-      else setAlertType("generic");
-      setIsOpenAlert(true);
+      if (err.message.includes("이메일")) {
+        setAlert({ open: true, type: "email" });
+        setError("email", {
+          type: "duplicate",
+          message: "중복된 이메일입니다.",
+        });
+      } else {
+        setAlert({ open: true, type: "generic" });
+      }
     }
   };
 
@@ -165,13 +210,13 @@ export default function LoginPage() {
       <p className="text-center mt-4 sm:mt-5 text-black text-normal ">
         이미 가입하셨나요?{" "}
         <Link
-          href="/signup"
+          href="/login"
           className="text-[#5534DA] underline underline-offset-4"
         >
           로그인하기
         </Link>
       </p>
-      {isOpenAlert && <AlertModal type={alertType} onClose={handleClose} />}
+      {alert.open && <AlertModal type={alert.type} onClose={handleClose} />}
     </main>
   );
 }
