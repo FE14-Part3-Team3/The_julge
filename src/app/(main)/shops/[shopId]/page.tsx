@@ -3,103 +3,35 @@
  */
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useParams, useRouter } from "next/navigation";
 import RegisterCard from "@/components/Card/RegisterCard";
 import ShopNotices from "@/components/ShopNotices/ShopNotices";
 import ShopInfoCard from "@/components/ShopCard/ShopInfoCard";
 import { useGetShop } from "@/hooks/api/useShopService";
-import { TEST_MODE_CONFIG } from "@/components/ShopNotices/dummyData";
-
-// 목업 데이터
-const mockShopData = {
-  id: "mock-shop-1",
-  name: "목업 테스트 식당",
-  category: "식당",
-  address1: "서울시 강남구",
-  address2: "역삼동 123-45",
-  description:
-    "목업 데이터로 테스트 중인 가게입니다. 다양한 화면을 확인해보세요!",
-  imageUrl: "/temp-restaurant.jpg",
-  originalHourlyPay: 12000,
-  location: "서울시 강남구",
-  userId: "mock-user-id",
-};
-
-// 테스트용 더미 shop 데이터
-const dummyShop = {
-  id: "shop-1",
-  name: "도토리 식당",
-  category: "식당",
-  address1: "서울시 송파구",
-  address2: "송파동 123-45",
-  description:
-    "알바하기 편한 너구리네 라면집! 라면 올려두고 끓이기만 하면 되어서 쉬운 편에 속하는 가게입니다.",
-  imageUrl: "/temp-restaurant.jpg",
-  originalHourlyPay: 11000,
-  location: "서울시 송파구",
-  userId: "has-shop",
-};
 
 export default function ShopDetailPage() {
   const router = useRouter();
   const params = useParams();
   const shopId = params.shopId as string;
-  const [useMockData, setUseMockData] = useState(false);
 
-  // 목업 데이터 사용 여부 확인 (/shops/mock-test 경로)
-  useEffect(() => {
-    setUseMockData(shopId === "mock-test");
-  }, [shopId]);
-
-  const isTestMode = TEST_MODE_CONFIG.CURRENT_MODE !== "normal";
-
-  // 실제 API 연동 (훅은 항상 호출됨)
+  // API 연동
   const { data, isLoading, error } = useGetShop(shopId);
   const shop = data?.item;
 
-  // 1. mock-test 경로 렌더링
-  if (useMockData) {
-    return (
-      <div className="max-w-[964px] mx-auto px-6 py-10">
-        <h1 className="text-[28px] font-bold mb-6">내 가게</h1>
-        <section className="mb-10">
-          <ShopInfoCard shop={mockShopData} />
-        </section>
-        <section>
-          <ShopNotices shopId={mockShopData.id} />
-        </section>
-      </div>
-    );
-  }
-
-  // 2. 테스트 모드 렌더링 (mock-test 아닐 때)
-  if (isTestMode) {
-    const mappedShop = dummyShop; // 테스트 모드에서는 항상 dummyShop 사용
-    return (
-      <div className="max-w-[964px] mx-auto px-6 py-10">
-        <h1 className="text-[28px] font-bold mb-6">내 가게</h1>
-        <section className="mb-10">
-          <ShopInfoCard shop={mappedShop} />
-        </section>
-        <section>
-          <ShopNotices shopId={mappedShop.id} />
-        </section>
-      </div>
-    );
-  }
-
-  // 3. 일반 모드 렌더링
+  // 로딩 중 표시
   if (isLoading) {
     return <div className="text-center py-10">로딩 중...</div>;
   }
 
+  // 가게 정보를 컴포넌트에서 사용 가능한 형태로 변환
   const mappedShop = shop && {
     ...shop,
     location: shop.address1,
     userId: shop.user?.item?.id || "",
   };
 
+  // 오류 발생 또는 가게 정보가 없는 경우 가게 등록 안내 카드 표시
   if (error || !mappedShop) {
     return (
       <RegisterCard
@@ -111,6 +43,7 @@ export default function ShopDetailPage() {
     );
   }
 
+  // 가게 정보 및 공고 목록 표시
   return (
     <div className="max-w-[964px] mx-auto px-6 py-10">
       <h1 className="text-[28px] font-bold mb-6">내 가게</h1>

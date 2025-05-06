@@ -5,10 +5,14 @@ import { useRouter } from "next/navigation";
 import NoticeList from "@/components/Notice/NoticeList";
 import NoticeRegisterCard from "@/components/Card/NoticeRegisterCard";
 import { ExtendedNotice } from "@/types/ShopTypes";
-import { API_CONFIG } from "./apiConfig";
 import { useShopsNoticeList } from "@/hooks/api/useNoticeService";
 import { GetListQuery } from "@/types/common";
 import { ItemWrapper } from "@/types/api/notice";
+
+// API 설정 상수
+const API_CONFIG = {
+  ITEMS_PER_PAGE: 6,
+};
 
 interface ShopNoticesProps {
   shopId: string;
