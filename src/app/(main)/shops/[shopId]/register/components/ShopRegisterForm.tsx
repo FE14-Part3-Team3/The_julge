@@ -4,7 +4,7 @@ import Button from "@/components/Button/Button";
 import Input from "@/components/Input/Input";
 import SelectInput from "@/components/Input/SelectInput";
 import AlertModal from "@/components/Modal/AlertModal";
-import { useParams, useSearchParams, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import ImageUploader from "./ImageUploader";
@@ -44,6 +44,7 @@ export default function ShopRegisterForm() {
   }, [watch("image")]);
 
   const onSubmit: SubmitHandler<MyStoreRegisterForm> = async (data) => {
+    const token = localStorage.getItem("token");
     try {
       //1.이미지 업로드 선행해서 반환받은 url로 데이터 세팅 다시 하기
       const response = await fetch(
@@ -52,7 +53,7 @@ export default function ShopRegisterForm() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            // Authorization: `Bearer ${token}`,  //토큰 첨부해서 보내기
+            Authorization: `Bearer ${token}`, //토큰 첨부해서 보내기
           },
           body: JSON.stringify(data),
         }

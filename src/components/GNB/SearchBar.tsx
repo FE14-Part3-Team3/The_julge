@@ -37,7 +37,7 @@ export default function SearchBar({ className }: SearchBarProp) {
     } else {
       currentParams.delete("keyword");
     }
-    router.push(`${pathname}?${currentParams.toString()}`, { scroll: false });
+    router.push(`/?${currentParams.toString()}`, { scroll: false });
   };
 
   return (
