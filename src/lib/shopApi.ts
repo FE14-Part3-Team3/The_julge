@@ -10,72 +10,40 @@ export async function getMyShop(
   userId: string
 ): Promise<(ShopInfo & { location: string; userId: string }) | null> {
   try {
-    // 유효성 검사
     if (!userId || userId.trim() === "") {
-      console.error("[getMyShop] 유효하지 않은 userId");
       return null;
     }
 
-    // 인증 토큰 가져오기
     const token = localStorage.getItem("token");
-    console.log("[getMyShop] API 호출 준비", { userId, hasToken: !!token });
-
-    // API 호출
-    console.log("[getMyShop] 요청 URL:", `/users/${userId}`);
     const res = await requestor.get<any>(`/users/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
-    console.log("[getMyShop] 응답 상태:", res.status);
-
-    // 응답 데이터 구조 유효성 검사
     if (!res.data || !res.data.item) {
-      console.log("[getMyShop] 응답 데이터 없음 또는 item 객체 없음");
       return null;
     }
 
-    // shop 객체 확인
     if (!res.data.item.shop) {
-      console.log("[getMyShop] shop 객체 없음 - 가게 미등록 상태");
       return null;
     }
 
-    // shop.item 객체 확인
     const shopData = res.data.item.shop.item;
     if (!shopData) {
-      console.log("[getMyShop] shop.item 객체 없음");
       return null;
     }
 
-    // 가게 ID 확인
     if (!shopData.id) {
-      console.log("[getMyShop] 가게 ID 없음");
       return null;
     }
 
-    console.log("[getMyShop] 가게 정보 찾음:", shopData);
-
-    // 필요한 데이터 추가하여 반환
     return {
       ...shopData,
       location: shopData.address1,
       userId: userId,
     };
-  } catch (error: any) {
-    // 오류 상세 로깅
-    console.error("[getMyShop] 오류 발생:", error);
-
-    if (error.response) {
-      console.error("[getMyShop] 응답 상태:", error.response.status);
-      console.error("[getMyShop] 응답 데이터:", error.response.data);
-    } else if (error.request) {
-      console.error("[getMyShop] 요청 오류 (응답 없음):", error.request);
-    } else {
-      console.error("[getMyShop] 기타 오류:", error.message);
-    }
-
+  } catch (error) {
     return null;
   }
 }
@@ -90,45 +58,141 @@ export async function getShopById(
 ): Promise<(ShopInfo & { location: string; userId: string }) | null> {
   try {
     if (!shopId || shopId.trim() === "") {
-      console.error("[getShopById] 유효하지 않은 shopId");
       return null;
     }
 
-    // 인증 토큰 가져오기
     const token = localStorage.getItem("token");
-    console.log("[getShopById] API 호출 준비", { shopId, hasToken: !!token });
-
-    // 실제 API 사용
     const res = await requestor.get<CreateShopResponse>(`/shops/${shopId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
-    console.log("[getShopById] 응답 상태:", res.status);
-
-    // 응답 데이터 확인
     if (!res.data || !res.data.item) {
-      console.log("[getShopById] 응답 데이터 없음 또는 item 객체 없음");
       return null;
     }
 
     const shopData = res.data.item;
-    console.log("[getShopById] 가게 정보 찾음:", shopData);
-
     return {
       ...shopData,
       location: shopData.address1,
       userId: shopData.user?.item?.id || "",
     };
   } catch (error: any) {
-    console.error("[getShopById] 오류 발생:", error);
+    // 404 에러일 경우 대체 방법으로 조회 시도
+    if (error.response && error.response.status === 404) {
+      try {
+        const userId = localStorage.getItem("id");
+        if (userId) {
+          const myShop = await getMyShop(userId);
+          if (myShop && myShop.id === shopId) {
+            return myShop;
+          }
+        }
+      } catch (fallbackError) {
+        // 대체 조회 실패 시 무시
+      }
+    }
+    return null;
+  }
+}
 
-    if (error.response) {
-      console.error("[getShopById] 응답 상태:", error.response.status);
-      console.error("[getShopById] 응답 데이터:", error.response.data);
+/**
+ * 가게 정보 업데이트 - 실제 API 호출
+ * @param shopId 가게 ID
+ * @param data 업데이트할 가게 정보
+ * @returns 성공 여부
+ */
+export async function updateShop(shopId: string, data: any): Promise<boolean> {
+  try {
+    if (!shopId || shopId.trim() === "") {
+      return false;
     }
 
-    return null;
+    const token = localStorage.getItem("token");
+
+    // 이미지 처리
+    let imageUrl = "";
+    if (data.image instanceof FileList && data.image.length > 0) {
+      const formData = new FormData();
+      formData.append("image", data.image[0]);
+
+      const imageResponse = await fetch(
+        "https://bootcamp-api.codeit.kr/api/0-1/the-julge/upload/image",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
+
+      if (imageResponse.ok) {
+        const imageData = await imageResponse.json();
+        imageUrl = imageData.item?.url || "";
+      }
+    }
+
+    // 업데이트할 데이터 준비
+    const updateData = {
+      name: data.name,
+      category: data.category,
+      address1: data.address1,
+      address2: data.address2,
+      description: data.description,
+      image: imageUrl || undefined,
+      originalHourlyPay: data.wage,
+    };
+
+    const apiUrl = `/shops/${shopId}`;
+
+    // 여러 API 요청 방식 시도
+    try {
+      // PATCH 요청 시도
+      const res = await requestor.patch(apiUrl, updateData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      return res.status >= 200 && res.status < 300;
+    } catch (patchError: any) {
+      // PATCH 실패 시 PUT 요청 시도
+      if (patchError.response && patchError.response.status === 404) {
+        try {
+          const putRes = await requestor.put(apiUrl, updateData, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          return putRes.status >= 200 && putRes.status < 300;
+        } catch (putError) {
+          // PUT 실패 시 대체 엔드포인트 시도
+          try {
+            const altUrl = `/shop-details/${shopId}`;
+            const postRes = await requestor.post(altUrl, updateData, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            });
+
+            return postRes.status >= 200 && postRes.status < 300;
+          } catch (postError) {
+            // 모든 시도 실패
+            return false;
+          }
+        }
+      } else {
+        // 404가 아닌 다른 오류는 그대로 실패 처리
+        return false;
+      }
+    }
+  } catch (error) {
+    return false;
   }
 }
