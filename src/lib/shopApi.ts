@@ -1,44 +1,62 @@
-import { ShopInfo } from "@/types/api/shop";
+import { ShopInfo, CreateShopResponse } from "@/types/api/shop";
+import requestor from "@/lib/axios";
 
-// 사장님 id로 가게 조회 (mock)
+/**
+ * 사용자 ID로 가게 정보 조회 - 실제 API 호출
+ * @param userId 사용자 ID
+ * @returns 가게 정보 또는 null
+ */
 export async function getMyShop(
   userId: string
 ): Promise<(ShopInfo & { location: string; userId: string }) | null> {
-  if (userId === "has-shop") {
+  try {
+    // 실제 API 사용
+    const res = await requestor.get<{ item: { shop: { item: ShopInfo } } }>(
+      `/users/${userId}`
+    );
+
+    const shopData = res.data.item.shop?.item;
+
+    if (!shopData) {
+      return null;
+    }
+
     return {
-      id: "shop-1",
-      name: "도토리 식당",
-      category: "식당",
-      address1: "서울시 송파구",
-      address2: "송파동 123-45",
-      description:
-        "알바하기 편한 너구리네 라면집! 라면 올려두고 끓이기만 하면 되어서 쉬운 편에 속하는 가게입니다.!",
-      imageUrl: "/temp-restaurant.jpg",
-      originalHourlyPay: 11000,
-      location: "서울시 송파구",
+      ...shopData,
+      location: shopData.address1,
       userId: userId,
     };
+  } catch (error) {
+    console.error("사용자 가게 정보 조회 실패:", error);
+    return null;
   }
-  return null;
 }
 
-// shopId로 가게 조회 (mock)
+/**
+ * 가게 ID로 가게 정보 조회 - 실제 API 호출
+ * @param shopId 가게 ID
+ * @returns 가게 정보 또는 null
+ */
 export async function getShopById(
   shopId: string
 ): Promise<(ShopInfo & { location: string; userId: string }) | null> {
-  if (shopId === "shop-1") {
+  try {
+    // 실제 API 사용
+    const res = await requestor.get<CreateShopResponse>(`/shops/${shopId}`);
+
+    const shopData = res.data.item;
+
+    if (!shopData) {
+      return null;
+    }
+
     return {
-      id: "shop-1",
-      name: "도토리 식당",
-      category: "식당",
-      address1: "서울시 송파구",
-      address2: "송파동 123-45",
-      description: "알바하기 편한 나구리네 라면집!",
-      imageUrl: "/temp-restaurant.jpg",
-      originalHourlyPay: 11000,
-      location: "서울시 송파구",
-      userId: "has-shop",
+      ...shopData,
+      location: shopData.address1,
+      userId: shopData.user?.item?.id || "",
     };
+  } catch (error) {
+    console.error("가게 정보 조회 실패:", error);
+    return null;
   }
-  return null;
 }
