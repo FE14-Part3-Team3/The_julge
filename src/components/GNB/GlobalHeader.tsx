@@ -3,7 +3,7 @@
 import { useAuth } from "@/contexts/AuthContext";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import NotificationPanel from "./NotificationPanel";
 import SearchBar from "./SearchBar";
 import clsx from "clsx";
@@ -77,7 +77,9 @@ export default function GlobalHeader() {
         </div>
 
         {/* 태블릿, PC 검색창 */}
-        <SearchBar className="relative xs:hidden sm:block max-w-[450px]" />
+        <Suspense>
+          <SearchBar className="relative xs:hidden sm:block max-w-[450px]" />
+        </Suspense>
 
         {/* 네비게이션 */}
         <nav
@@ -133,7 +135,9 @@ export default function GlobalHeader() {
           )}
         </nav>
       </div>
-      <SearchBar className="sm:hidden" />
+      <Suspense>
+        <SearchBar className="sm:hidden" />
+      </Suspense>
     </header>
   );
 }
