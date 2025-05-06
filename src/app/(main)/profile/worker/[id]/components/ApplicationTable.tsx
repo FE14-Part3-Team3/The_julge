@@ -8,6 +8,7 @@ import { UserApplication } from "@/types/api/application";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import Pagination from "@/components/Pagination/Pagination";
+import { Section } from "@/components/Section/Section";
 
 export default function ApplicationTable() {
   const { id: userId } = useParams() as { id: string };
@@ -41,18 +42,20 @@ export default function ApplicationTable() {
 
   return (
     <div className="space-y-6">
-      <Table<UserApplication>
-        data={applications}
-        columns={userApplicationColumns}
-        pagination={
-          <Pagination
-            totalItems={data.count}
-            itemsPerPage={limit}
-            currentOffset={offset}
-            onPageChange={handlePageChange}
-          />
-        }
-      />
+      <Section name="신청 내역">
+        <Table<UserApplication>
+          data={applications}
+          columns={userApplicationColumns}
+          pagination={
+            <Pagination
+              totalItems={data.count}
+              itemsPerPage={limit}
+              currentOffset={offset}
+              onPageChange={handlePageChange}
+            />
+          }
+        />
+      </Section>
     </div>
   );
 }
