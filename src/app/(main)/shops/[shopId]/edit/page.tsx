@@ -1,13 +1,11 @@
-// 가게 등록 페이지 구현
-// Next.js의 페이지 라우팅 시스템에서 /shops/new 경로에 대응하는 페이지 컴포넌트
 "use client";
 
 import React, { useEffect } from "react";
-import ShopRegisterForm from "@/app/(main)/shops/[shopId]/register/components/ShopRegisterForm";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import ShopEditForm from "./components/ShopEditForm";
 
-export default function NewShopPage() {
+export default function ShopEditPage() {
   const router = useRouter();
 
   const handleClose = () => {
@@ -16,7 +14,6 @@ export default function NewShopPage() {
 
   // 반응형 스타일을 동적으로 적용하기 위한 useEffect
   useEffect(() => {
-    // 모바일 환경에서 폼의 그리드 레이아웃을 조정하는 스타일을 추가
     const styleSheet = document.createElement("style");
     styleSheet.id = "responsive-shop-form";
     styleSheet.textContent = `
@@ -57,7 +54,7 @@ export default function NewShopPage() {
         {/* 헤더 영역: 제목과 닫기 버튼 */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="font-bold text-[28px]/[100%] lg:text-[32px]/[100%]">
-            가게 등록
+            가게 정보
           </h1>
           <button onClick={handleClose} className="focus:outline-none">
             <Image
@@ -69,9 +66,9 @@ export default function NewShopPage() {
           </button>
         </div>
 
-        {/* 가게 정보 입력 폼 컴포넌트 */}
+        {/* 가게 정보 편집 폼 컴포넌트 */}
         <div className="shop-register-form w-full bg-[#FAFAFA] p-6 rounded-lg">
-          <ShopRegisterForm />
+          <ShopEditForm />
         </div>
       </div>
     </div>
