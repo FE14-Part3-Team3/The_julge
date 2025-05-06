@@ -9,12 +9,14 @@ export interface Column<T> {
 interface TableProps<T extends { id: string | number }> {
   data: T[];
   columns: Column<T>[];
+  pagination?: React.ReactNode;
 }
 
 const Table = <T extends { id: string | number }>({
   // 제네릭 함수형으로 선언
   data,
   columns,
+  pagination,
 }: TableProps<T>) => {
   return (
     <div className="w-full border border-gray-20 bg-white rounded-lg overflow-hidden">
@@ -41,9 +43,13 @@ const Table = <T extends { id: string | number }>({
         <tbody>
           {data.map(
             (
-              item // 데이터를 순회하며 바디 생성
+              item,
+              index // 데이터를 순회하며 바디 생성
             ) => (
-              <tr key={item.id} className="border-b">
+              <tr
+                key={item.id}
+                className={index !== data.length - 1 ? "border-b" : ""}
+              >
                 {columns.map((col, idx) => (
                   <td key={idx} className="p-4">
                     {col.render(item)}
@@ -54,6 +60,11 @@ const Table = <T extends { id: string | number }>({
           )}
         </tbody>
       </table>
+      {pagination && (
+        <div className="p-4 border-t border-gray-20 flex justify-center">
+          {pagination}
+        </div>
+      )}
     </div>
   );
 };
