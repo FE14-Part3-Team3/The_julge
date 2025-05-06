@@ -185,7 +185,7 @@ export default function ShopEditForm() {
           <Button disabled={isSubmitting || isLoading} type="submit">
             {" "}
             {/* isSubmitting은 훅의 로딩 상태와 통합될 수 있음 */}
-            {isSubmitting || isLoading ? "저장 중..." : "저장하기"}
+            {isSubmitting || isLoading ? "완료 중..." : "완료하기"}
           </Button>
         </div>
       </form>
