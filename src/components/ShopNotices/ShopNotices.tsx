@@ -484,6 +484,7 @@ export default function ShopNotices({ shopId }: ShopNoticesProps) {
 
       {hasNotices ? (
         <>
+          <h2 className="text-[24px] font-bold mb-6">내가 등록한 공고</h2>
           <NoticeList notices={notices} shopId={shopId} hasMore={hasMore} />
         </>
       ) : (
