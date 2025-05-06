@@ -12,7 +12,7 @@ export default function ImageUploader({
   previewImg,
 }: ImageUploaderProps) {
   return (
-    <div className="col-span-2 flex flex-col">
+    <div className="col-span-2 flex flex-col w-full sm:max-w-[483px] aspect-[3.2/2]">
       <h2 className="text-black text-normal/[26px] mb-2">가게 이미지</h2>
       <input
         type="file"
@@ -23,7 +23,7 @@ export default function ImageUploader({
       />
       <label
         htmlFor="image-uploader"
-        className="relative w-[483px] h-[276px] bg-gray-10 border border-gray-30 rounded-md cursor-pointer"
+        className="relative w-full aspect-[3.2/2] sm:max-w-[483px] bg-gray-10 border border-gray-30 rounded-md cursor-pointer"
       >
         {previewImg ? (
           <Image

@@ -77,13 +77,20 @@ export default function ShopRegisterForm() {
   return (
     <>
       <form
-        className="mt-[32px] w-full grid grid-cols-2 gap-x-5 gap-y-6"
+        className="mt-[24px] flex flex-col gap-5 sm:mt-[32px] w-full sm:grid sm:grid-cols-2 sm:gap-x-5 sm:gap-y-6"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <Input label="가게 이름*" placeholder="입력" {...register("name")} />
+        <Input
+          label="가게 이름*"
+          placeholder="입력"
+          {...register("name", { required: "가게 이름을 입력해주세요." })}
+          isError={!!errors.name}
+          errorText={errors.name?.message}
+        />
         <Controller
           name="category"
           control={control}
+          rules={{ required: "분류를 선택해주세요." }}
           defaultValue=""
           render={({ field }) => (
             <SelectInput
@@ -93,12 +100,15 @@ export default function ShopRegisterForm() {
               onChange={field.onChange}
               options={category}
               width="w-full"
+              isError={!!errors.category}
+              errorText={errors.category?.message}
             />
           )}
         />
         <Controller
           name="address1"
           control={control}
+          rules={{ required: "주소를 선택해주세요." }}
           defaultValue=""
           render={({ field }) => (
             <SelectInput
@@ -108,20 +118,22 @@ export default function ShopRegisterForm() {
               onChange={field.onChange}
               options={address}
               width="w-full"
+              isError={!!errors.address1}
+              errorText={errors.address1?.message}
             />
           )}
         />
         <Input
           label="상세 주소*"
           placeholder="입력"
-          {...register("address2")}
+          {...register("address2", { required: "상세 주소를 입력해주세요." })}
         />
         <div className="col-span-1">
           <Input
             label="기본 시급*"
             placeholder="입력"
             suffix={"원"}
-            {...register("wage")}
+            {...register("wage", { required: "기본 시급을 입력해주세요." })}
           />
         </div>
         <ImageUploader register={register} previewImg={previewImg} />
@@ -130,10 +142,19 @@ export default function ShopRegisterForm() {
           <textarea
             className="w-full h-[153px] border border-gray-30 rounded-md px-5 py-4 mt-2 text-normal/[26px] font-normal "
             placeholder="입력"
+            {...register("description", { maxLength: 150 })}
           />
+          {!!errors.description && (
+            <p className="text-red-40 text-[12px]/[16px] mt-2 pl-2">
+              150자 미만으로 작성해주세요
+            </p>
+          )}
         </div>
-        <div className="flex justify-center col-span-2">
-          <Button disabled={isSubmitting}>
+        <div className="flex justify-center col-span-2 pb-[60px]">
+          <Button
+            disabled={isSubmitting}
+            className="w-full sm:max-w-[312px] whitespace-nowrap"
+          >
             {isSubmitting ? "로딩 중..." : "등록하기"}
           </Button>
         </div>

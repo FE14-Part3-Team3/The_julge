@@ -130,6 +130,9 @@ export default function ProfileRegisterPage() {
             <Controller
               name="address"
               control={control}
+              rules={{
+                required: "주소지를 선택해주세요",
+              }}
               render={({ field }) => (
                 <SelectInput
                   label="선호 지역"
