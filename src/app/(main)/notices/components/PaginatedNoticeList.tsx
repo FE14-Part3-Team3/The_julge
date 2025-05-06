@@ -16,7 +16,7 @@ import NoticeSelectInput from "@/components/Input/NoticeSelectInput";
 import EmptyCard from "@/components/Card/EmptyCard";
 import NoticeFilterPanel from "@/components/FilterPanel/FilterPanel";
 
-const defaultQuery: GetShopNoticesQuery = {
+export const defaultQuery: GetShopNoticesQuery = {
   offset: 0,
   limit: 6,
   sort: "time",
@@ -55,6 +55,13 @@ export default function PaginatedNoticeList() {
     setQueryToURL(next);
   };
 
+  const handleCheckboxChange = (district: string, checked: boolean) => {
+    const updatedDistricts = checked
+      ? [...selectedDistricts, district]
+      : selectedDistricts.filter((d) => d !== district);
+    setSelectedDistricts(updatedDistricts);
+  };
+
   const applyFilters = () => {
     const nextQuery = {
       ...inputQuery,
@@ -84,7 +91,7 @@ export default function PaginatedNoticeList() {
     { label: "마감임박순", value: "time" },
     { label: "시급많은순", value: "pay" },
     { label: "시간적은순", value: "hour" },
-    { label: "가나다순", value: "shop" },
+    { label: "가다나순", value: "shop" },
   ];
   const selectedLabel =
     OPTIONS.find((opt) => opt.value === (inputQuery.sort ?? "time"))?.label ??
@@ -145,6 +152,7 @@ export default function PaginatedNoticeList() {
         <EmptyCard description="해당 공고가 없습니다." />
       )}
       <div className="mt-10">
+
         <Pagination
           totalItems={allNotices?.count}
           itemsPerPage={Number(inputQuery.limit)}
