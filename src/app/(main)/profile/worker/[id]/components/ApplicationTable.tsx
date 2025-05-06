@@ -42,14 +42,16 @@ export default function ApplicationTable() {
   return (
     <div className="space-y-6">
       <Table<UserApplication>
-        data={data.items.map((w) => w.item)}
+        data={applications}
         columns={userApplicationColumns}
-      />
-      <Pagination
-        totalItems={data.count}
-        itemsPerPage={limit}
-        currentOffset={offset}
-        onPageChange={handlePageChange}
+        pagination={
+          <Pagination
+            totalItems={data.count}
+            itemsPerPage={limit}
+            currentOffset={offset}
+            onPageChange={handlePageChange}
+          />
+        }
       />
     </div>
   );
