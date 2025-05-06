@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 interface SearchBarProp {
@@ -12,15 +13,31 @@ interface SearchFormInput {
 }
 
 export default function SearchBar({ className }: SearchBarProp) {
-  const { register, handleSubmit, reset } = useForm<SearchFormInput>();
+  const { register, handleSubmit, setValue } = useForm<SearchFormInput>();
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const currentKeyword = searchParams.get("keyword");
+    if (currentKeyword) {
+      setValue("query", currentKeyword);
+    }
+  }, [searchParams, setValue]);
 
   const onSubmit: SubmitHandler<SearchFormInput> = (data) => {
     const searchTerm = data.query.trim();
+    const currentParams = new URLSearchParams(
+      Array.from(searchParams.entries())
+    );
 
     if (searchTerm) {
-      router.push(`/search?q=${encodeURIComponent(searchTerm)}`);
+      currentParams.set("keyword", searchTerm);
+      currentParams.set("offset", "0");
+    } else {
+      currentParams.delete("keyword");
     }
+    router.push(`${pathname}?${currentParams.toString()}`, { scroll: false });
   };
 
   return (
@@ -44,7 +61,7 @@ export default function SearchBar({ className }: SearchBarProp) {
         type="search"
         className="bg-gray-10 w-full p-2 pl-[32px] rounded-[10px]"
         placeholder="가게 이름으로 찾아보세요"
-        {...register("query", { required: true })}
+        {...register("query")}
         aria-label="검색어 입력"
       />
     </form>
