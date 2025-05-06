@@ -11,52 +11,79 @@ export default function ShopsIndexPage() {
   const { isLogin, user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [redirectAttempts, setRedirectAttempts] = useState(0);
 
   // 사용자의 가게 정보 조회
   useEffect(() => {
-    if (!isLogin || !user || !user.id) {
-      console.log("[ShopsIndexPage] 로그인 상태 확인:", { isLogin, user });
+    // 인증 관련 상태가 준비되지 않았을 경우
+    if (!isLogin) {
+      console.log("[ShopsIndexPage] 로그인 상태 확인: 로그인 필요");
+      setLoading(false);
+      return;
+    }
+
+    // 로그인한 사용자의 ID가 없는 경우
+    const userId = localStorage.getItem("id");
+    if (!userId) {
+      console.log("[ShopsIndexPage] 사용자 ID 없음");
+      setLoading(false);
+      return;
+    }
+
+    // 이미 여러 번 시도했으나 실패한 경우
+    if (redirectAttempts > 3) {
+      console.log("[ShopsIndexPage] 최대 시도 횟수 초과");
+      setError("가게 정보를 불러오는 중 오류가 발생했습니다.");
       setLoading(false);
       return;
     }
 
     // 로컬스토리지 값 확인
     const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("id");
     console.log("[ShopsIndexPage] 로컬스토리지 확인:", {
       token: !!token,
       userId,
     });
 
-    // 사용자의 가게 정보 조회 (약간의 지연 후)
+    // 토큰이 없는 경우
+    if (!token) {
+      console.log("[ShopsIndexPage] 토큰 없음");
+      setLoading(false);
+      return;
+    }
+
+    // 사용자의 가게 정보 조회
     const fetchShopInfo = async () => {
       try {
-        console.log("[ShopsIndexPage] 가게 정보 조회 시작, userId:", user.id);
+        console.log("[ShopsIndexPage] 가게 정보 조회 시작, userId:", userId);
 
-        // 약간의 지연 후 API 호출 - 가끔 API가 너무 빨리 호출되면 인증 문제가 발생할 수 있음
-        await new Promise((resolve) => setTimeout(resolve, 500));
-
-        const result = await getMyShop(user.id);
+        const result = await getMyShop(userId);
         console.log("[ShopsIndexPage] 가게 정보 조회 결과:", result);
 
-        if (result) {
-          // 가게가 있으면 해당 가게 상세 페이지로 이동
+        if (result && result.id) {
+          // 가게가 있으면 해당 가게 상세 페이지로 즉시 이동
           console.log("[ShopsIndexPage] 가게 발견, 리다이렉션:", result.id);
           router.replace(`/shops/${result.id}`);
         } else {
-          // 가게가 없으면 로딩 상태 해제
+          // 가게가 없거나 ID가 없는 경우
           console.log("[ShopsIndexPage] 가게 없음, 등록 화면 표시");
           setLoading(false);
         }
       } catch (error) {
         console.error("[ShopsIndexPage] 가게 정보 조회 오류:", error);
-        setError("가게 정보를 불러오는 중 오류가 발생했습니다.");
-        setLoading(false);
+
+        // 재시도 카운터 증가
+        setRedirectAttempts((prev) => prev + 1);
+
+        // 짧은 딜레이 후 재시도
+        setTimeout(() => {
+          setLoading(true); // 로딩 상태 재활성화
+        }, 500);
       }
     };
 
     fetchShopInfo();
-  }, [isLogin, user, router]);
+  }, [isLogin, user, router, loading, redirectAttempts]);
 
   // 로딩 중 표시
   if (loading) {
@@ -76,7 +103,11 @@ export default function ShopsIndexPage() {
           {error}
           <button
             className="ml-4 underline"
-            onClick={() => window.location.reload()}
+            onClick={() => {
+              setRedirectAttempts(0);
+              setError(null);
+              setLoading(true);
+            }}
           >
             다시 시도
           </button>
