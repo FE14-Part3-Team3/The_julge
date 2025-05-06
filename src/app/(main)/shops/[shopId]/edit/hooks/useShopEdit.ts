@@ -7,22 +7,45 @@ import { ShopInfo } from "@/types/api/shop";
 import { Category } from "@/lib/constants/foodCategory";
 import { AddressOptions } from "@/lib/constants/addressOptions";
 
+/**
+ * @interface UseShopEditProps
+ * @description useShopEdit 훅에 전달되는 props 타입입니다.
+ * @property watch react-hook-form의 watch 함수 (폼 값 감지용)
+ * @property reset react-hook-form의 reset 함수 (폼 값 초기화용)
+ */
 interface UseShopEditProps {
   watch: UseFormWatch<ShopEditFormData>;
   reset: UseFormReset<ShopEditFormData>;
 }
 
-// updateShop API가 받을 데이터 타입 (shopApi.ts의 updateData와 유사하게)
+/**
+ * @interface ShopUpdateRequestData
+ * @description 가게 정보 수정을 위해 API에 전달될 데이터의 타입입니다.
+ * @property name 가게 이름
+ * @property category 가게 분류
+ * @property address1 가게 주소 (시/도)
+ * @property address2 가게 상세 주소
+ * @property description 가게 설명
+ * @property image (optional) 가게 이미지 URL (문자열)
+ * @property originalHourlyPay 기본 시급 (숫자)
+ */
 export interface ShopUpdateRequestData {
   name: string;
   category: string;
   address1: string;
   address2: string;
   description: string;
-  imageUrl?: string; // 이미지가 변경되지 않으면 보내지 않을 수 있음
+  image?: string; // 이미지가 변경되지 않으면 보내지 않을 수 있음
   originalHourlyPay: number;
 }
 
+/**
+ * @hook useShopEdit
+ * @description 가게 정보 수정 페이지의 로직을 관리하는 커스텀 훅입니다.
+ * 로그인 상태 확인, 기존 가게 데이터 로드, 이미지 미리보기, 이미지 업로드, 폼 제출 처리 등의 기능을 수행합니다.
+ * @param {UseShopEditProps} props - 훅에 필요한 react-hook-form의 watch와 reset 함수
+ * @returns 편집 상태, 로딩 상태, 오류 메시지, 로그인 상태, 이미지 미리보기 URL, 폼 제출 핸들러, 모달 닫기 핸들러, 로그인 리다이렉트 핸들러를 포함하는 객체
+ */
 export default function useShopEdit({ watch, reset }: UseShopEditProps) {
   const [isEdited, setIsEdited] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -35,7 +58,13 @@ export default function useShopEdit({ watch, reset }: UseShopEditProps) {
 
   // 1. 로그인 상태 확인 및 기존 가게 데이터 로드
   useEffect(() => {
+    /**
+     * @function checkLoginAndLoadData
+     * @description 로그인 상태를 확인하고, 로그인된 경우 기존 가게 정보를 불러와 폼에 설정합니다.
+     */
     const checkLoginAndLoadData = async () => {
+      setIsLoading(true);
+      // 로컬 스토리지에서 사용자 정보 및 토큰 확인
       const token = localStorage.getItem("token");
       const userId = localStorage.getItem("id");
       const userType = localStorage.getItem("type");
@@ -159,7 +188,7 @@ export default function useShopEdit({ watch, reset }: UseShopEditProps) {
         name: formData.name,
         category: formData.category || "", // 빈 문자열 허용 또는 기본값 설정
         address1: formData.address1 || "",
-        address2: formData.address2,
+        address2: formData.address2 || "", // 빈 문자열 기본값 추가
         description: formData.description || "",
         originalHourlyPay: Number(formData.wage) || 0,
       };
@@ -172,7 +201,7 @@ export default function useShopEdit({ watch, reset }: UseShopEditProps) {
       ) {
         const newImageUrl = await uploadImage(formData.image[0]);
         if (newImageUrl) {
-          updateData.imageUrl = newImageUrl;
+          updateData.image = newImageUrl;
         } else {
           // 이미지 업로드 실패 시, 기존 이미지를 유지할지 또는 오류 처리할지 결정
           // 여기서는 오류를 발생시키고 중단
@@ -185,7 +214,7 @@ export default function useShopEdit({ watch, reset }: UseShopEditProps) {
       } else if (previewImg) {
         // 새 이미지가 없고, 기존 이미지가 있었던 경우 (previewImg에 URL이 있는 경우)
         // imageUrl을 기존 값으로 설정 (사용자가 이미지를 변경하지 않은 경우)
-        updateData.imageUrl = previewImg;
+        updateData.image = previewImg;
       }
       // 사용자가 이미지를 "제거"하는 기능은 별도 UI/UX 필요
 
