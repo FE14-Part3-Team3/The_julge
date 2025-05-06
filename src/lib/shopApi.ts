@@ -98,101 +98,75 @@ export async function getShopById(
 }
 
 /**
- * 가게 정보 업데이트 - 실제 API 호출
+ * 가게 정보 업데이트
  * @param shopId 가게 ID
  * @param data 업데이트할 가게 정보
  * @returns 성공 여부
  */
 export async function updateShop(shopId: string, data: any): Promise<boolean> {
   try {
-    if (!shopId || shopId.trim() === "") {
-      return false;
-    }
-
+    if (!shopId) return false;
     const token = localStorage.getItem("token");
+    if (!token) return false;
 
-    // 이미지 처리
-    let imageUrl = "";
-    if (data.image instanceof FileList && data.image.length > 0) {
-      const formData = new FormData();
-      formData.append("image", data.image[0]);
+    // 최저시급/최대시급 제한 설정
+    const MIN_WAGE = 10030; // 2023년 한국 최저시급
+    const MAX_WAGE = 1000000000; // 최대 시급 제한 (10억원)
 
-      const imageResponse = await fetch(
-        "https://bootcamp-api.codeit.kr/api/0-1/the-julge/upload/image",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: formData,
-        }
+    // 시급 값 범위 조정
+    let wage = Number(data.wage || 0);
+    if (wage < MIN_WAGE) {
+      console.log(
+        `시급이 최저시급(${MIN_WAGE}원) 미만이어서 최저시급으로 조정합니다.`
       );
-
-      if (imageResponse.ok) {
-        const imageData = await imageResponse.json();
-        imageUrl = imageData.item?.url || "";
-      }
+      wage = MIN_WAGE;
+    } else if (wage > MAX_WAGE) {
+      console.log(
+        `시급이 최대 제한(${MAX_WAGE}원)을 초과하여 최대값으로 조정합니다.`
+      );
+      wage = MAX_WAGE;
     }
 
-    // 업데이트할 데이터 준비
-    const updateData = {
-      name: data.name,
-      category: data.category,
-      address1: data.address1,
-      address2: data.address2,
-      description: data.description,
-      image: imageUrl || undefined,
-      originalHourlyPay: data.wage,
+    // API 명세서에 맞는 데이터 구성
+    const shopData: Record<string, any> = {
+      name: String(data.name || ""),
+      category: String(data.category || ""),
+      address1: String(data.address1 || ""),
+      address2: String(data.address2 || ""),
+      description: String(data.description || ""),
+      originalHourlyPay: wage,
     };
 
-    const apiUrl = `/shops/${shopId}`;
+    // 이미지 필드가 있는 경우 imageUrl로 추가 (API 명세서에 맞게)
+    if (typeof data.image === "string" && data.image.trim() !== "") {
+      shopData.imageUrl = data.image.trim();
+    }
 
-    // 여러 API 요청 방식 시도
-    try {
-      // PATCH 요청 시도
-      const res = await requestor.patch(apiUrl, updateData, {
+    console.log("API 요청 데이터:", JSON.stringify(shopData));
+
+    // API 호출
+    const response = await fetch(
+      `https://bootcamp-api.codeit.kr/api/0-1/the-julge/shops/${shopId}`,
+      {
+        method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-      });
-
-      return res.status >= 200 && res.status < 300;
-    } catch (patchError: any) {
-      // PATCH 실패 시 PUT 요청 시도
-      if (patchError.response && patchError.response.status === 404) {
-        try {
-          const putRes = await requestor.put(apiUrl, updateData, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          });
-
-          return putRes.status >= 200 && putRes.status < 300;
-        } catch (putError) {
-          // PUT 실패 시 대체 엔드포인트 시도
-          try {
-            const altUrl = `/shop-details/${shopId}`;
-            const postRes = await requestor.post(altUrl, updateData, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
-            });
-
-            return postRes.status >= 200 && postRes.status < 300;
-          } catch (postError) {
-            // 모든 시도 실패
-            return false;
-          }
-        }
-      } else {
-        // 404가 아닌 다른 오류는 그대로 실패 처리
-        return false;
+        body: JSON.stringify(shopData),
       }
+    );
+
+    // 오류 확인
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`API 오류 (${response.status}):`, errorText);
+      return false;
     }
+
+    return true;
   } catch (error) {
+    console.error("오류 발생:", error);
     return false;
   }
 }
