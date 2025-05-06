@@ -84,78 +84,82 @@ export default function ProfileRegisterPage() {
   };
 
   return (
-    <main className="w-full max-w-[964px] mx-auto mt-[60px]">
-      <div className="flex justify-between">
-        <h1 className="font-bold text-[28px]/[100%]">내 프로필</h1>
-        <button onClick={handleClick}>
-          <Image
-            src={"/assets/images/vector.svg"}
-            width={17.58}
-            height={17.58}
-            alt="닫기"
-          />
-        </button>
-      </div>
-      <form className="mt-[32px]" onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex gap-5">
-          <Input
-            label="이름*"
-            placeholder={"입력"}
-            {...register("name", {
-              required: "이름을 입력해주세요.",
-              pattern: {
-                value: /^[가-힣]{2,4}$/, // 한글 2~4자
-                message: "2~4글자의 한글 이름을 입력해주세요.",
-              },
-            })}
-            isError={!!errors.name}
-            errorText={errors.name?.message}
-            width="w-1/3"
-          />
-          <Input
-            label="연락처*"
-            placeholder="입력"
-            {...register("phone", {
-              required: "연락처를 입력해주세요.",
-              pattern: {
-                value: /^01([016789])[-\s]?(\d{3,4})[-\s]?(\d{4})$/,
-                message: "유효한 휴대폰 번호 형식으로 입력해주세요.",
-              },
-            })}
-            isError={!!errors.phone}
-            errorText={errors.phone?.message}
-            width="w-1/3"
-          />
-          <Controller
-            name="address"
-            control={control}
-            render={({ field }) => (
-              <SelectInput
-                label="선호 지역"
-                placeholder="선택"
-                options={address}
-                value={field.value}
-                onChange={field.onChange}
-                width="w-1/3"
-              />
+    <main className="w-full h-screen pt-[40px] sm:pt-[60px] px-[12px] sm:px-[32px] bg-gray-5">
+      <div className="w-full max-w-[964px] mx-auto">
+        <div className="flex justify-between">
+          <h1 className="font-bold text-[20px]/[100%] sm:text-[28px]/[100%]">
+            내 프로필
+          </h1>
+          <button
+            onClick={handleClick}
+            className="relative block w-[13px] h-[13px] sm:w-[17px] sm:h-[17px]"
+          >
+            <Image src={"/assets/images/vector.svg"} fill alt="닫기" />
+          </button>
+        </div>
+        <form className="mt-[32px]" onSubmit={handleSubmit(onSubmit)}>
+          <div className="flex flex-col gap-5 sm:flex-row sm:flex-wrap">
+            <Input
+              label="이름*"
+              placeholder={"입력"}
+              {...register("name", {
+                required: "이름을 입력해주세요.",
+                pattern: {
+                  value: /^[가-힣]{2,4}$/, // 한글 2~4자
+                  message: "2~4글자의 한글 이름을 입력해주세요.",
+                },
+              })}
+              isError={!!errors.name}
+              errorText={errors.name?.message}
+              width="w-full sm:w-[calc(50%-0.625rem)] md:w-[calc(33.333%-0.833rem)]"
+            />
+            <Input
+              label="연락처*"
+              placeholder="입력"
+              {...register("phone", {
+                required: "연락처를 입력해주세요.",
+                pattern: {
+                  value: /^01([016789])[-\s]?(\d{3,4})[-\s]?(\d{4})$/,
+                  message: "유효한 휴대폰 번호 형식으로 입력해주세요.",
+                },
+              })}
+              isError={!!errors.phone}
+              errorText={errors.phone?.message}
+              width="w-full sm:w-[calc(50%-0.625rem)] md:w-[calc(33.333%-0.833rem)]"
+            />
+            <Controller
+              name="address"
+              control={control}
+              render={({ field }) => (
+                <SelectInput
+                  label="선호 지역"
+                  placeholder="선택"
+                  options={address}
+                  value={field.value}
+                  onChange={field.onChange}
+                  width="w-full sm:w-[calc(50%-0.625rem)] md:w-[calc(33.333%-0.833rem)]"
+                />
+              )}
+            />
+          </div>
+          <div className="mt-6">
+            <label className="text-base/[26px]">소개</label>
+            <textarea
+              className="w-full h-[153px] border border-gray-30 rounded-md px-5 py-4 mt-2 text-normal/[26px] font-normal "
+              placeholder="입력"
+              {...register("bio", { maxLength: 150 })}
+            />
+            {!!errors.bio && (
+              <p className="text-red-40 text-[12px]/[16px] mt-2 pl-2">
+                150자 미만으로 작성해주세요
+              </p>
             )}
-          />
-        </div>
-        <div className="mt-6">
-          <label className="text-base/[26px]">소개</label>
-          <textarea
-            className="w-full h-[153px] border border-gray-30 rounded-md px-5 py-4 mt-2 text-normal/[26px] font-normal "
-            placeholder="입력"
-            {...register("bio", { maxLength: 150 })}
-          />
-          {!!errors.bio && (
-            <p className="text-red-40 text-[12px]/[16px] mt-2 pl-2">
-              150자 미만으로 작성해주세요
-            </p>
-          )}
-        </div>
-        <Button className="block mx-auto mt-8">등록하기</Button>
-      </form>
+          </div>
+          <Button className="block mx-auto mt-8 w-full sm:max-w-[312px] whitespace-nowrap">
+            등록하기
+          </Button>
+        </form>
+      </div>
     </main>
   );
 }
