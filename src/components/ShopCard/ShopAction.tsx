@@ -57,7 +57,7 @@ export default function ShopAction({ shopId }: ShopActionProps) {
     <div className={buttonStyles.container}>
       <button
         className={`${buttonStyles.editButton} bg-white border border-red-50 text-red-50 rounded-md text-center`}
-        onClick={() => router.push(`/shops/${shopId}/register`)}
+        onClick={() => router.push(`/shops/${shopId}/edit`)}
       >
         편집하기
       </button>
