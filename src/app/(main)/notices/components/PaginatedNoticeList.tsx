@@ -152,12 +152,13 @@ export default function PaginatedNoticeList() {
         <EmptyCard description="해당 공고가 없습니다." />
       )}
       <div className="mt-10">
-        {/* <Pagination
+
+        <Pagination
           totalItems={allNotices?.count}
           itemsPerPage={Number(inputQuery.limit)}
           currentOffset={Number(inputQuery.offset)}
           onPageChange={handlePageChange}
-        /> */}
+        />
       </div>
     </Section>
   );
