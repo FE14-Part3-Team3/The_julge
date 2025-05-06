@@ -195,7 +195,7 @@ export default function ShopDetailPage() {
         `}</style>
 
         <div className="px-6 py-10">
-          <h2 className="text-[24px] font-bold mb-6">내가 등록한 공고</h2>
+          {/* 제목을 제거하여 중복을 방지합니다 */}
           {shopIdForNotices && <ShopNotices shopId={shopIdForNotices} />}
         </div>
       </section>
