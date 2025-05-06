@@ -4,8 +4,16 @@
 
 import React, { useEffect } from "react";
 import ShopRegisterForm from "@/app/(main)/shops/[shopId]/register/components/ShopRegisterForm";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function NewShopPage() {
+  const router = useRouter();
+
+  const handleClose = () => {
+    router.back();
+  };
+
   // 반응형 스타일을 동적으로 적용하기 위한 useEffect
   useEffect(() => {
     // 모바일 환경에서 폼의 그리드 레이아웃을 조정하는 스타일을 추가
@@ -18,6 +26,17 @@ export default function NewShopPage() {
         }
         .col-span-1 {
           grid-column: span 1 !important;
+        }
+      }
+      
+      /* 큰 화면에서 폼 크기 확장 */
+      @media (min-width: 1024px) {
+        .shop-register-container {
+          max-width: 1200px !important;
+        }
+        .shop-register-form {
+          width: 100% !important;
+          max-width: 1100px !important;
         }
       }
     `;
@@ -33,15 +52,28 @@ export default function NewShopPage() {
   }, []);
 
   return (
-    <main className="max-w-[964px] mx-auto mt-[60px] px-4 sm:px-6 mb-10">
-      {/* 페이지 제목 표시 */}
-      <h1 className="font-bold text-lg sm:text-xl md:text-2xl text-black mb-6">
-        가게 등록
-      </h1>
-      {/* 가게 정보 입력 폼 컴포넌트를 반응형 컨테이너로 감싸기 */}
-      <div className="w-full sm:p-4">
-        <ShopRegisterForm />
+    <div className="min-h-screen">
+      <div className="max-w-[1200px] mx-auto px-6 py-10 shop-register-container">
+        {/* 헤더 영역: 제목과 닫기 버튼 */}
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="font-bold text-[28px]/[100%] lg:text-[32px]/[100%]">
+            가게 등록
+          </h1>
+          <button onClick={handleClose} className="focus:outline-none">
+            <Image
+              src="/assets/images/vector.svg"
+              width={17.58}
+              height={17.58}
+              alt="닫기"
+            />
+          </button>
+        </div>
+
+        {/* 가게 정보 입력 폼 컴포넌트 */}
+        <div className="shop-register-form w-full bg-[#FAFAFA] p-6 rounded-lg">
+          <ShopRegisterForm />
+        </div>
       </div>
-    </main>
+    </div>
   );
 }
