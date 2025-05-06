@@ -15,7 +15,6 @@ interface SearchFormInput {
 export default function SearchBar({ className }: SearchBarProp) {
   const { register, handleSubmit, setValue } = useForm<SearchFormInput>();
   const router = useRouter();
-  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   useEffect(() => {
