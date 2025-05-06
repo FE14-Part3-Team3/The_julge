@@ -99,7 +99,7 @@ export default function ShopOverview({
                 <button
                   className={`${customButtonStyle} border border-red-50 text-red-50 rounded-md text-center`}
                   onClick={
-                    onEdit ?? (() => router.push(`/shops/${shop.id}/register`))
+                    onEdit ?? (() => router.push(`/shops/${shop.id}/edit`))
                   }
                 >
                   편집하기
