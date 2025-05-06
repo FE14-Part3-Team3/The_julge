@@ -1,3 +1,5 @@
+"use client";
+
 import clsx from "clsx";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -13,15 +15,19 @@ interface SearchFormInput {
 }
 
 export default function SearchBar({ className }: SearchBarProp) {
-  const { register, handleSubmit, setValue } = useForm<SearchFormInput>();
+
+  const { register, handleSubmit, setValue } = useForm<SearchFormInput>({
+    defaultValues: { query: "" },
+  });
   const router = useRouter();
-  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   useEffect(() => {
     const currentKeyword = searchParams.get("keyword");
     if (currentKeyword) {
       setValue("query", currentKeyword);
+    } else {
+      setValue("query", "");
     }
   }, [searchParams, setValue]);
 
@@ -37,7 +43,7 @@ export default function SearchBar({ className }: SearchBarProp) {
     } else {
       currentParams.delete("keyword");
     }
-    router.push(`${pathname}?${currentParams.toString()}`, { scroll: false });
+    router.push(`/?${currentParams.toString()}`, { scroll: false });
   };
 
   return (

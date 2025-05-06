@@ -64,6 +64,7 @@ export default function GlobalHeader() {
         <div>
           <Link
             href={"/"}
+            passHref
             className="block relative w-[84px] h-[30px] sm:w-[112px] sm:h-[40px] flex-shrink-0"
           >
             <Image
