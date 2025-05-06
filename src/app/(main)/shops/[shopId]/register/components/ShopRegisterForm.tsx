@@ -10,6 +10,7 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import ImageUploader from "./ImageUploader";
 import { category, Category } from "@/lib/constants/foodCategory";
 import { address, AddressOptions } from "@/lib/constants/addressOptions";
+import { useGetShop } from "@/hooks/api/useShopService";
 
 export interface MyStoreRegisterForm {
   name: string;
@@ -17,8 +18,8 @@ export interface MyStoreRegisterForm {
   address1: AddressOptions | "";
   address2: string;
   description: string;
-  image: FileList;
-  wage: number;
+  imageUrl: string;
+  originalHourlyPay: number;
 }
 
 export default function ShopRegisterForm() {
@@ -27,14 +28,39 @@ export default function ShopRegisterForm() {
     handleSubmit,
     control,
     watch,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<MyStoreRegisterForm>({
     mode: "onSubmit",
   });
   const [isRegistered, setIsRegistered] = useState(false);
   const router = useRouter();
-  const { shopId } = useParams();
+  const { shopId } = useParams() as { shopId: string };
   const [previewImg, setPreviewImg] = useState("");
+  const { data, isLoading } = useGetShop(shopId);
+
+  useEffect(() => {
+    if (data) {
+      const {
+        name,
+        address1,
+        address2,
+        category,
+        description,
+        imageUrl,
+        originalHourlyPay,
+      } = data.item;
+      reset({
+        name,
+        address1,
+        address2,
+        category,
+        description,
+        imageUrl,
+        originalHourlyPay,
+      });
+    }
+  }, [data]);
 
   useEffect(() => {
     const selectedFile = watch("image");
@@ -133,10 +159,12 @@ export default function ShopRegisterForm() {
             label="기본 시급*"
             placeholder="입력"
             suffix={"원"}
-            {...register("wage", { required: "기본 시급을 입력해주세요." })}
+            {...register("originalHourlyPay", {
+              required: "기본 시급을 입력해주세요.",
+            })}
           />
         </div>
-        <ImageUploader register={register} previewImg={previewImg} />
+        <ImageUploader {...register("imageUrl")} previewImg={previewImg} />
         <div className="col-span-2">
           <label htmlFor="description">가게 설명</label>
           <textarea

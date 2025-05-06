@@ -1,15 +1,12 @@
 import Image from "next/image";
-import { UseFormRegister } from "react-hook-form";
-import { MyStoreRegisterForm } from "./ShopRegisterForm";
 
 interface ImageUploaderProps {
-  register: UseFormRegister<MyStoreRegisterForm>;
   previewImg?: string;
 }
 
 export default function ImageUploader({
-  register,
   previewImg,
+  ...register
 }: ImageUploaderProps) {
   return (
     <div className="col-span-2 flex flex-col w-full sm:max-w-[483px] aspect-[3.2/2]">
@@ -19,7 +16,7 @@ export default function ImageUploader({
         accept="image/*"
         id="image-uploader"
         className="hidden"
-        {...register("image")}
+        {...register}
       />
       <label
         htmlFor="image-uploader"
