@@ -146,7 +146,11 @@ export default function NoticeList({
               return (
                 <div
                   key={notice.id}
-                  onClick={() => router.push(`/notices/${notice.id}`)}
+                  onClick={() =>
+                    router.push(
+                      `/shops/${shopId}/notices/${notice.id}/applications`
+                    )
+                  }
                   className="cursor-pointer hover:shadow-lg transition-all rounded-xl border border-gray-200 p-4 bg-white shadow-sm"
                 >
                   <NoticeCardView list={noticeItem} />
