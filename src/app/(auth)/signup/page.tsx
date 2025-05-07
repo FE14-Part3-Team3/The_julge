@@ -27,7 +27,7 @@ export default function SignUpPage() {
     open: false,
     type: "generic",
   });
-  const { user, signUpSuccess } = useAuth();
+  const { user } = useAuth();
   const {
     register,
     handleSubmit,
@@ -44,20 +44,6 @@ export default function SignUpPage() {
       type: "employee",
     },
   });
-
-  //모달이 닫히는 경우를 가정하고 저장된 새로운 UserId가 있는 경우 해당 페이지로 이동합니다.
-  useEffect(() => {
-    // 사용자가 존재하고, 현재 alert 모달이 열려있지 않을 때만 실행
-    // (회원가입 성공 메시지를 보여주는 동안 리디렉션되는 것을 방지)
-    if (user?.id && !alert.open) {
-      if (user.role === "employer") {
-        router.push(`/shops/${user.id}`);
-      } else if (user.role === "employee") {
-        router.push(`/profile/worker/${user.id}`);
-      }
-    }
-    // 모달이 닫힐 때 이 검사를 다시 실행하려면 alert.open을 의존성 배열에 추가할 수 있습니다.
-  }, [user, alert.open, router]); // router도 의존성 배열에 추가하는 것이 좋습니다.
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -77,16 +63,9 @@ export default function SignUpPage() {
   if (isLoading) return null;
 
   const handleClose = () => {
+    if (alert.type === "signup") router.push("/login");
     setAlert({ open: false, type: "generic" }); // 모달 닫을 때 상태 초기화
     // 모달을 닫은 *후에* 사용자 상태를 확인하고 페이지 이동
-    if (user?.id) {
-      console.log("handleClose: 회원가입 확인 후 페이지 이동.");
-      if (user.role === "employee") {
-        router.push(`/profile/worker/${user.id}`);
-      } else if (user.role === "employer") {
-        router.push(`/shops/${user.id}`);
-      }
-    }
   };
 
   const onSubmit: SubmitHandler<SignUpForm> = async (data) => {
@@ -106,7 +85,6 @@ export default function SignUpPage() {
       }
 
       const result = await response.json();
-      signUpSuccess(result);
       setAlert({ open: true, type: "signup" });
 
       //throw한 반환 데이터를 받아 상세한 에러처리
