@@ -18,7 +18,6 @@ interface AuthContextType {
   user: User | null;
   loginSuccess: (result: any) => void;
   logout: () => void;
-  signUpSuccess: (result: any) => void;
   isLogin: boolean;
 }
 
@@ -26,7 +25,6 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   loginSuccess: () => {},
   logout: () => {},
-  signUpSuccess: () => {},
   isLogin: false,
 });
 
@@ -49,21 +47,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  useEffect(() => {});
+
   const loginSuccess = (result: any) => {
     const { id, type } = result.item.user.item;
     const token = result.item.token;
     localStorage.setItem("id", id);
     localStorage.setItem("type", type);
     localStorage.setItem("token", token);
-    setIsLogin(true);
-  };
-
-  const signUpSuccess = (result: any) => {
-    const { id, type } = result.item;
-    localStorage.setItem("id", id);
-    localStorage.setItem("type", type);
-    localStorage.setItem("token", result.item.token);
-    setUser({ id, role: type });
     setIsLogin(true);
   };
 
@@ -81,7 +72,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         loginSuccess,
         logout,
-        signUpSuccess,
         isLogin,
       }}
     >
