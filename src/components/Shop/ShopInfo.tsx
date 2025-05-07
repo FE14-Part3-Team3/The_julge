@@ -73,7 +73,7 @@ export default function ShopInfo({ shop }: ShopInfoProps) {
             <div className="flex gap-2 justify-center lg:justify-end">
               <button
                 className={`${customButtonStyle} border border-red-50 text-red-50 rounded-md text-center`}
-                onClick={() => router.push(`/shops/${shop.id}/edit`)}
+                onClick={() => router.push(`/shops/${shop.id}/register`)}
               >
                 편집하기
               </button>
