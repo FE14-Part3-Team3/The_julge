@@ -20,7 +20,10 @@ export const applicationColumns: Column<Application>[] = [
   { label: "신청자", render: ({ user }) => user.item.name },
   { label: "소개", render: ({ user }) => user.item.bio },
   { label: "전화번호", render: ({ user }) => user.item.phone },
-  { label: "상태", render: (item) => String(item.status) },
+  {
+    label: "상태",
+    render: ({ status }) => <StatusButton status={status} />,
+  },
 ];
 
 export const userApplicationColumns: Column<UserApplication>[] = [
