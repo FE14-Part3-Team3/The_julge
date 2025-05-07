@@ -78,7 +78,7 @@ export default function ShopItem({
                         className="mt-6 w-full py-2 border border-red-50 text-red-50 font-bold rounded-md"
                         onClick={() =>
                             router.push(
-                                `shops/${shopId}/notices/${noticeId}/edit`
+                                `shops/${shopId}/notices/${noticeId}/register-notice`
                             )
                         }
                     >
