@@ -51,21 +51,9 @@ export default function MyStoreRegisterPage() {
   }, []);
 
   return (
-    <main className="max-w-[1200px] mx-auto px-6 py-10">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="font-bold text-[28px]/[100%] lg:text-[32px]/[100%] text-black">
-          {isEditMode ? "가게 정보" : "가게 정보 등록"}
-        </h1>
-        <button onClick={handleClose} className="focus:outline-none">
-          <Image
-            src="/assets/images/vector.svg"
-            width={17.58}
-            height={17.58}
-            alt="닫기"
-          />
-        </button>
-      </div>
-      <div className="w-full shop-register-form bg-[#FAFAFA] p-6 rounded-lg">
+    <main className="w-full h-screen px-[12px] py-[40px] bg-gray-5 sm:pt-[60px] sm:px-[32px]">
+      <div className="w-full max-w-[964px] mx-auto">
+        <h1 className="font-bold text-lg text-black">가게 정보</h1>
         <ShopRegisterForm />
       </div>
     </main>
