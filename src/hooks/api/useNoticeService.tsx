@@ -33,10 +33,10 @@ export const useShopsNoticeList = (
   query: GetListQuery | undefined
 ) => {
   // 가게의 공고 목록 조회
-  return useQuery<GetShopNoticesResponse>({
+  return useQuery<GetNoticeListResponse>({
     queryKey: ["shop-notices", shopId, query],
     queryFn: async () => {
-      const res = await requestor.get<GetShopNoticesResponse>(
+      const res = await requestor.get<GetNoticeListResponse>(
         `/shops/${shopId}/notices`,
         {
           params: query,
