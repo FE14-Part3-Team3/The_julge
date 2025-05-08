@@ -22,7 +22,6 @@ export interface MyStoreRegisterForm {
   description: string;
   image?: FileList;
   originalHourlyPay: number;
-  image?: FileList;
 }
 
 export interface ShopPayload extends Omit<MyStoreRegisterForm, "image"> {
@@ -243,7 +242,7 @@ export default function ShopRegisterForm() {
             })}
           />
         </div>
-        <ImageUploader {...register("image")} previewImg={previewImg} />
+        <ImageUploader {...register("image")} previewUrl={previewUrl} />
         <div className="col-span-2">
           <label htmlFor="description">가게 설명</label>
           <textarea
