@@ -7,6 +7,8 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ExtendedNotice } from "@/types/ShopTypes";
 import Button from "@/components/Button/Button";
+import NoticeCardView from "./NoticeCardView";
+import { useGetShop } from "@/hooks/api/useShopService";
 
 // 반응형 컨테이너 클래스
 const CONTAINER_CLASSES = {
@@ -50,6 +52,10 @@ export default function NoticeList({
     "desktop"
   );
 
+  // 가게 정보 가져오기
+  const { data: shopData } = useGetShop(shopId);
+  const shop = shopData?.item;
+
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
@@ -80,17 +86,15 @@ export default function NoticeList({
       : "grid-cols-3";
 
   return (
-    <div
-      className={`bg-white border border-gray-200 rounded-xl ${containerClass} h-auto mx-auto p-6`}
-    >
+    <div className={`border-0 rounded-xl ${containerClass} h-auto mx-auto p-2`}>
       {/* 공고가 없는 경우 표시할 내용 */}
       {notices.length === 0 ? (
-        <div className="text-center py-8">
+        <div className="text-center py-8 bg-white rounded-xl border border-gray-200 p-6">
           <p className="text-gray-600 mb-4">공고를 등록해 보세요.</p>
           <Button
             variant="primary"
             size={deviceSize === "mobile" ? "sm" : "lg"}
-            onClick={() => router.push(`/shops/${shopId}/notices/register-notice`)}
+            onClick={() => router.push(`/shops/${shopId}/register-notice`)}
             className={`
               font-bold flex items-center justify-center
               ${deviceSize === "mobile" ? "w-[151.5px] h-[38px] text-sm" : ""}
@@ -112,32 +116,43 @@ export default function NoticeList({
       ) : (
         <div>
           {/* 공고 카드 그리드 - 반응형으로 열 수 조정 */}
-          <div className={`grid ${gridCols} gap-4`}>
-            {notices.map((notice) => (
-              <div
-                key={notice.id}
-                className="p-4 border rounded-lg shadow hover:shadow-md cursor-pointer transition"
-                onClick={() =>
-                  router.push(
-                    `/shops/${shopId}/notices/${notice.id}/applications`
-                  )
-                }
-              >
-                {/* 공고 제목 */}
-                <h3 className="text-lg font-semibold line-clamp-1">
-                  {notice.description}
-                </h3>
-                {/* 급여 및 근무시간 정보 */}
-                <div className="text-sm text-gray-600 mt-2">
-                  시급 {notice.hourlyPay.toLocaleString()}원
-                  {notice.workhour && <> / 근무시간 {notice.workhour}시간</>}
+          <div className={`grid ${gridCols} gap-6 mb-6`}>
+            {notices.map((notice) => {
+              // 가게 정보와 공고 정보를 NoticeItem 형식으로 변환
+              if (!shop) return null;
+
+              const noticeItem = {
+                id: notice.id,
+                hourlyPay: notice.hourlyPay,
+                startsAt: notice.startsAt,
+                workhour: notice.workhour,
+                description: notice.description || "",
+                closed: notice.closed,
+                shop: {
+                  item: {
+                    id: shopId,
+                    name: shop.name,
+                    category: shop.category,
+                    address1: shop.address1,
+                    address2: shop.address2,
+                    description: shop.description,
+                    imageUrl: shop.imageUrl,
+                    originalHourlyPay: shop.originalHourlyPay,
+                  },
+                  href: `/api/shops/${shopId}`,
+                },
+              };
+
+              return (
+                <div
+                  key={notice.id}
+                  onClick={() => router.push(`/notices/${notice.id}`)}
+                  className="cursor-pointer hover:shadow-lg transition-all rounded-xl border border-gray-200 p-4 bg-white shadow-sm"
+                >
+                  <NoticeCardView list={noticeItem} />
                 </div>
-                {/* 시작일 표시 */}
-                <div className="text-xs text-gray-400 mt-4">
-                  {new Date(notice.startsAt).toLocaleDateString()}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* 무한 스크롤 로딩 표시 */}

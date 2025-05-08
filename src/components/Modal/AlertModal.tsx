@@ -29,12 +29,12 @@ export default function AlertModal({ type, onClose }: AlertModalProps) {
       <Modal
         description={AlertMessages[type]}
         layout="centered"
-        buttonAlign="end"
+        buttonAlign="center"
         width="w-[540px] max-xs:w-[327px]"
         height="h-[250px] max-xs:h-[220px]"
         descriptionSize="text-[18px] max-xs:text-[16px]"
       >
-        <div className="flex w-full mt-auto pt-2 justify-end max-xs:justify-center">
+        <div className="flex w-full mt-auto pt-2 justify-center">
           <ModalButton
             label="확인"
             onClick={onClose}

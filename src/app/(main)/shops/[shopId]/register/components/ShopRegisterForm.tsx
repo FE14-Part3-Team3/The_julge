@@ -22,6 +22,7 @@ export interface MyStoreRegisterForm {
   description: string;
   image?: FileList;
   originalHourlyPay: number;
+  image?: FileList;
 }
 
 export interface ShopPayload extends Omit<MyStoreRegisterForm, "image"> {
@@ -242,23 +243,7 @@ export default function ShopRegisterForm() {
             })}
           />
         </div>
-        <ImageUploader
-          label="가게 이미지"
-          name="image" // RHF 필드 이름
-          onChange={(e) =>
-            setValue("image", e.target.files, {
-              shouldValidate: true,
-              shouldDirty: true,
-            })
-          } // setValue로 파일 업데이트
-          previewUrl={previewUrl}
-          existingImageUrl={existingImageUrl}
-          onClearImage={() => {
-            // 이미지 제거 핸들러 (선택적)
-            setValue("image", undefined, { shouldDirty: true });
-            setPreviewUrl(isEditMode ? existingImageUrl : undefined); // 수정 모드면 기존 이미지로, 아니면 비움
-          }}
-        />
+        <ImageUploader {...register("image")} previewImg={previewImg} />
         <div className="col-span-2">
           <label htmlFor="description">가게 설명</label>
           <textarea

@@ -5,13 +5,18 @@ import RegisterCard from "@/components/Card/RegisterCard";
 import { useParams } from "next/navigation";
 import { useGetUser } from "@/hooks/api/useUserService";
 import { SeoulDistrict } from "@/types/common";
-import { Section } from "@/components/Section/Section";
+import { useRouter } from "next/navigation";
 import ApplicationTable from "./components/ApplicationTable";
 
 export default function WorkerProfilePage() {
   const params = useParams();
   const userId = params?.id as string;
   const { data } = useGetUser(userId);
+  const router = useRouter();
+
+  const goRegister = () => {
+    router.push(`/profile/worker/${userId}/register`);
+  };
 
   if (!data) return null;
 
@@ -41,6 +46,7 @@ export default function WorkerProfilePage() {
           title="내 프로필"
           description="내 프로필을 등록하고 원하는 가게에 지원해 보세요."
           buttonText="내 프로필 등록하기"
+          onClick={goRegister}
         />
       )}
       ;
