@@ -9,7 +9,7 @@ import ShopName from "./ShopName";
 import ShopDescription from "./ShopDescription";
 import ShopLocation from "./ShopLocation";
 import ShopAction from "./ShopAction";
-import { Shop } from "@/types/ShopTypes";
+import { ShopInfo } from "@/types/api/shop";
 
 // 반응형 컨테이너 클래스
 const CONTAINER_CLASSES = {
@@ -19,7 +19,7 @@ const CONTAINER_CLASSES = {
 };
 
 interface ShopInfoCardProps {
-  shop: Shop;
+  shop: ShopInfo;
 }
 
 export default function ShopInfoCard({ shop }: ShopInfoCardProps) {
@@ -79,7 +79,7 @@ export default function ShopInfoCard({ shop }: ShopInfoCardProps) {
           <div className={layoutStyles.textSection}>
             <ShopCategory category={shop.category} />
             <ShopName name={shop.name} />
-            <ShopLocation location={shop.location} />
+            <ShopLocation location={shop.address1} />
             <ShopDescription description={shop.description} />
           </div>
           <div className={layoutStyles.buttonSection}>

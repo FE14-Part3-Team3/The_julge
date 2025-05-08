@@ -90,7 +90,7 @@ export default function NoticeList({
           <Button
             variant="primary"
             size={deviceSize === "mobile" ? "sm" : "lg"}
-            onClick={() => router.push(`/shops/${shopId}/notices/new`)}
+            onClick={() => router.push(`/shops/${shopId}/notices/register-notice`)}
             className={`
               font-bold flex items-center justify-center
               ${deviceSize === "mobile" ? "w-[151.5px] h-[38px] text-sm" : ""}
@@ -117,7 +117,11 @@ export default function NoticeList({
               <div
                 key={notice.id}
                 className="p-4 border rounded-lg shadow hover:shadow-md cursor-pointer transition"
-                onClick={() => router.push(`/notices/${notice.id}`)}
+                onClick={() =>
+                  router.push(
+                    `/shops/${shopId}/notices/${notice.id}/applications`
+                  )
+                }
               >
                 {/* 공고 제목 */}
                 <h3 className="text-lg font-semibold line-clamp-1">

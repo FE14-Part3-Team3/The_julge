@@ -10,6 +10,7 @@ interface ShopActionProps {
 }
 
 export default function ShopAction({ shopId }: ShopActionProps) {
+  const userId = localStorage.getItem("id");
   const router = useRouter();
   const [deviceSize, setDeviceSize] = useState<"mobile" | "tablet" | "desktop">(
     "desktop"
@@ -57,13 +58,13 @@ export default function ShopAction({ shopId }: ShopActionProps) {
     <div className={buttonStyles.container}>
       <button
         className={`${buttonStyles.editButton} bg-white border border-red-50 text-red-50 rounded-md text-center`}
-        onClick={() => router.push(`/shops/${shopId}/edit`)}
+        onClick={() => router.push(`/shops/${userId}/register`)}
       >
         편집하기
       </button>
       <button
         className={`${buttonStyles.registerButton} bg-red-50 text-white rounded-md text-center`}
-        onClick={() => router.push(`/shops/${shopId}/notices/new`)}
+        onClick={() => router.push(`/shops/${userId}/notices/register-notice`)}
       >
         공고 등록하기
       </button>

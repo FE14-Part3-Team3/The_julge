@@ -8,31 +8,40 @@ import { useParams, useRouter } from "next/navigation";
 import RegisterCard from "@/components/Card/RegisterCard";
 import ShopNotices from "@/components/ShopNotices/ShopNotices";
 import ShopInfoCard from "@/components/ShopCard/ShopInfoCard";
-import { useGetShop } from "@/hooks/api/useShopService";
+import { useGetUser } from "@/hooks/api/useUserService";
+import { ShopInfo } from "@/types/api/shop";
 
 export default function ShopDetailPage() {
   const router = useRouter();
   const params = useParams();
-  const shopId = params.shopId as string;
+  const userId = params.shopId as string;
+  const { data: userDataWrapper, isLoading, error } = useGetUser(userId);
 
-  // API 연동
-  const { data, isLoading, error } = useGetShop(shopId);
-  const shop = data?.item;
-
-  // 로딩 중 표시
   if (isLoading) {
     return <div className="text-center py-10">로딩 중...</div>;
   }
 
-  // 가게 정보를 컴포넌트에서 사용 가능한 형태로 변환
-  const mappedShop = shop && {
-    ...shop,
-    location: shop.address1,
-    userId: shop.user?.item?.id || "",
-  };
+  if (error) {
+    // useQuery에서 error 객체를 반환하므로, 에러 상태를 표시하는 것이 좋습니다.
+    return (
+      <div className="text-center py-10">
+        데이터를 불러오는 중 오류가 발생했습니다.
+      </div>
+    );
+  }
+
+  const user = userDataWrapper?.item;
+
+  if (!user) {
+    router.push("/login");
+    return;
+  }
+
+  const shopData: ShopInfo | undefined = user.shop?.item;
+
 
   // 오류 발생 또는 가게 정보가 없는 경우 가게 등록 안내 카드 표시
-  if (error || !mappedShop) {
+  if (!shopData) {
     return (
       <RegisterCard
         title="내 가게"
@@ -41,18 +50,17 @@ export default function ShopDetailPage() {
         onClick={() => router.push("/shops/new")}
       />
     );
+  } else {
+    return (
+      <div className="max-w-[964px] mx-auto px-6 py-10">
+        <h1 className="text-[28px] font-bold mb-6">내 가게</h1>
+        <section className="mb-10">
+          <ShopInfoCard shop={shopData} />
+        </section>
+        <section>
+          <ShopNotices shopId={shopData.id} />
+        </section>
+      </div>
+    );
   }
-
-  // 가게 정보 및 공고 목록 표시
-  return (
-    <div className="max-w-[964px] mx-auto px-6 py-10">
-      <h1 className="text-[28px] font-bold mb-6">내 가게</h1>
-      <section className="mb-10">
-        <ShopInfoCard shop={mappedShop} />
-      </section>
-      <section>
-        <ShopNotices shopId={mappedShop.id} />
-      </section>
-    </div>
-  );
 }
