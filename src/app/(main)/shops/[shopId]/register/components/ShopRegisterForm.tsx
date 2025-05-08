@@ -11,6 +11,8 @@ import ImageUploader from "./ImageUploader";
 import { category, Category } from "@/lib/constants/foodCategory";
 import { address, AddressOptions } from "@/lib/constants/addressOptions";
 import { useGetShop } from "@/hooks/api/useShopService";
+import { useGetUser } from "@/hooks/api/useUserService";
+import { useUploadImage } from "@/hooks/api/useImageUpload";
 
 export interface MyStoreRegisterForm {
   name: string;
@@ -18,206 +20,162 @@ export interface MyStoreRegisterForm {
   address1: AddressOptions | "";
   address2: string;
   description: string;
-  imageUrl: string;
-  originalHourlyPay: number;
   image?: FileList;
+  originalHourlyPay: number;
+}
+
+export interface ShopPayload extends Omit<MyStoreRegisterForm, "image"> {
+  imageUrl?: string; // 업로드된 이미지 URL 또는 기존 URL
 }
 
 export default function ShopRegisterForm() {
+  const params = useParams();
+  const userId = params.shopId as string;
+  const { data: userDataWrapper } = useGetUser(userId);
+  const router = useRouter();
+  const isEditMode = !!userDataWrapper?.item.shop;
+  const { upload } = useUploadImage();
+  let shopId: string;
+  if (userDataWrapper?.item.shop) {
+    shopId = userDataWrapper.item.shop.item.id;
+  }
+
   const {
     register,
     handleSubmit,
     control,
     watch,
     reset,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<MyStoreRegisterForm>({
     mode: "onSubmit",
   });
+
   const [isRegistered, setIsRegistered] = useState(false);
-  const router = useRouter();
-  const { shopId } = useParams() as { shopId: string };
-  const [previewImg, setPreviewImg] = useState("");
-  const { data, isLoading } = useGetShop(shopId);
+  const [previewUrl, setPreviewUrl] = useState<string | undefined>(undefined);
+  const [existingImageUrl, setExistingImageUrl] = useState<string | undefined>(
+    undefined
+  );
+
+  const { data: shopDataWrapper, isLoading: isLoadingShop } = useGetShop(
+    shopId,
+    isEditMode
+  );
 
   useEffect(() => {
-    if (data) {
+    if (isEditMode && shopDataWrapper?.item) {
       const {
         name,
         address1,
         address2,
         category,
         description,
-        imageUrl,
+        imageUrl, // 서버의 이미지 URL
         originalHourlyPay,
-      } = data.item;
+      } = shopDataWrapper.item;
+
       reset({
+        // image 필드는 reset에서 제외하거나, FileList가 아니므로 다른 방식으로 처리
         name,
-        address1,
+        address1: address1 as AddressOptions, // 타입 단언 또는 데이터 변환 필요
         address2,
-        category,
+        category: category as Category, // 타입 단언 또는 데이터 변환 필요
         description,
-        imageUrl,
         originalHourlyPay,
+        // image: undefined, // FileList가 아니므로 초기화 시 FileList를 넣지 않음
       });
-
       if (imageUrl) {
-        setPreviewImg(imageUrl);
+        setPreviewUrl(imageUrl); // 기존 이미지를 프리뷰로 설정
+        setExistingImageUrl(imageUrl); // 기존 이미지 URL 저장
       }
     }
-  }, [data, reset]);
+  }, [isEditMode, shopDataWrapper, reset]);
 
+  const watchedImage = watch("image"); // FileList | undefined
   useEffect(() => {
-    const imageFile = watch("image");
-    if (imageFile && imageFile.length > 0) {
-      const file = imageFile[0];
-      setPreviewImg(URL.createObjectURL(file));
+    if (watchedImage && watchedImage.length > 0) {
+      const file = watchedImage[0];
+      const objectUrl = URL.createObjectURL(file);
+      setPreviewUrl(objectUrl);
+
+      // 메모리 누수 방지를 위해 cleanup 함수 사용
+      return () => URL.revokeObjectURL(objectUrl);
+    } else if (!isEditMode || !existingImageUrl) {
+      // 수정 모드가 아니거나, 수정 모드인데 기존 이미지가 없었고, 새 파일도 선택 안 한 경우
+      // 또는 이미지 선택 취소 시 (watchedImage가 undefined/empty가 될 때)
+      // setPreviewUrl(undefined); // 이 부분은 이미지 삭제 기능 추가 시 고려
     }
-  }, [watch("image")]);
-
-  // 이미지 업로드 함수
-  const uploadImage = async (file: File): Promise<string> => {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      throw new Error("로그인이 필요합니다");
-    }
-
-    try {
-      console.log("이미지 업로드 시작 - 파일명:", file.name);
-
-      // 1. Presigned URL 생성 요청 - 절대 경로 사용
-      const presignedResponse = await fetch(
-        "https://bootcamp-api.codeit.kr/api/0-1/the-julge/images",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ name: file.name }),
-        }
-      );
-
-      if (!presignedResponse.ok) {
-        console.error("Presigned URL 생성 실패:", presignedResponse.status);
-        throw new Error(
-          `Presigned URL 생성에 실패했습니다 (${presignedResponse.status})`
-        );
-      }
-
-      const presignedData = await presignedResponse.json();
-      console.log("Presigned URL 응답:", presignedData);
-
-      if (!presignedData?.item?.url) {
-        throw new Error("Presigned URL을 찾을 수 없습니다.");
-      }
-
-      const presignedUrl = presignedData.item.url;
-      console.log("Presigned URL:", presignedUrl);
-
-      // 2. Presigned URL을 사용하여 이미지 업로드
-      const uploadResponse = await fetch(presignedUrl, {
-        method: "PUT",
-        headers: {
-          // Content-Type 헤더를 명시적으로 설정하지 않음
-        },
-        body: file,
-      });
-
-      if (!uploadResponse.ok) {
-        console.error("이미지 업로드 실패:", uploadResponse.status);
-        throw new Error(
-          `이미지 업로드에 실패했습니다 (${uploadResponse.status})`
-        );
-      }
-
-      // 3. 이미지 URL은 presignedUrl에서 쿼리 파라미터 제외
-      const imageUrl = presignedUrl.split("?")[0];
-      console.log("최종 이미지 URL:", imageUrl);
-      return imageUrl;
-    } catch (error) {
-      console.error("이미지 업로드 오류:", error);
-      throw error;
-    }
-  };
+  }, [watchedImage, isEditMode, existingImageUrl]);
 
   const onSubmit: SubmitHandler<MyStoreRegisterForm> = async (formData) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("로그인이 필요합니다.");
-      return;
-    }
-
+    const token = localStorage.getItem("token"); // 실제로는 Auth Context 등에서 관리
+    let uploadedImageUrl: string | undefined = existingImageUrl; // 기본값은 기존 이미지 URL
     try {
-      let imageUrl = formData.imageUrl;
-
-      // 새 이미지가 있으면 업로드하고 URL 받아오기
+      // 1. 새 이미지가 선택되었는지 확인
       if (formData.image && formData.image.length > 0) {
-        try {
-          imageUrl = await uploadImage(formData.image[0]);
-          console.log("업로드 성공, 이미지 URL:", imageUrl);
-        } catch (imageError) {
-          console.error("이미지 업로드 중 오류가 발생했습니다:", imageError);
-          alert("이미지 업로드에 실패했습니다. 다시 시도해 주세요.");
-          return; // 이미지 업로드 실패 시 폼 제출 중단
-        }
-      }
+        const imageFile = formData.image[0];
+        // 실제 이미지 업로드 로직 (예시: FormData 사용)
 
-      // 최종 데이터 준비 (image 필드 제외)
-      const shopData = {
+        const uploadedImageUrl = upload(imageFile);
+        return uploadedImageUrl;
+      }
+      const payload: ShopPayload = {
         name: formData.name,
         category: formData.category,
         address1: formData.address1,
         address2: formData.address2,
         description: formData.description,
-        imageUrl: imageUrl,
-        originalHourlyPay: Number(formData.originalHourlyPay), // 숫자로 변환 확실히
+        originalHourlyPay: formData.originalHourlyPay,
+        imageUrl: uploadedImageUrl, // 최종 이미지 URL
       };
 
-      console.log("가게 등록 데이터:", shopData);
+      console.log("제출할 데이터:", payload);
 
-      const response = await fetch(
-        `https://bootcamp-api.codeit.kr/api/0-1/the-julge/shops`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(shopData),
-        }
-      );
-
-      // 응답 결과 로깅
-      console.log("가게 등록 응답 상태:", response.status);
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("가게 등록 오류:", response.status, errorText);
-
-        try {
-          // 텍스트가 JSON인 경우 파싱
-          const errorJson = JSON.parse(errorText);
-          alert(
-            `가게 등록에 실패했습니다: ${errorJson.message || response.status}`
-          );
-        } catch {
-          alert(`가게 등록에 실패했습니다: ${response.status}`);
-        }
-        return;
+      let responseData;
+      if (isEditMode && shopId) {
+        // 수정 로직 (PUT 요청)
+        // responseData = await updateShopMutation.mutateAsync({ shopId, body: payload });
+        const response = await fetch(
+          `https://bootcamp-api.codeit.kr/api/0-1/the-julge/shops/${shopId}`, // shopId 사용
+          {
+            method: "PUT", // 수정은 PUT
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(payload),
+          }
+        );
+        if (!response.ok) throw await response.json();
+        responseData = await response.json();
+      } else {
+        // 등록 로직 (POST 요청)
+        // responseData = await registerShopMutation.mutateAsync(payload);
+        const response = await fetch(
+          `https://bootcamp-api.codeit.kr/api/0-1/the-julge/shops`, // 등록 시에는 shopId 없음
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(payload),
+          }
+        );
+        if (!response.ok) throw await response.json();
+        responseData = await response.json();
       }
-
       setIsRegistered(true);
+      console.log("서버 응답:", responseData);
     } catch (err: any) {
-      console.error("가게 등록 중 예외 발생:", err);
-      alert("가게 등록 중 오류가 발생했습니다.");
+      console.error("폼 제출 오류:", err);
     }
   };
 
   const handleClose = () => {
     setIsRegistered(false);
-    router.push(`/shops/${shopId}`);
+    router.push(`/shops/${userId}`);
   };
 
   return (
@@ -284,7 +242,7 @@ export default function ShopRegisterForm() {
             })}
           />
         </div>
-        <ImageUploader {...register("image")} previewImg={previewImg} />
+        <ImageUploader {...register("image")} previewUrl={previewUrl} />
         <div className="col-span-2">
           <label htmlFor="description">가게 설명</label>
           <textarea

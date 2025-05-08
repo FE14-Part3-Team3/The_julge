@@ -4,74 +4,152 @@ import Button from "@/components/Button/Button";
 import Input from "@/components/Input/Input";
 import {
   usePostShopsNoticeList,
+  useShopsNotice,
   useUpdateShop,
 } from "@/hooks/api/useNoticeService";
-import { NoticeFormData, NoticeItem } from "@/types/api/notice";
+import { useGetUser } from "@/hooks/api/useUserService";
+import {
+  NoticeFormData,
+  ItemWrapper,
+  GetShopNoticesResponse,
+} from "@/types/api/notice";
 import { useQueryClient } from "@tanstack/react-query";
-import { ParamValue } from "next/dist/server/request/params";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
-interface NoticeRegisterFormProps {
-  data?: NoticeItem;
-  noticeId?: ParamValue;
+interface NoticeDetailData extends NoticeFormData {
+  id: string;
 }
 
-export default function NoticeRegisterForm({
-  data,
-  noticeId,
-}: NoticeRegisterFormProps) {
-  const { shopId } = useParams() as { shopId: string };
+export default function NoticeRegisterForm() {
+  const params = useParams();
+  const userId = params.shopId as string;
+  const { data: userDataWrapper } = useGetUser(userId);
+  const noticeId = params.noticeId as string | undefined; // noticeId는 없을 수 있음
+  const isEditMode = !!noticeId; //noticeId가 존재하면 수정 모드
   const queryClient = useQueryClient();
   const router = useRouter();
   const minDate = new Date().toISOString().slice(0, 16);
   const updateMutation = useUpdateShop(); //공고를 편집하는 변이를 불러옵니다.
   const postMutation = usePostShopsNoticeList(); //공고를 발행하는 변이를 불러옵니다.
+  let shopId: string | undefined;
+  if (userDataWrapper?.item.shop) {
+    shopId = userDataWrapper.item.shop.item.id;
+  }
 
-  //prop으로 받는 data가 이미 존재하는 경우와 존재하지 않는 경우를 나눠서 분기점을 잡고 구별합니다.
-  const onSubmit: SubmitHandler<NoticeFormData> = (formData) => {
-    const formatedDate =
-      new Date(formData.startsAt).toISOString().slice(0, 19) + "Z";
-    console.log(formatedDate);
-    console.log(formData);
-    if (data) {
-      updateMutation.mutate(
-        {
-          shopId,
-          noticeId,
-          body: { ...formData, startsAt: formatedDate },
-        },
-        { onSuccess: () => router.push(`/shops/${shopId}`) }
-      );
-    } else {
-      postMutation.mutate(
-        { shopId, body: { ...formData, startsAt: formatedDate } },
-        { onSuccess: () => router.push(`/shops/${shopId}`) }
-      );
-    }
-  };
+  const { data: noticeDetailWrapper, isLoading: isLoadingNotice } =
+    useShopsNotice(shopId, noticeId); //
 
   const {
     register,
     reset,
     handleSubmit,
     formState: { errors },
-  } = useForm<NoticeFormData>({ mode: "onSubmit" });
+    setValue,
+  } = useForm<NoticeFormData>({
+    mode: "onSubmit",
+  });
 
-  //데이터가 있는 경우 데이터에서 다음 필드들을 추출해 폼을 리셋합니다.
   useEffect(() => {
-    if (data) {
-      const { description, hourlyPay, startsAt, workhour }: NoticeFormData =
-        data;
-      reset({ description, hourlyPay, startsAt, workhour });
+    if (isEditMode && noticeDetailWrapper?.item) {
+      const noticeData = noticeDetailWrapper.item as NoticeDetailData;
+      const { description, hourlyPay, startsAt, workhour } = noticeData;
+
+      const formattedStartsAt = startsAt
+        ? new Date(startsAt).toISOString().slice(0, 16)
+        : "";
+      reset({
+        description,
+        hourlyPay,
+        startsAt: formattedStartsAt,
+        workhour,
+      });
     }
-  }, [data]);
+  }, [isEditMode, noticeDetailWrapper, reset]);
+
+  //prop으로 받는 data가 이미 존재하는 경우와 존재하지 않는 경우를 나눠서 분기점을 잡고 구별합니다.
+  const onSubmit: SubmitHandler<NoticeFormData> = (formData) => {
+    const formattedDate =
+      new Date(formData.startsAt).toISOString().slice(0, 19) + "Z";
+    const body = { ...formData, startsAt: formattedDate };
+
+    if (isEditMode) {
+      updateMutation.mutate(
+        {
+          shopId,
+          noticeId,
+          body,
+        },
+        {
+          onSuccess: (updatedNoticeData) => {
+            queryClient.invalidateQueries({
+              queryKey: ["shop-notices-detail", shopId, noticeId],
+            });
+            queryClient.invalidateQueries({
+              queryKey: ["shop-notices", shopId],
+            });
+
+            router.push(`/shops/${userId}/notices/${noticeId}/applications`);
+          },
+          onError: (error) => {
+            console.error(
+              "공고 수정 실패:",
+              updateMutation.errorMessage || error.message
+            );
+            alert(`수정 실패: ${updateMutation.errorMessage || error.message}`);
+          },
+        }
+      );
+    } else {
+      postMutation.mutate(
+        { shopId, body },
+        {
+          onSuccess: (newNoticeResponseData) => {
+            console.log("공고 등록 성공", newNoticeResponseData);
+
+            let newCreatedNoticeId: string | undefined;
+            console.log(newNoticeResponseData);
+
+            newCreatedNoticeId = newNoticeResponseData.item.id;
+            if (newCreatedNoticeId) {
+              queryClient.invalidateQueries({
+                queryKey: ["shop-notices", shopId],
+              });
+              router.push(
+                `/shops/${userId}/notices/${newCreatedNoticeId}/applications`
+              );
+            } else {
+              console.error(
+                "등록 후 새 공고 ID를 찾을 수 없습니다. 응답 데이터:",
+                newNoticeResponseData
+              );
+              router.push(`/shops/${userId}/`);
+              alert(
+                "공고는 등록되었으나, 상세 페이지로 이동 중 ID를 찾지 못했습니다. 목록을 확인해주세요."
+              );
+            }
+          },
+          onError: (error) => {
+            console.error(
+              "공고 등록 실패:",
+              postMutation.errorMessage || error.message
+            );
+            alert(`등록 실패: ${postMutation.errorMessage || error.message}`);
+          },
+        }
+      );
+    }
+  };
 
   const handleClick = () => {
     router.back();
   };
+
+  if (isEditMode && isLoadingNotice) {
+    return <div>공고 정보를 불러오는 중...</div>;
+  }
 
   return (
     <main className="w-full max-w-[964px] mx-auto mt-[60px]">

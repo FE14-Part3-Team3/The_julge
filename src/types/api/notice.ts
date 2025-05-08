@@ -48,4 +48,5 @@ export type ItemWrapper = Wrapper<NoticeItem>; // 가게 공고 등록 , 가게�
 
 export type GetNoticeListResponse = NoticesPaginatedResponse<ItemWrapper>;
 
-export type GetShopNoticesResponse = PaginatedResponse<ItemWrapper>; // 가게의 공고 목록 조회
+export type GetShopNoticesResponse = ItemWrapper; // 가게의 공고 목록 조회
+

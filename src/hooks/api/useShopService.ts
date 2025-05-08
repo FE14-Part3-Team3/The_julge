@@ -31,7 +31,7 @@ export const usePostShop = () => {
   };
 };
 
-export const useGetShop = (shopId: string | undefined) => {
+export const useGetShop = (shopId: string | undefined, isEdit: boolean) => {
   // 가게 정보 조회
   return useQuery<CreateShopResponse>({
     queryKey: ["shops", shopId],
@@ -39,6 +39,7 @@ export const useGetShop = (shopId: string | undefined) => {
       const res = await requestor.get<CreateShopResponse>(`/shops/${shopId}`);
       return res.data;
     },
+    enabled: isEdit && !!shopId,
   });
 };
 
