@@ -59,22 +59,17 @@ export default function ShopNotices({ shopId }: ShopNoticesProps) {
     });
   }, [hasMore, isLoading, page, notices.length, isMounted]);
 
-  console.log("[ShopNotices] 컴포넌트 렌더링, shopId:", shopId);
-
   // API를 통한 공고 목록 직접 호출 함수
   const fetchNotices = async (shopId: string, page: number) => {
     if (!shopId) {
-      console.error("[ShopNotices] 유효하지 않은 shopId");
       setError("가게 정보를 찾을 수 없습니다.");
       return null;
     }
 
     try {
-      console.log("[ShopNotices] 공고 목록 직접 조회 시도:", { shopId, page });
       const token = localStorage.getItem("token");
 
       if (!token) {
-        console.error("[ShopNotices] 인증 토큰 없음");
         setError("인증 정보가 없습니다. 다시 로그인해주세요.");
         return null;
       }
@@ -91,25 +86,16 @@ export default function ShopNotices({ shopId }: ShopNoticesProps) {
         }
       );
 
-      console.log("[ShopNotices] API 응답 상태:", response.status);
-
       if (!response.ok) {
         if (response.status === 401) {
-          console.error("[ShopNotices] 인증 오류 (401)");
           setError("인증이 만료되었습니다. 다시 로그인해주세요.");
         } else {
-          console.error("[ShopNotices] API 오류:", response.status);
           setError("공고 목록을 불러오는 중 오류가 발생했습니다.");
         }
         return null;
       }
 
       const data = await response.json();
-      console.log("[ShopNotices] 공고 목록 조회 성공:", {
-        count: data.items?.length,
-        hasNext: data.hasNext,
-        totalCount: data.count,
-      });
 
       // 전체 공고 수 설정 (ref 사용)
       if (data.count !== undefined && totalNoticeCountRef.current === null) {
@@ -118,7 +104,6 @@ export default function ShopNotices({ shopId }: ShopNoticesProps) {
 
       return data;
     } catch (error) {
-      console.error("[ShopNotices] 공고 목록 조회 오류:", error);
       setError("공고 목록을 불러오는 중 오류가 발생했습니다.");
       return null;
     }
@@ -127,7 +112,6 @@ export default function ShopNotices({ shopId }: ShopNoticesProps) {
   // 공고 중복 제거 및 상태 업데이트 함수
   const processNoticeData = (data: any, isFirstPage: boolean) => {
     if (!data || !data.items) {
-      console.log("[ShopNotices] 처리할 데이터 없음, 로딩 상태 종료");
       setInitialLoading(false);
 
       // 데이터가 빈 배열이더라도 데이터 로딩 성공으로 간주
@@ -154,12 +138,6 @@ export default function ShopNotices({ shopId }: ShopNoticesProps) {
       closed: itemWrapper.item.closed,
       shopId: shopId,
     }));
-
-    console.log("[ShopNotices] 매핑된 공고 데이터:", {
-      count: newNotices.length,
-      totalCount: data.count,
-      isFirstPage,
-    });
 
     // 마감기한이 먼 순으로 정렬 (startsAt 기준으로 내림차순, 더 미래 날짜가 앞에 옴)
     const sortedNotices = [...newNotices].sort((a, b) => {
@@ -216,12 +194,6 @@ export default function ShopNotices({ shopId }: ShopNoticesProps) {
   // 데이터 로드 효과 - 공통 로직을 processNoticeData로 분리하여 의존성 감소
   useEffect(() => {
     if (data) {
-      console.log("[ShopNotices] 데이터 로드됨:", {
-        count: data.items?.length,
-        hasNext: data.hasNext,
-        totalCount: data.count,
-      });
-
       processNoticeData(data, page === 0);
     }
   }, [data, page, shopId]);
@@ -232,10 +204,6 @@ export default function ShopNotices({ shopId }: ShopNoticesProps) {
 
     const loadNoticesDirectly = async () => {
       if ((!data || loadingRetryCount > 0) && !isLoading && !error && shopId) {
-        console.log(
-          "[ShopNotices] 직접 API 호출 시도, 재시도 횟수:",
-          loadingRetryCount
-        );
         const result = await fetchNotices(shopId, page);
 
         if (result && isMounted) {
@@ -255,11 +223,6 @@ export default function ShopNotices({ shopId }: ShopNoticesProps) {
   useEffect(() => {
     // shopId가 변경되었고, 이전에 처리한 shopId와 다른 경우에만 초기화
     if (shopId !== lastShopIdRef.current) {
-      console.log("[ShopNotices] shopId 변경으로 인한 초기화:", {
-        이전: lastShopIdRef.current,
-        현재: shopId,
-      });
-
       setPage(0);
       setError(null);
       setInitialLoading(true);
@@ -276,7 +239,6 @@ export default function ShopNotices({ shopId }: ShopNoticesProps) {
         // 직접 API 호출을 위한 재시도 카운트 설정 (fallback 메커니즘)
         const timer = setTimeout(() => {
           if (!dataLoaded) {
-            console.log("[ShopNotices] 데이터 로드 재시도");
             setLoadingRetryCount((prev) => prev + 1);
           }
         }, 1500);
@@ -284,7 +246,6 @@ export default function ShopNotices({ shopId }: ShopNoticesProps) {
         // 최대 5초 후에는 로딩 상태 종료 (데이터가 없더라도)
         const maxLoadingTimer = setTimeout(() => {
           if (initialLoading) {
-            console.log("[ShopNotices] 최대 로딩 시간 초과, 로딩 상태 종료");
             setInitialLoading(false);
           }
         }, 5000);
@@ -325,30 +286,8 @@ export default function ShopNotices({ shopId }: ShopNoticesProps) {
         // 사용자가 문서 하단에 더 빨리 도달했다고 감지 (임계값 증가)
         if (windowHeight + scrollTop + scrollThreshold >= documentHeight) {
           if (hasMore && !isLoading) {
-            console.log(
-              "[ShopNotices] 스크롤 감지, 다음 페이지 로드 시도:",
-              page + 1,
-              {
-                현재스크롤위치: scrollTop,
-                문서전체높이: documentHeight,
-                창높이: windowHeight,
-                감지임계값: scrollThreshold,
-                hasMore,
-                isLoading,
-                loadedCount: loadedNoticeIdsRef.current.size,
-                totalCount: totalNoticeCountRef.current,
-              }
-            );
             setPage((prev) => prev + 1);
           } else {
-            console.log(
-              "[ShopNotices] 스크롤 감지되었지만 더 로드할 데이터 없음:",
-              {
-                hasMore,
-                isLoading,
-                page,
-              }
-            );
           }
         }
       }, 100); // 100ms 디바운싱
@@ -370,15 +309,6 @@ export default function ShopNotices({ shopId }: ShopNoticesProps) {
         notices.length > 0 &&
         notices.length < 12
       ) {
-        console.log(
-          "[ShopNotices] 초기 화면이 짧아 자동으로 다음 페이지 로드:",
-          {
-            documentHeight,
-            windowHeight,
-            hasMore,
-            noticesLength: notices.length,
-          }
-        );
         setPage((prev) => prev + 1);
       }
     }, 500);
@@ -445,16 +375,6 @@ export default function ShopNotices({ shopId }: ShopNoticesProps) {
 
   // 데이터가 성공적으로 로드되었으나 공고가 없는 경우
   const hasNotices = notices.length > 0;
-  console.log("[ShopNotices] 렌더링 결과:", {
-    hasNotices,
-    count: notices.length,
-    loadedIds: loadedNoticeIdsRef.current.size,
-    totalCount: totalNoticeCountRef.current,
-    shopId,
-    initialLoading,
-    dataLoaded,
-    hasMore,
-  });
 
   // 디버그 정보 컴포넌트 - 개발 시에만 사용
   const DebugInfo = () => (
@@ -476,7 +396,7 @@ export default function ShopNotices({ shopId }: ShopNoticesProps) {
       </button>
     </div>
   );
-
+  console.log(notices);
   return (
     <>
       {/* 디버그 정보 비활성화 */}

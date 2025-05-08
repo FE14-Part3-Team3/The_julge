@@ -64,7 +64,7 @@ export default function ShopAction({ shopId }: ShopActionProps) {
       </button>
       <button
         className={`${buttonStyles.registerButton} bg-red-50 text-white rounded-md text-center`}
-        onClick={() => router.push(`/shops/${shopId}/register-notice`)}
+        onClick={() => router.push(`/shops/${userId}/notices/register-notice`)}
       >
         공고 등록하기
       </button>
