@@ -12,7 +12,7 @@
 
 ## 📆 프로젝트 기간
 
-2025년 04월 22일 - 2025년 05월 11일
+2025년 04월 22일 - 2025년 05월 09일
 
 ## 🚀 배포
 
@@ -50,9 +50,9 @@ https://the-julge-team3.netlify.app/
 
 ![가게 정보 상세](https://i.ibb.co/HmrhDRQ/2025-05-08-4-40-35.png)
 
-![공고 상세- 지원]()
+<!-- ![공고 상세- 지원]() -->
 
-![공고 상세- 내 가게]()
+![공고 상세- 내 가게](https://i.ibb.co/Mx9dRfm7/2025-05-09-5-12-57.png)
 ![]()
 
 ###
@@ -85,72 +85,223 @@ pnpm run dev
 ## 📁 폴더 구조
 
 ```
-my-app/
-├─ .next/                   # 빌드 아웃풋 (자동 생성)
-├─ node_modules/            # 패키지 의존성
-├─ public/                  # 정적 파일
-│  ├─ favicon.ico
-│  ├─ robots.txt
-│  └─ assets/
-│     ├─ logo.svg
-│     └─ images/
-├─ src/                     # 모든 소스코드
-│  ├─ app/                  # App Router
-│  │  ├─ layout.tsx
-│  │  ├─ globals.css
-│  │  ├─ login/
-│  │  │  └─ page.tsx
-│  │  ├─ signup/
-│  │  │  └─ page.tsx
-│  │  └─ (protected)/      # 로그인 후 영역 (Route Group)
-│  │     ├─ layout.tsx
-│  │     ├─ jobs/
-│  │     │  ├─ page.tsx
-│  │     │  └─ components/
-│  │     │     ├─ RecommendedJobs.tsx
-│  │     │     ├─ JobList.tsx
-│  │     │     └─ SortControls.tsx
-│  │     └─ profile/
-│  │        ├─ employer/    # 사장님 프로필
-│  │        │  └─ [id]/
-│  │        │     ├─ page.tsx
-│  │        │     └─ components/
-│  │        │        ├─ StoreDetails.tsx
-│  │        │        ├─ JobPostForm.tsx
-│  │        │        └─ JobPostList.tsx
-│  │        └─ worker/      # 알바님 프로필
-│  │           └─ [id]/
-│  │              ├─ page.tsx
-│  │              └─ components/
-│  │                 ├─ ProfileDetails.tsx
-│  │                 ├─ ApplicationForm.tsx
-│  │                 └─ ApplicationList.tsx
-│  ├─ components/           # 전역 재사용 컴포넌트
-│  │  ├─ Button.tsx
-│  │  ├─ Modal.tsx
-│  │  └─ Avatar.tsx
-│  ├─ lib/                  # API 호출, 데이터 패칭 로직
-│  │  ├─ api.ts
-│  │  └─ posts.ts
-│  ├─ hooks/                # 커스텀 훅
-│  │  ├─ useAuth.ts
-│  │  └─ usePosts.ts
-│  ├─ styles/               # 전역 스타일 및 디자인 토큰
-│  │  ├─ variables.css
-│  │  └─ globals.css
-│  ├─ types/                # TypeScript 타입 선언
-│  │  ├─ user.ts
-│  │  └─ job.ts
-│  └─ utils/                # 유틸 함수
-│     └─ formatDate.ts
-├─ .env.local               # 환경 변수
-├─ .eslintrc.js             # ESLint 설정
-├─ next.config.js           # Next.js 설정
-├─ tsconfig.json            # TypeScript 설정
-├─ package.json
-├─ README.md
-└─ yarn.lock (또는 package-lock.json)
-
+📦
+├─ .github
+│  ├─ ISSUE_TEMPLATE
+│  │  ├─ etc-template.md
+│  │  ├─ 🐞-bug-report-template.md
+│  │  └─ 🔍-feature-issue.md
+│  └─ pull_request_template.md
+├─ .gitignore
+├─ .vscode
+│  └─ settings.json
+├─ README.md
+├─ eslint.config.mjs
+├─ next.config.ts
+├─ package-lock.json
+├─ package.json
+├─ pnpm-lock.yaml
+├─ postcss.config.js
+├─ public
+│  ├─ assets
+│  │  ├─ dummy
+│  │  ├─ icons
+│  │  │  ├─ chevron
+│  │  │  │  ├─ chevron-outline.svg
+│  │  │  │  └─ chevron.svg
+│  │  │  ├─ map.svg
+│  │  │  ├─ notification.svg
+│  │  │  └─ search.svg
+│  │  └─ images
+│  │     ├─ arrow_up.svg
+│  │     ├─ arrow_up_gray.svg
+│  │     ├─ arrow_up_red_30.svg
+│  │     ├─ arrow_up_red_40.svg
+│  │     ├─ blur-placeholder.jpg
+│  │     ├─ camera.svg
+│  │     ├─ check.svg
+│  │     ├─ clock.svg
+│  │     ├─ clock_gray.svg
+│  │     ├─ close.svg
+│  │     ├─ delete_red.svg
+│  │     ├─ ellipse.svg
+│  │     ├─ logo.svg
+│  │     ├─ map.svg
+│  │     ├─ map_gray.svg
+│  │     ├─ notification.svg
+│  │     ├─ phone.svg
+│  │     ├─ placeholder.png
+│  │     ├─ select_arrow.svg
+│  │     └─ vector.svg
+│  ├─ fonts
+│  │  ├─ SpoqaHanSansNeo-Bold.ttf
+│  │  ├─ SpoqaHanSansNeo-Bold.woff
+│  │  ├─ SpoqaHanSansNeo-Bold.woff2
+│  │  ├─ SpoqaHanSansNeo-Regular.ttf
+│  │  ├─ SpoqaHanSansNeo-Regular.woff
+│  │  └─ SpoqaHanSansNeo-Regular.woff2
+│  └─ temp-restaurant.jpg
+├─ src
+│  ├─ app
+│  │  ├─ (auth)
+│  │  │  ├─ login
+│  │  │  │  └─ page.tsx
+│  │  │  └─ signup
+│  │  │     ├─ components
+│  │  │     │  ├─ MemberTypeRadioInput.tsx
+│  │  │     │  └─ RadioButton.tsx
+│  │  │     └─ page.tsx
+│  │  ├─ (main)
+│  │  │  ├─ layout.tsx
+│  │  │  ├─ notices
+│  │  │  │  ├─ [noticeId]
+│  │  │  │  │  └─ page.tsx
+│  │  │  │  └─ components
+│  │  │  │     ├─ PaginatedNoticeList.tsx
+│  │  │  │     └─ RecommendedNotices.tsx
+│  │  │  ├─ page.tsx
+│  │  │  ├─ profile
+│  │  │  │  └─ worker
+│  │  │  │     └─ [id]
+│  │  │  │        ├─ components
+│  │  │  │        │  ├─ ApplicationTable.tsx
+│  │  │  │        │  └─ ProfileCard.tsx
+│  │  │  │        ├─ page.tsx
+│  │  │  │        └─ register
+│  │  │  │           └─ page.tsx
+│  │  │  └─ shops
+│  │  │     ├─ [shopId]
+│  │  │     │  ├─ edit
+│  │  │     │  │  ├─ components
+│  │  │     │  │  │  ├─ ImageUploader.tsx
+│  │  │     │  │  │  └─ ShopEditForm.tsx
+│  │  │     │  │  ├─ hooks
+│  │  │     │  │  │  └─ useShopEdit.ts
+│  │  │     │  │  └─ page.tsx
+│  │  │     │  ├─ notices
+│  │  │     │  │  ├─ [noticeId]
+│  │  │     │  │  │  ├─ applications
+│  │  │     │  │  │  │  ├─ components
+│  │  │     │  │  │  │  │  └─ ApplicationTable.tsx
+│  │  │     │  │  │  │  └─ page.tsx
+│  │  │     │  │  │  └─ edit
+│  │  │     │  │  │     └─ page.tsx
+│  │  │     │  │  └─ register-notice
+│  │  │     │  │     └─ page.tsx
+│  │  │     │  ├─ page.tsx
+│  │  │     │  └─ register
+│  │  │     │     ├─ components
+│  │  │     │     │  ├─ ImageUploader.tsx
+│  │  │     │     │  └─ ShopRegisterForm.tsx
+│  │  │     │     ├─ hooks
+│  │  │     │     │  └─ useShopRegister.ts
+│  │  │     │     └─ page.tsx
+│  │  │     └─ new
+│  │  │        └─ page.tsx
+│  │  ├─ dummyApplication.ts
+│  │  ├─ globals.css
+│  │  ├─ layout.tsx
+│  │  └─ providers.tsx
+│  ├─ components
+│  │  ├─ Button
+│  │  │  ├─ Button.tsx
+│  │  │  └─ ModalButton.tsx
+│  │  ├─ Card
+│  │  │  ├─ EmptyCard.tsx
+│  │  │  ├─ NoticeRegisterCard.tsx
+│  │  │  ├─ RegisterCard.tsx
+│  │  │  └─ ShopOverview.tsx
+│  │  ├─ FallbackImage
+│  │  │  └─ FallbackImage.tsx
+│  │  ├─ FilterPanel
+│  │  │  └─ FilterPanel.tsx
+│  │  ├─ GNB
+│  │  │  ├─ GlobalHeader.tsx
+│  │  │  ├─ NotificationPanel.tsx
+│  │  │  └─ SearchBar.tsx
+│  │  ├─ IconText
+│  │  │  ├─ IconText.tsx
+│  │  │  └─ IconTextList.tsx
+│  │  ├─ Input
+│  │  │  ├─ Input.tsx
+│  │  │  ├─ InputField.tsx
+│  │  │  ├─ NoticeSelectInput.tsx
+│  │  │  └─ SelectInput.tsx
+│  │  ├─ Modal
+│  │  │  ├─ AlertModal.tsx
+│  │  │  ├─ ApplyModal.tsx
+│  │  │  ├─ Modal.tsx
+│  │  │  ├─ RegisterModal.tsx
+│  │  │  └─ useApplyModal.tsx
+│  │  ├─ Notice
+│  │  │  ├─ NoticeCard.tsx
+│  │  │  ├─ NoticeCardView.tsx
+│  │  │  ├─ NoticeList.tsx
+│  │  │  └─ PayBadge.tsx
+│  │  ├─ Pagination
+│  │  │  ├─ ChevronButton.tsx
+│  │  │  ├─ PageButton.tsx
+│  │  │  └─ Pagination.tsx
+│  │  ├─ Section
+│  │  │  └─ Section.tsx
+│  │  ├─ Shop
+│  │  │  └─ ShopInfo.tsx
+│  │  ├─ ShopCard
+│  │  │  ├─ ShopAction.tsx
+│  │  │  ├─ ShopCategory.tsx
+│  │  │  ├─ ShopDescription.tsx
+│  │  │  ├─ ShopImage.tsx
+│  │  │  ├─ ShopInfoCard.tsx
+│  │  │  ├─ ShopLocation.tsx
+│  │  │  └─ ShopName.tsx
+│  │  ├─ ShopItem
+│  │  │  ├─ ShopItem.tsx
+│  │  │  └─ ShopItemSchemas.tsx
+│  │  ├─ ShopNotices
+│  │  │  └─ ShopNotices.tsx
+│  │  └─ Table
+│  │     ├─ StatusButton.tsx
+│  │     ├─ Table.tsx
+│  │     └─ TableSchemas.tsx
+│  ├─ contexts
+│  │  └─ AuthContext.tsx
+│  ├─ hooks
+│  │  ├─ api
+│  │  │  ├─ useAlertService.ts
+│  │  │  ├─ useApplications.ts
+│  │  │  ├─ useAuthentication.ts
+│  │  │  ├─ useImageUpload.ts
+│  │  │  ├─ useNoticeService.tsx
+│  │  │  ├─ useParsedNoticeQuery.tsx
+│  │  │  ├─ useShopService.ts
+│  │  │  └─ useUserService.ts
+│  │  └─ usePagination.ts
+│  ├─ lib
+│  │  ├─ axios.ts
+│  │  ├─ constants
+│  │  │  ├─ addressOptions.ts
+│  │  │  └─ foodCategory.ts
+│  │  ├─ getQueryString.ts
+│  │  ├─ imageAssets.ts
+│  │  ├─ react-query.ts
+│  │  └─ shopApi.ts
+│  ├─ mock
+│  │  └─ noticeData.ts
+│  ├─ styles
+│  │  └─ dummy
+│  ├─ types
+│  │  ├─ ShopTypes.ts
+│  │  ├─ api
+│  │  │  ├─ application.ts
+│  │  │  ├─ notice.ts
+│  │  │  ├─ notification.ts
+│  │  │  ├─ shop.ts
+│  │  │  └─ user.ts
+│  │  └─ common.ts
+│  └─ utils
+│     └─ dummy
+├─ tailwind.config.js
+└─ tsconfig.json
 ```
 
 ## 📁 폴더/파일명 네이밍 컨벤션
